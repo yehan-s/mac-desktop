@@ -1,6 +1,9 @@
 {
   "name": "mac-desktop",
   "private": true,
+  "workspaces": [
+    "client/"
+  ],
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
@@ -8,8 +11,6 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
     "prettier": "^3.2.5",
     "turbo": "latest"
   },
