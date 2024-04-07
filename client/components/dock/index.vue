@@ -88,6 +88,7 @@ const displayPhotos = ref(false);
 const images = ref();
 const nodes = ref();
 const toast = useToast();
+// icon
 const items = ref([
   {
     label: "Finder",
@@ -316,11 +317,15 @@ const responsiveOptions = ref([
 
 //   TerminalService.emit("response", response);
 // };
+interface Position {
+  position: string;
+}
 
 // 预设
-const presets = {
+const presets = ref({
   dock: {
-    root: ({ props }) => ({
+    // props: DockItem
+    root: ({ props }: { props: Position }) => ({
       class: [
         // Positioning
         "absolute z-1",
@@ -346,7 +351,7 @@ const presets = {
         "pointer-events-auto",
       ],
     },
-    menu: ({ props }) => ({
+    menu: ({ props }: { props: Position }) => ({
       class: [
         // Flexbox & Alignment
         "flex items-center justify-center",
@@ -393,7 +398,7 @@ const presets = {
       ],
     },
   },
-};
+});
 </script>
 
 <style scoped></style>
