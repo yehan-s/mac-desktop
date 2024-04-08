@@ -364,6 +364,7 @@ const presets = ref({
         "outline-none",
       ],
     }),
+    // @ts-ignore
     menuitem: ({ props, context, instance }) => ({
       class: [
         // Spacing & Shape
