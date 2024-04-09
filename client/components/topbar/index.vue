@@ -5,82 +5,76 @@
     >
       <div class="flex justify-center w-[30px] items-center">
         <!-- apple -->
-        <div class="relative">
+        <div
+          class="relative rounded w-full h-full flex items-center hover:bg-gray-400"
+        >
           <TopbarItem mo="appleMenuSwitch" :value="controlStore.showAppleMenu">
-            <Apple theme="filled" size="16" :fill="dark ? '#000' : '#fff'" />
+            <!-- <Apple theme="filled" size="16" :fill="dark ? '#000' : '#fff'" /> -->
+            <Image
+              alt=""
+              width="300"
+              height="300"
+              :src="`${dark ? '/img/icons/apple-white.png' : '/img/icons/apple-black.png'}`"
+            />
           </TopbarItem>
           <MenuAppleMenu v-if="controlStore.showAppleMenu" />
         </div>
       </div>
+      <!-- 空闲占用 -->
       <div class="flex-1"></div>
-      <!-- tools -->
+      <!-- 右侧图标列表 -->
       <div class="flex items-center justify-end h-full space-x-2">
         <!-- wifi -->
         <div class="relative">
           <TopbarItem mo="wifiMenuSwitch" :value="controlStore.showWifiMenu">
             <Wifi
-              v-show="controlStore.wifi === true"
-              theme="outline"
-              size="16"
-              :fill="dark ? '#000' : '#fff'"
+              v-show="controlStore.wifi"
+              :size="16"
+              :color="`${dark ? '#fff' : '#000'}`"
             />
-            <CloseWifi
+            <WifiOff
               v-show="controlStore.wifi === false"
-              theme="outline"
-              size="16"
-              :fill="dark ? '#000' : '#fff'"
+              :size="16"
+              :color="`${dark ? '#fff' : '#000'}`"
             />
           </TopbarItem>
           <MenuWifiMenu v-if="controlStore.showWifiMenu" />
         </div>
-        <!-- search -->
-        <TopbarItem>
-          <Search theme="outline" size="16" :fill="dark ? '#000' : '#fff'" />
-        </TopbarItem>
-        <TopbarItem>
-          <More theme="outline" size="16" :fill="dark ? '#000' : '#fff'" />
-        </TopbarItem>
         <!-- battryCharge -->
-        <TopbarItem
+        <!-- <TopbarItem
           ><BatteryCharge
             theme="outline"
             size="16"
             :fill="dark ? '#000' : '#fff'"
           />
-        </TopbarItem>
+        </TopbarItem> -->
         <!-- switchBtn -->
         <div class="relative">
           <TopbarItem
             mo="controlCenterSwitch"
             :value="controlStore.showControlCenter"
           >
-            <SwitchButton
+            <!-- <SwitchButton
               theme="outline"
               size="16"
               :fill="dark ? '#000' : '#fff'"
-            />
+            /> -->
+            <ArrowLeftRight :size="16" :color="`${dark ? '#fff' : '#000'}`" />
           </TopbarItem>
           <MenuControlCenter v-if="controlStore.showControlCenter" />
         </div>
         <!-- time -->
-        <div :class="[dark ? 'text-black' : '']">
-          {{ dayjs(date).format("MMMD ddd HH:mm") }}
-        </div>
+        <ClientOnly>
+          <TopbarCurrentDate />
+        </ClientOnly>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {
-  Apple,
-  CloseWifi,
-  Wifi,
-  Search,
-  More,
-  BatteryCharge,
-  SwitchButton,
-} from "@icon-park/vue-next";
+import { CloseWifi, BatteryCharge, SwitchButton } from "@icon-park/vue-next";
+import { ArrowLeftRight, Wifi, WifiOff } from "lucide-vue-next";
 import dayjs from "@/utils/dayjs";
 import { useThemeStore } from "@/store/theme";
 import { useControlStore } from "@/store/control";
@@ -88,7 +82,6 @@ import { useControlStore } from "@/store/control";
 const themeStore = useThemeStore();
 const controlStore = useControlStore();
 let { dark } = storeToRefs(themeStore);
-let date = ref(new Date());
 </script>
 
 <style scoped></style>
