@@ -4,12 +4,11 @@
       class="w-screen h-8 px-2 fixed top-0 text-sm text-white bg-gray-700/10 backdrop-blur-2xl shadow transition flex justify-between"
     >
       <div class="flex justify-center w-[30px] items-center">
-        <!-- apple -->
+        <!-- icon -->
         <div
           class="relative rounded w-full h-full flex items-center hover:bg-gray-400"
         >
           <TopbarItem mo="appleMenuSwitch" :value="controlStore.showAppleMenu">
-            <!-- <Apple theme="filled" size="16" :fill="dark ? '#000' : '#fff'" /> -->
             <Image
               alt=""
               width="300"
@@ -48,22 +47,17 @@
             :fill="dark ? '#000' : '#fff'"
           />
         </TopbarItem> -->
-        <!-- switchBtn -->
+        <!-- 控制菜单 -->
         <div class="relative">
           <TopbarItem
             mo="controlCenterSwitch"
             :value="controlStore.showControlCenter"
           >
-            <!-- <SwitchButton
-              theme="outline"
-              size="16"
-              :fill="dark ? '#000' : '#fff'"
-            /> -->
             <ArrowLeftRight :size="16" :color="`${dark ? '#fff' : '#000'}`" />
           </TopbarItem>
           <MenuControlCenter v-if="controlStore.showControlCenter" />
         </div>
-        <!-- time -->
+        <!-- 时间 -->
         <ClientOnly>
           <TopbarCurrentDate />
         </ClientOnly>
@@ -73,7 +67,6 @@
 </template>
 
 <script setup lang="ts">
-import { CloseWifi, BatteryCharge, SwitchButton } from "@icon-park/vue-next";
 import { ArrowLeftRight, Wifi, WifiOff } from "lucide-vue-next";
 import dayjs from "@/utils/dayjs";
 import { useThemeStore } from "@/store/theme";

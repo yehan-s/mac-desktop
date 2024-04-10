@@ -49,7 +49,7 @@ importers:
         specifier: ^6.11.4
         version: 6.11.4
       daisyui:
-        specifier: ^4.9.0
+        specifier: ^4.10.1
         version: 4.10.1(postcss@8.4.38)
       dayjs-nuxt:
         specifier: ^2.1.9

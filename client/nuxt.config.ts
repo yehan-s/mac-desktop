@@ -19,11 +19,13 @@ export default defineNuxtConfig({
   ],
   primevue: {
     options: {
-      // unstyled: true,
+      unstyled: true,
     },
     // @ts-ignore
   },
-  css: ["primevue/resources/themes/aura-light-green/theme.css"],
+  css: [
+    // "primevue/resources/themes/aura-light-green/theme.css"
+  ],
   devServer: {
     port: 3005,
   },
