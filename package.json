@@ -2,7 +2,8 @@
   "name": "mac-desktop",
   "private": true,
   "workspaces": [
-    "client/"
+    "client/*",
+    "server/"
   ],
   "scripts": {
     "build": "turbo build",
