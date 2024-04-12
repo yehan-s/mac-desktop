@@ -1,15 +1,38 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Chat } from 'src/chat/chat.entity';
+import {
+  Entity,
+  PrimaryColumn,
+  Column,
+  CreateDateColumn,
+  OneToMany,
+} from 'typeorm';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
-  @Column()
+  @PrimaryColumn()
+  id: string;
+
+  @Column({
+    default: 'visitor',
+  })
   username: string;
+
   @Column()
   password: string;
-  @Column()
+
+  @Column({
+    default: '',
+  })
   avatar: string;
-  @Column()
+
+  @Column({
+    default: 'user',
+  })
   role: string;
+
+  @OneToMany(() => Chat, (chat) => chat.user)
+  chats: Chat[];
+
+  @CreateDateColumn()
+  createdAt: Date;
 }

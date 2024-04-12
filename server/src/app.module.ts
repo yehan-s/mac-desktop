@@ -4,6 +4,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserController } from './user/user.controller';
 import { UserModule } from './user/user.module';
+import { User } from './user/user.entity';
+import { Chat } from './chat/chat.entity';
 
 @Module({
   imports: [
@@ -15,7 +17,8 @@ import { UserModule } from './user/user.module';
       username: 'root',
       password: 'example',
       database: 'test',
-      autoLoadEntities: true,
+      // autoLoadEntities: true,
+      entities: [User, Chat],
       synchronize: true,
     }),
   ],
