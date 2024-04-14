@@ -6,6 +6,12 @@
     <Topbar />
     <!-- <Launchpad /> -->
     <ClientOnly>
+      <!-- <appChat /> -->
+      <!-- <Chat /> -->
+    </ClientOnly>
+    <window v-for="item in windows" />
+    <button @click="addWindow" class="btn">添加窗口</button>
+    <ClientOnly>
       <Dock />
     </ClientOnly>
   </div>
@@ -13,9 +19,18 @@
 
 <script setup lang="ts">
 // import Dock from "primevue/dock";
+import Chat from "@/components/apps/chat/index.vue";
+import trafficLight from "~/components/window/trafficLight.vue";
+import window from "~/components/window/window.vue";
 import Wallpapers from "@/utils/wallpapers";
 import { useThemeStore } from "@/store/theme";
 const themeStore = useThemeStore();
+
+const windows = ref([1] as number[]);
+
+const addWindow = () => {
+  windows.value.push(1);
+};
 
 const backgroundStyle = computed(() => {
   // const imageUrl = themeStore.dark ? Wallpapers.NIGHT : Wallpapers.DAY;
