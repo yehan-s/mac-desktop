@@ -9,7 +9,7 @@
       <!-- <appChat /> -->
       <!-- <Chat /> -->
     </ClientOnly>
-    <window v-for="item in appStore.showApps" />
+    <window v-for="item in appStore.showApps" :appName="item"/>
     <ClientOnly>
       <Dock />
     </ClientOnly>

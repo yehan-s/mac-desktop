@@ -4,15 +4,26 @@
     <div
       class="absolute z-50 flex w-full h-7 window-header rounded-t-xl bg-red-300"
     >
-      <TrafficHeader />
+      <TrafficHeader :appName="props.appName" />
     </div>
-    <div class="relative w-full h-full bg-green-200">hellp yehan!</div>
+    <div
+      class="relative w-full h-full bg-green-200"
+      @click="
+        (function () {
+          console.log(props.appName);
+        })()
+      "
+    ></div>
   </div>
 </template>
 
 <script setup lang="ts">
 import TrafficHeader from "@/components/window/trafficLight.vue";
 import { vDraggable, type DragOptions } from "@neodrag/vue";
+
+let props = defineProps({
+  appName: String,
+});
 
 const options: DragOptions = {
   bounds: { bottom: -500, top: 32, left: -600, right: -600 },

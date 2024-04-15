@@ -52,7 +52,13 @@
 <script setup>
 import { Maximize2, Minimize2, Minus, X } from "lucide-vue-next";
 import { ref, onMounted, onUnmounted } from "vue";
-// import { useAppsStore } from "@/store";
+import { useAppStore } from "~/store/app";
+
+let props = defineProps({
+  appName: String,
+});
+
+const appStore = useAppStore();
 
 const trafficLightRef = ref(null);
 const enter = ref(false);
@@ -71,8 +77,8 @@ onMounted(() => {
 // temp
 const max = ref(false);
 const closeHandler = () => {
-  console.log(111);
-  //   closeApp(id);
+  console.log(props.appName)
+  appStore.closeApp(props.appName);
 };
 
 const handleMinimize = () => {
