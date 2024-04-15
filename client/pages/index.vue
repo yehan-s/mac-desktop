@@ -9,7 +9,7 @@
       <!-- <appChat /> -->
       <!-- <Chat /> -->
     </ClientOnly>
-    <window v-for="item in appStore.showApps" :appName="item"/>
+    <UseWindow />
     <ClientOnly>
       <Dock />
     </ClientOnly>
@@ -21,6 +21,7 @@
 import Chat from "@/components/apps/chat/index.vue";
 import trafficLight from "~/components/window/trafficLight.vue";
 import window from "~/components/window/window.vue";
+import UseWindow from "~/components/window/useWindow.vue";
 import Wallpapers from "@/utils/wallpapers";
 import { useThemeStore } from "~/store/theme";
 import { useAppStore } from "~/store/app";

@@ -77,12 +77,15 @@ onMounted(() => {
 // temp
 const max = ref(false);
 const closeHandler = () => {
-  console.log(props.appName)
+  console.log(props.appName);
   appStore.closeApp(props.appName);
 };
 
 const handleMinimize = () => {
-  console.log(222);
+  console.log(props.appName);
+  console.log('---',appStore.minimizeApps.includes(props.appName));
+  appStore.addMinimizeApps(props.appName);
+  console.log('---',appStore.minimizeApps.includes(props.appName));
 };
 
 const handleMax = () => {

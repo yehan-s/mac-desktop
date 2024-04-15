@@ -1,5 +1,9 @@
 <template>
-  <div class="absolute rounded-xl w-52 h-52" v-draggable="options">
+  <div
+    v-show="isMinimize"
+    class="absolute rounded-xl w-52 h-52"
+    v-draggable="options"
+  >
     <!-- bg-transparent -->
     <div
       class="absolute z-50 flex w-full h-7 window-header rounded-t-xl bg-red-300"
@@ -20,6 +24,9 @@
 <script setup lang="ts">
 import TrafficHeader from "@/components/window/trafficLight.vue";
 import { vDraggable, type DragOptions } from "@neodrag/vue";
+import { useAppStore } from "~/store/app";
+
+const appStore = useAppStore();
 
 let props = defineProps({
   appName: String,
@@ -31,6 +38,10 @@ const options: DragOptions = {
   cancel: ".traffic-lights",
   // disabled: !!max,
 };
+
+let isMinimize = computed(() => {
+  return !appStore.minimizeApps.includes(props.appName);
+});
 </script>
 
 <style scoped></style>
