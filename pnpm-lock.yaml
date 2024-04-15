@@ -20,6 +20,9 @@ importers:
       '@icon-park/vue-next':
         specifier: ^1.4.2
         version: 1.4.2(vue@3.4.21)
+      '@neodrag/vue':
+        specifier: ^2.0.4
+        version: 2.0.4
       '@pinia/nuxt':
         specifier: ^0.5.1
         version: 0.5.1(vue@3.4.21)
@@ -1386,6 +1389,10 @@ packages:
     transitivePeerDependencies:
       - encoding
       - supports-color
+    dev: false
+
+  /@neodrag/vue@2.0.4:
+    resolution: {integrity: sha512-JogE2e00wBBoHG9QxIoithBBuz3YY5ilaOdq8T7e1z76UgAomenQfGbbsf3zrQ314HHvgNdUJxTKKED2T5SGuw==}
     dev: false
 
   /@nestjs/cli@10.3.2:

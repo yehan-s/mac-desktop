@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@icon-park/vue-next": "^1.4.2",
+    "@neodrag/vue": "^2.0.4",
     "@pinia/nuxt": "^0.5.1",
     "dayjs": "^1.11.10",
     "lucide-vue-next": "^0.364.0",

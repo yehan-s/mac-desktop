@@ -9,8 +9,7 @@
       <!-- <appChat /> -->
       <!-- <Chat /> -->
     </ClientOnly>
-    <window v-for="item in windows" />
-    <button @click="addWindow" class="btn">添加窗口</button>
+    <window v-for="item in appStore.showApps" />
     <ClientOnly>
       <Dock />
     </ClientOnly>
@@ -23,14 +22,10 @@ import Chat from "@/components/apps/chat/index.vue";
 import trafficLight from "~/components/window/trafficLight.vue";
 import window from "~/components/window/window.vue";
 import Wallpapers from "@/utils/wallpapers";
-import { useThemeStore } from "@/store/theme";
+import { useThemeStore } from "~/store/theme";
+import { useAppStore } from "~/store/app";
 const themeStore = useThemeStore();
-
-const windows = ref([1] as number[]);
-
-const addWindow = () => {
-  windows.value.push(1);
-};
+const appStore = useAppStore();
 
 const backgroundStyle = computed(() => {
   // const imageUrl = themeStore.dark ? Wallpapers.NIGHT : Wallpapers.DAY;

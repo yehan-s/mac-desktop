@@ -26,64 +26,56 @@
 import Dock from "primevue/dock";
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useToast } from "primevue/usetoast";
+import { useAppStore } from "~/store/app";
+
+const appStore = useAppStore();
+
+function command(this: { label: string; icon: string; command: () => void }) {
+  console.log(this.label);
+  appStore.openApp(this.label);
+}
 
 // icon
 const items = ref([
   {
     label: "launchpad",
     icon: "img/icons/launchpad.png",
-    command: () => {
-      console.log("launchpad");
-    },
+    command,
   },
   {
     label: "vscode",
     icon: "img/icons/vscode.png",
-    command: () => {
-      console.log("vscode");
-    },
+    command,
   },
   {
     label: "chatgpt",
     icon: "img/icons/chatgpt.png",
-    command: () => {
-      console.log("chatgpt");
-    },
+    command,
   },
   {
     label: "terminal",
     icon: "img/icons/terminal.png",
-    command: () => {
-      console.log("terminal");
-    },
+    command,
   },
   {
     label: "turbochat",
     icon: "img/icons/turbochat.png",
-    command: () => {
-      console.log("turbochat");
-    },
+    command,
   },
   {
     label: "facetime",
     icon: "img/icons/facetime.png",
-    command: () => {
-      console.log("facetime");
-    },
+    command,
   },
   {
     label: "mail",
     icon: "img/icons/mail.png",
-    command: () => {
-      console.log("mail");
-    },
+    command,
   },
   {
     label: "github",
     icon: "img/icons/github.png",
-    command: () => {
-      console.log("github");
-    },
+    command,
   },
 ]);
 const onDockItemClick = (event: { preventDefault: () => void }, item: any) => {
