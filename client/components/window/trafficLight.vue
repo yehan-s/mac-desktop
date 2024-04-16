@@ -29,8 +29,8 @@
           class="mx-[10px]"
         />
         <Minimize2
-          v-if="max"
-          @click="handleMini"
+          v-if="isMax"
+          @click="handlePMini"
           :size="10"
           color="black"
           :stroke-width="2"
@@ -38,7 +38,7 @@
         />
         <Maximize2
           v-else
-          @click="handleMax"
+          @click="handlePMax"
           :size="10"
           color="black"
           :stroke-width="2"
@@ -56,6 +56,7 @@ import { useAppStore } from "~/store/app";
 
 let props = defineProps({
   appName: String,
+  isMax: Boolean,
 });
 
 const appStore = useAppStore();
@@ -83,42 +84,18 @@ const closeHandler = () => {
 
 const handleMinimize = () => {
   console.log(props.appName);
-  console.log('---',appStore.minimizeApps.includes(props.appName));
+  console.log("---", appStore.minimizeApps.includes(props.appName));
   appStore.addMinimizeApps(props.appName);
-  console.log('---',appStore.minimizeApps.includes(props.appName));
+  console.log("---", appStore.minimizeApps.includes(props.appName));
+};
+const emit = defineEmits(["handleMax", "handleMini"]);
+
+const handlePMax = () => {
+  // props.isMax = true;
+  emit("handleMax");
 };
 
-const handleMax = () => {
-  console.log(333);
+const handlePMini = () => {
+  emit("handleMini");
 };
-
-const handleMini = () => {
-  console.log(444);
-};
-
-// const [max, closeApp] = useAppsStore((s) => [s.max, s.closeApp], shallow);
-
-// onMounted(() => {
-//   const trafficLight = trafficLightRef.value;
-//   if (trafficLight) {
-//     trafficLight.addEventListener("mouseenter", () => {
-//       enter.value = true;
-//     });
-//     trafficLight.addEventListener("mouseleave", () => {
-//       enter.value = false;
-//     });
-//   }
-// });
-
-// onUnmounted(() => {
-//   const trafficLight = trafficLightRef.value;
-//   if (trafficLight) {
-//     trafficLight.removeEventListener("mouseenter", () => {
-//       enter.value = true;
-//     });
-//     trafficLight.removeEventListener("mouseleave", () => {
-//       enter.value = false;
-//     });
-//   }
-// });
 </script>

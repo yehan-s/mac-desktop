@@ -1,27 +1,30 @@
 <template>
   <div
+    ref="refWindow"
     v-show="isMinimize"
     class="absolute rounded-xl w-52 h-52"
     v-draggable="options"
+    :class="{ 'w-full h-full': isMax, 'z-50': isFocus }"
+    @mousedown="setFocus"
   >
     <!-- bg-transparent -->
     <div
-      class="absolute z-50 flex w-full h-7 window-header rounded-t-xl bg-red-300"
+      @dblclick="toggleMax"
+      class="absolute z-30 flex w-full h-7 window-header rounded-t-xl bg-red-300"
     >
-      <TrafficHeader :appName="props.appName" />
+      <TrafficHeader
+        :appName="props.appName"
+        :isMax="isMax"
+        @handleMax="handleMax"
+        @handleMini="handleMini"
+      />
     </div>
-    <div
-      class="relative w-full h-full bg-green-200"
-      @click="
-        (function () {
-          console.log(props.appName);
-        })()
-      "
-    ></div>
+    <div class="relative w-full h-full bg-green-200"></div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted, defineProps, computed } from "vue";
 import TrafficHeader from "@/components/window/trafficLight.vue";
 import { vDraggable, type DragOptions } from "@neodrag/vue";
 import { useAppStore } from "~/store/app";
@@ -32,15 +35,52 @@ let props = defineProps({
   appName: String,
 });
 
-const options: DragOptions = {
+// 拖拽配置
+let options: DragOptions = reactive({
   bounds: { bottom: -500, top: 32, left: -600, right: -600 },
   handle: ".window-header",
   cancel: ".traffic-lights",
   // disabled: !!max,
+});
+
+let refWindow = ref<HTMLElement | null>(null);
+const setPosition = (x: number, y: number) => {
+  if (refWindow.value) {
+    refWindow.value.style.left = `${x}px`;
+    refWindow.value.style.top = `${y}px`;
+  } else {
+    console.error("DOM 元素未挂载");
+  }
 };
 
+let isMax = ref(false);
+const handleMax = () => {
+  isMax.value = true;
+};
+const handleMini = () => {
+  isMax.value = false;
+};
+
+const toggleMax = () => {
+  if (isMax.value) {
+    handleMini();
+  } else {
+    handleMax();
+  }
+};
+
+const setFocus = () => {
+  appStore.setFocus(props.appName);
+  console.log(props.appName);
+};
+
+// 监测最小化
 let isMinimize = computed(() => {
   return !appStore.minimizeApps.includes(props.appName);
+});
+// 监测是否聚焦
+let isFocus = computed(() => {
+  return appStore.focus === props.appName;
 });
 </script>
 

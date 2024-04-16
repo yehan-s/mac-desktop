@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-screen h-screen overflow-hidden bg-center bg-cover"
+    class="w-screen h-screen overflow-hidden bg-center bg-cover relative"
     :style="backgroundStyle"
   >
     <Topbar />
