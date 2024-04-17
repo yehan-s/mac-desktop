@@ -18,7 +18,7 @@
         @handleMax="handleMax"
         @handleMini="handleMini"
       />
-      <Chat v-if="(props.appName === 'turbochat')" />
+      <Chat v-if="props.appName === 'turbochat'" />
     </div>
     <div class="relative w-full h-full bg-green-200"></div>
   </div>
@@ -39,6 +39,7 @@ let props = defineProps({
 
 // 拖拽配置
 let options: DragOptions = reactive({
+  position: { x: 0, y: 32 },
   bounds: { bottom: -500, top: 32, left: -600, right: -600 },
   handle: ".window-header",
   cancel: ".traffic-lights",
