@@ -18,6 +18,7 @@
         @handleMax="handleMax"
         @handleMini="handleMini"
       />
+      <Chat v-if="(props.appName === 'turbochat')" />
     </div>
     <div class="relative w-full h-full bg-green-200"></div>
   </div>
@@ -26,6 +27,7 @@
 <script setup lang="ts">
 import { ref, onMounted, defineProps, computed } from "vue";
 import TrafficHeader from "@/components/window/trafficLight.vue";
+import Chat from "@/components/apps/chat/index.vue";
 import { vDraggable, type DragOptions } from "@neodrag/vue";
 import { useAppStore } from "~/store/app";
 

@@ -6,7 +6,6 @@
     <Topbar />
     <!-- <Launchpad /> -->
     <ClientOnly>
-      <!-- <appChat /> -->
       <!-- <Chat /> -->
     </ClientOnly>
     <UseWindow />

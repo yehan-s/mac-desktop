@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer components {
+  .flex-center {
+    @apply flex justify-center items-center;
+  }
+
   .appleMenuItem {
     @apply px-1 m-1 rounded hover:bg-blue-500/80 hover:text-white;
   }
@@ -84,4 +88,4 @@ body,
   --surface-800: 30 41 59;
   --surface-900: 15 23 42;
   --surface-950: 3 6 23;
-} 
+}

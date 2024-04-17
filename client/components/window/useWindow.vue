@@ -1,6 +1,7 @@
 <template>
   <div>
     <Window v-for="item in appStore.showApps" :appName="item" />
+    11111
   </div>
 </template>
 
