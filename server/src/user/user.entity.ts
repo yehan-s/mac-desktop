@@ -1,15 +1,15 @@
 import { Chat } from 'src/chat/chat.entity';
 import {
   Entity,
-  PrimaryColumn,
   Column,
   CreateDateColumn,
   OneToMany,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity()
 export class User {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({
