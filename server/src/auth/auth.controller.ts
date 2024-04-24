@@ -18,6 +18,11 @@ export class AuthController {
     const token = await this.authService.signIn(username, password);
     console.log('signin', query, token);
     // return '213123';
+    // if (token) {
+    //   return '有token';
+    // } else {
+    //   return '无token';
+    // }
     return {
       access_token: token,
     };

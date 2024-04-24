@@ -28,7 +28,7 @@
             <img :src="imgSrc" width="30" height="30" alt="qq" />
           </div>
           <div class="flex flex-col">
-            <p>{{ message.id }}</p>
+            <p>{{ message.userId }}</p>
             <button
               @click="removeMessage($event, message)"
               :class="[

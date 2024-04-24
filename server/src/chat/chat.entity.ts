@@ -27,11 +27,6 @@ export class Chat {
   })
   type: string;
 
-  @Column({
-    default: '',
-  })
-  size: string;
-
   @CreateDateColumn()
   createdAt: Date;
 

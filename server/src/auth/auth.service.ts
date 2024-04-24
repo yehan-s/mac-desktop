@@ -12,14 +12,24 @@ export class AuthService {
     private readonly userService: UserService,
     private jwt: JwtService,
   ) {}
-  async signIn(username, password) {
-    let user = this.userService.findUserByUsername(username);
+  async signIn(username: string, password: string) {
+    console.log('signin', username, password);
+    let user = await this.userService.findUserByUsername(username);
 
+    // if (user) {
+    //   console.log('user', user, typeof user);
+    //   throw new ForbiddenException('用户名已存在');
+    // }
     if (!user) {
       throw new UnauthorizedException('用户不存在，请注册');
     }
 
-    user = this.userService.findUser(username, password);
+    // else {
+    //   return 'auth错误找到用户';
+    //   return user;
+    // }
+
+    user = await this.userService.findUser(username, password);
     // 用户密码比较
     // const isPasswordValid = await argon2.verify(user.password, password);
 
