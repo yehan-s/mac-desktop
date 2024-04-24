@@ -2,7 +2,7 @@
   <div
     ref="refWindow"
     v-show="isMinimize"
-    class="absolute rounded-xl w-52 h-52"
+    class="absolute rounded-xl min-w-52 min-h-52"
     v-draggable="options"
     :class="{ 'w-full h-full': isMax, 'z-50': isFocus }"
     @mousedown="setFocus"
@@ -13,14 +13,17 @@
       class="absolute z-30 flex w-full h-7 window-header rounded-t-xl bg-red-300"
     >
       <TrafficHeader
+        class="z-10"
         :appName="props.appName"
         :isMax="isMax"
         @handleMax="handleMax"
         @handleMini="handleMini"
       />
+    </div>
+    <!-- 存放app -->
+    <div class="relative w-full h-full bg-green-200">
       <Chat v-if="props.appName === 'turbochat'" />
     </div>
-    <div class="relative w-full h-full bg-green-200"></div>
   </div>
 </template>
 
@@ -39,7 +42,7 @@ let props = defineProps({
 
 // 拖拽配置
 let options: DragOptions = reactive({
-  position: { x: 0, y: 32 },
+  // position: { x: 0, y: 32 },
   bounds: { bottom: -500, top: 32, left: -600, right: -600 },
   handle: ".window-header",
   cancel: ".traffic-lights",

@@ -7,8 +7,8 @@
       <img
         :src="chatIcon"
         class="bg-white rounded-full"
-        width="80"
-        height="80"
+        width="80px"
+        height="80px"
         alt="qqavatar"
       />
     </div>
@@ -86,7 +86,7 @@ const setPassword = (value) => {
 };
 
 const toggleCheck = () => {
-    check.value = !check.value;
+  check.value = !check.value;
 };
 
 const handleKeyDown = (event) => {

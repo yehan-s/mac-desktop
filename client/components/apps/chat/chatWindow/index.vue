@@ -1,0 +1,36 @@
+<template>
+  <div class="flex flex-col flex-1 select-none" :class="[bg]">
+    <WindowHeader />
+    <div class="flex flex-1">
+      <div class="flex flex-col flex-1" :class="[bg]">
+        <ChatMessage class="flex-1" />
+        <ChatSent />
+      </div>
+      <div class="flex flex-col w-[177px] border" :class="[border]">
+        <GroupAnnouncement />
+        <GroupMembers />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import ChatMessage from "./chatMessage.vue";
+import ChatSent from "./chatSent.vue";
+import GroupAnnouncement from "./groupAnnouncement.vue";
+import GroupMembers from "./groupMembers.vue";
+import WindowHeader from "./windowHeader.vue";
+
+import { useThemeStore } from "~/store/theme";
+const themeStore = useThemeStore();
+
+const bg = computed(() => (themeStore.dark ? "bg-green-200" : "bg-red-600"));
+const border = computed(() =>
+  themeStore.dark ? "border-[#232323]" : "border-[#e9e9e9]"
+);
+
+// let bg = themeStore.dark ? "bg-green-200" : "bg-red-600";
+// let border = themeStore.dark ? "border-[#232323]" : "border-[#e9e9e9]";
+</script>
+
+<style scoped></style>

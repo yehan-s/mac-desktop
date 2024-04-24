@@ -5,10 +5,12 @@
   >
     <Topbar />
     <!-- <Launchpad /> -->
+    <!-- <ClientOnly>
+      <Chat />
+    </ClientOnly> -->
     <ClientOnly>
-      <!-- <Chat /> -->
+      <UseWindow />
     </ClientOnly>
-    <UseWindow />
     <ClientOnly>
       <Dock />
     </ClientOnly>
