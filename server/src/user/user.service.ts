@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,8 +9,9 @@ export class UserService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
-  findAll() {
-    return 'This action returns all users yehan';
+  async findAll() {
+    const res = await this.userRepository.find();
+    return res;
   }
 
   async create(user: Partial<User>): Promise<any> {
@@ -30,14 +31,22 @@ export class UserService {
     });
   }
 
-  findUser(username, password) {
+  async findUser(username: string, password: string) {
+    if (!username || !password) {
+      throw new NotFoundException('用户名或者密码不能为空');
+    }
+    console.log('findUser', username, password);
     return this.userRepository.findOne({
       where: { username, password },
     });
+    // console.log('findUserResult', user);
   }
 
   findUserByUsername(username: string) {
     console.log('findUserByUsername', username);
+    if (!username) {
+      return null;
+    }
     return this.userRepository.findOne({
       where: { username },
     });

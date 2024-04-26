@@ -63,8 +63,10 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
+import type { LoginData } from "~/api/user/types.ts";
+import { loginForClient } from "~/api/user/index.ts";
 // import { useUserStore } from '@/store';
 // import { Login } from 'api/login';
 
@@ -96,6 +98,18 @@ const handleKeyDown = (event) => {
 };
 
 const loginHandler = async () => {
+  let loginData: LoginData = {
+    username: username.value,
+    password: password.value,
+  };
+  console.log(loginData);
+  let res = await loginForClient(loginData);
+  console.log("res", res);
+  // alert("这是登录按钮");
+
+  // let res = await $fetch("/user/findAll");
+  // console.log(res);
+
   //   if (!check.value) return;
   //   try {
   //     const res = await Login({ username: username.value, password: password.value });
@@ -111,8 +125,8 @@ const loginHandler = async () => {
   //   } catch (error) {
   //     console.error('Login failed:', error);
   //   }
-  console.log(username.value);
-  console.log("loginHandler", username.value, password.value);
+  // console.log(username.value);
+  // console.log("loginHandler", username.value, password.value);
 };
 </script>
 

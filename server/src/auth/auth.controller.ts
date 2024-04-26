@@ -12,6 +12,7 @@ export class AuthController {
   findAll(): string {
     return 'haha';
   }
+
   @Post('/signin')
   async signIn(@Body() dto, @Query() query) {
     const { username, password } = dto;

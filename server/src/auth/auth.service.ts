@@ -60,6 +60,7 @@ export class AuthService {
       throw new ForbiddenException('用户名已存在');
     }
     const res = await this.userService.create({ username, password });
-    return 'this. is a signup' + res;
+    console.log('signup', res);
+    return '注册成功';
   }
 }

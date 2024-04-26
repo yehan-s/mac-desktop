@@ -12,8 +12,9 @@ import { ConfigModule } from '@nestjs/config';
     UserModule,
     ConfigModule.forRoot(),
     JwtModule.register({
+      global: true,
       secret: process.env[ConfigEnum.SECRET],
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '1d' },
     }),
   ],
   providers: [AuthService, JwtStrategy],

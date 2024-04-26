@@ -1,6 +1,17 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
+  imports: {
+    dirs: ["composables/**"],
+  },
+  runtimeConfig: {
+    // 仅在服务器端可用的私有密钥
+    // apiSecret: '123',
+    // 公开的键，也会暴露给客户端
+    public: {
+      apiBase: 'http://127.0.0.1:3000'
+    }
+  },
   modules: [
     [
       "@pinia/nuxt",
