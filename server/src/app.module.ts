@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { ConfigEnum } from 'enum/config.enum';
 // import { ConfigEnum } from './enum/config.enum';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ConfigEnum } from 'enum/config.enum';
       synchronize: true,
     } as TypeOrmModuleOptions),
     AuthModule,
+    EventsModule,
   ],
   controllers: [UserController],
   providers: [],

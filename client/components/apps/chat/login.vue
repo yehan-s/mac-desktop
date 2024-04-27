@@ -66,9 +66,10 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import type { LoginData } from "~/api/user/types.ts";
+// @ts-ignore
 import { loginForClient } from "~/api/user/index.ts";
-// import { useUserStore } from '@/store';
-// import { Login } from 'api/login';
+import { useUserStore } from "~/store/user";
+const userStore = useUserStore();
 
 let username = ref("");
 let password = ref("");
@@ -104,7 +105,12 @@ const loginHandler = async () => {
   };
   console.log(loginData);
   let res = await loginForClient(loginData);
-  console.log("res", res);
+  // console.log("res", res);
+  // console.log("他的类型是", typeof res);
+  userStore.access_token = res.access_token;
+  console.log("token", userStore.access_token);
+
+  userStore.login = true;
   // alert("这是登录按钮");
 
   // let res = await $fetch("/user/findAll");

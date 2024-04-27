@@ -15,7 +15,7 @@ import { AuthGuard } from '@nestjs/passport';
 export class UserController {
   constructor(private userService: UserService) {}
 
-  // @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'))
   @Get('findAll')
   findAll(): Promise<User[]> {
     return this.userService.findAll();

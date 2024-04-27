@@ -45,11 +45,12 @@ export async function useClientRequest<T = unknown>(
     return res;
   } catch (error) {
     if (!process.client) throw error;
-    // console.log("useClientRequest error useFetch的错误", error);
-    // const { data, statusMessage } = error as $FetchError<RequestResult<T>>;
-    // console.log("具体错误", data, "错误信息", statusMessage);
+    console.log("useClientRequest error useFetch的错误", error);
+    const { data, statusMessage } = error as $FetchError<RequestResult<T>>;
+    console.log("具体错误", data, "错误信息", statusMessage);
     // 具体的错误处理大家自己去实现
     // 错误码： data?.code
+    alert(data.message);
 
     throw error;
   }

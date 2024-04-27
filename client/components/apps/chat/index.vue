@@ -8,7 +8,7 @@
     <!-- <div v-else class="flex-1 flex-center">
         <img :src="src" alt="123" class="w-[140px] h-[140px]" />
       </div> -->
-    <Login v-if="!login" />
+    <Login v-if="!userStore.login" />
     <Main v-else></Main>
   </div>
 </template>
@@ -18,12 +18,14 @@
 //   import { useUserStore } from '@/store';
 //   import { useThemeStore } from '@/store';
 //   import { socket } from '@/lib';
+import { useUserStore } from "~/store/user";
+const userStore = useUserStore();
 import Login from "./login.vue";
 import Main from "./main.vue";
 
 //   const userInfo = useUserStore(s => s.userInfo);
 //   const messages = ref<Message[]>([]);
-let login = ref(false);
+
 const dark = ref(false);
 const flag = ref(true);
 const src = dark.value ? "/qq/logo/qq_dark.svg" : "/qq/logo/qq_.svg";

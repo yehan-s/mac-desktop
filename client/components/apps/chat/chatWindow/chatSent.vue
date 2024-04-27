@@ -17,9 +17,10 @@
         id=""
         class="w-full h-full px-3 py-2 overflow-y-scroll resize-none focus:outline-none focus:shadow-outline chatlist overflow-x:hidden scroll-smooth"
         :class="[bg]"
+        v-model="message"
         @mouseenter="onMouseEnter"
         @mouseleave="onMouseLeave"
-        @keyDown.enter="sendMessage"
+        @keyup.enter="sendMessage"
         @change="changeMessage"
       ></textarea>
     </div>
@@ -28,6 +29,7 @@
 
 <script setup lang="ts">
 import Icon from "./icon.vue";
+import socket from "~/utils/socket";
 import { useThemeStore } from "~/store/theme";
 const themeStore = useThemeStore();
 
@@ -36,8 +38,13 @@ const border = computed(() =>
 );
 const bg = computed(() => (themeStore.dark ? "bg-red-100" : "bg-gray-500"));
 
-const sendMessage = (e: any) => {
-  console.log("sendMessage " + e.currentTarget);
+let message = ref<string>("");
+
+const sendMessage = (e: KeyboardEvent) => {
+  const target = e.target as HTMLTextAreaElement;
+  console.log("sendMessage " + target.value);
+  let data = target.value.replace(/\r?\n|\r/g, "");
+  socket.emit("message", { message: data });
 };
 const changeMessage = (e: any) => {
   console.log("changeMessage " + e.currentTarget);
@@ -51,6 +58,38 @@ const onMouseLeave = (event: MouseEvent) => {
   (event.currentTarget as HTMLElement).classList.remove("chatlist_");
   (event.currentTarget as HTMLElement).classList.add("chatlist");
 };
+
+// socket.on('events', (data) => {
+//   console.log('onEvents',data) // { msg1: '测试1', msg2: '测试2' }
+// });
+
+// socket.on("disconnect", (reason) => {
+//   console.log("断开连接", reason);
+// });
+
+// onMounted(() => {
+//   socket.connect();
+// }),
+
+onMounted(() => {
+  socket.connect();
+  socket.on("connect", () => {
+    // console.log("连接成功");
+    alert("连接成功");
+  });
+  socket.on("getMessages", (data) => {
+    if (data) {
+      console.log(data);
+    }
+  });
+  socket.on("disconnect", (reason) => {
+    console.log("断开连接", reason);
+  });
+});
+
+onUnmounted(() => {
+  socket.disconnect();
+});
 </script>
 
 <style scoped></style>

@@ -4,7 +4,7 @@ import type * as UserTypes from "./types";
 
 /** 登录 */
 export function login(data: UserTypes.LoginData) {
-  return useRequest<UserTypes.LoginResult>("/auth/login", {
+  return useRequest<UserTypes.LoginResult>("/auth/signin", {
     method: "POST",
     body: data,
   });

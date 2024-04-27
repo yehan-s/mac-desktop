@@ -1,3 +1,6 @@
+// import { useUserStore } from "~/store/user";
+// const userStore = useUserStore();
+
 export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig();
   // console.log("process", process);
@@ -9,6 +12,7 @@ export default defineNuxtPlugin(() => {
     /** 请求拦截器 */
     onRequest: ({ options }) => {
       const userAuth = useCookie("token");
+      // let userAuth = userStore.access_token;
       if (userAuth.value) {
         options.headers = options.headers ?? {};
         (options.headers as Record<string, string>).Authorization =
@@ -16,7 +20,11 @@ export default defineNuxtPlugin(() => {
       }
     },
     /** 请求错误拦截器，比如服务器无法连接会触发 */
-    onRequestError({ request, error }) {},
+    onRequestError({ request, error }) {
+      console.log("请求错误拦截器");
+      console.log("request", request);
+      console.log("error", error);
+    },
     /** 响应拦截器 */
     onResponse({ response }) {
       console.log("响应拦截器");
