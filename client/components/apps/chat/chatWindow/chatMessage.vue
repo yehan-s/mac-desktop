@@ -1,7 +1,6 @@
 <template>
   <div
-    class="chatlist overflow-y-scroll overflow-x:hidden scroll-smooth border-t
-    "
+    class=" chatlist  overflow-y-scroll overflow-hidden scroll-smooth border-t"
     :class="[border]"
     @mouseenter="onMouseEnter"
     @mouseleave="onMouseLeave"
@@ -19,7 +18,7 @@
       <ul class="w-full mt-4">
         <!-- <transition-group name="message" tag="div"> -->
         <li
-          v-for="message in props.messages"
+          v-for="message in message2"
           :key="message.id"
           :id="`message-${message.id}`"
           class="p-[3px] flex"
@@ -52,11 +51,19 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+// import { define } from 'vue';
+// import type  Message  from '~/types/message.d.ts';
+// @ts-ignore
+import type { Message } from "~/tpyes/index.ts";
 import { useThemeStore } from "~/store/theme";
 import { ref, reactive } from "vue";
+// import type { Message } from './message';
+// import type {haha} from './types'
 const themeStore = useThemeStore();
-
+// let yhh:haha={
+//   name:'yehan'
+// }
 // interface Message{
 //   id:number
 //   userId:string
@@ -87,6 +94,67 @@ let props = defineProps({
     },
   },
 });
+
+// let mes =  ref([
+//   {
+//     id: 2,
+//     userId: "jinshu",
+//     roomId: "turboroom",
+//     content: "Your mom said it's time to come home",
+//     type: "text",
+//     createAt: new Date(),
+//   },
+// ]),
+let message2 = ref<Message[]>([
+  {
+    id: 2,
+    userId: "jinshu",
+    roomId: "turboroom",
+    content: "Your mom said it's time to come home",
+    type: "text",
+    createAt: new Date(),
+  },
+  {
+    id: 3,
+    userId: "yh",
+    roomId: "turboroom",
+    content: "i kown",
+    type: "text",
+    createAt: new Date(),
+  },
+  {
+    id: 3,
+    userId: "yh",
+    roomId: "turboroom",
+    content: "i kown",
+    type: "text",
+    createAt: new Date(),
+  },
+  {
+    id: 3,
+    userId: "yh",
+    roomId: "turboroom",
+    content: "i kown",
+    type: "text",
+    createAt: new Date(),
+  },
+  {
+    id: 3,
+    userId: "yh",
+    roomId: "turboroom",
+    content: "i kown",
+    type: "text",
+    createAt: new Date(),
+  },
+  {
+    id: 3,
+    userId: "yh",
+    roomId: "turboroom",
+    content: "i kown",
+    type: "text",
+    createAt: new Date(),
+  },
+]);
 
 const border = computed(() =>
   themeStore.dark ? "border-[#232323]" : "border-[#e9e9e9]"
@@ -152,3 +220,4 @@ const onMouseLeave = (event) => {
   opacity: 0;
 }
 </style>
+./types

@@ -15,7 +15,7 @@
       <textarea
         name=""
         id=""
-        class="w-full h-full px-3 py-2 overflow-y-scroll resize-none focus:outline-none focus:shadow-outline chatlist overflow-x:hidden scroll-smooth"
+        class="w-full h-full px-3 py-2 overflow-y-scroll resize-none focus:outline-none focus:shadow-outline chatlist overflow-hidden scroll-smooth"
         :class="[bg]"
         v-model="message"
         @mouseenter="onMouseEnter"
@@ -28,10 +28,20 @@
 </template>
 
 <script setup lang="ts">
+import type { Message } from "~/types/message.d.ts";
 import Icon from "./icon.vue";
 import socket from "~/utils/socket";
 import { useThemeStore } from "~/store/theme";
 const themeStore = useThemeStore();
+
+interface Message1 {
+  id: number;
+  userId: string;
+  roomId: string;
+  content: string;
+  type: string;
+  createAt: Date;
+}
 
 const border = computed(() =>
   themeStore.dark ? "border-[#232323]" : "border-[#e0e0e0]"
@@ -44,7 +54,14 @@ const sendMessage = (e: KeyboardEvent) => {
   const target = e.target as HTMLTextAreaElement;
   console.log("sendMessage " + target.value);
   let data = target.value.replace(/\r?\n|\r/g, "");
-  socket.emit("message", { message: data });
+
+  // 创建一个消息
+  let tempChat: Partial<Message> = {
+    userId: "3c33f19c-b5be-4fd4-b9e7-6b5882c4a078",
+    content: data,
+    roomId: "TurboRoom",
+  };
+  socket.emit("createMessage", tempChat);
 };
 const changeMessage = (e: any) => {
   console.log("changeMessage " + e.currentTarget);
@@ -74,9 +91,9 @@ const onMouseLeave = (event: MouseEvent) => {
 onMounted(() => {
   socket.connect();
   socket.on("connect", () => {
-    // console.log("连接成功");
-    alert("连接成功");
+    console.log("连接成功");
   });
+  // socket.emit("creatMessage",'哈哈')
   socket.on("getMessages", (data) => {
     if (data) {
       console.log(data);

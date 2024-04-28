@@ -7,8 +7,8 @@ import { Chat } from './chat/chat.entity';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { ConfigEnum } from 'enum/config.enum';
+import { ChatModule } from './chat/chat.module';
 // import { ConfigEnum } from './enum/config.enum';
-import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
@@ -30,7 +30,7 @@ import { EventsModule } from './events/events.module';
       synchronize: true,
     } as TypeOrmModuleOptions),
     AuthModule,
-    EventsModule,
+    ChatModule,
   ],
   controllers: [UserController],
   providers: [],

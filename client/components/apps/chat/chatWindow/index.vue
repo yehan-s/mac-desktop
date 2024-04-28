@@ -2,9 +2,11 @@
   <div class="flex flex-col flex-1 select-none" :class="[bg]">
     <WindowHeader />
     <div class="flex flex-1">
-      <div class="flex flex-col flex-1" :class="[bg]">
-        <ChatMessage class="flex-1" />
-        <ChatSent />
+      <div class="flex flex-col flex-1 overflow-hidden" :class="[bg]">
+        <ChatMessage
+          class="h-[350px]"
+        />
+        <ChatSent class="h-[180px]"/>
       </div>
       <div class="flex flex-col w-[177px] border" :class="[border]">
         <GroupAnnouncement />
