@@ -20,7 +20,7 @@
         v-model="message"
         @mouseenter="onMouseEnter"
         @mouseleave="onMouseLeave"
-        @keyup.enter="sendMessage"
+        @keydown.enter.prevent="sendMessage"
         @change="changeMessage"
       ></textarea>
     </div>
@@ -54,6 +54,7 @@ const sendMessage = (e: KeyboardEvent) => {
   const target = e.target as HTMLTextAreaElement;
   console.log("sendMessage " + target.value);
   let data = target.value.replace(/\r?\n|\r/g, "");
+  target.value = "";
 
   // 创建一个消息
   let tempChat: Partial<Message> = {

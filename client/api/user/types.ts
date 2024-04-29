@@ -6,6 +6,8 @@ export type LoginData = {
 };
 /** 登录返回结果 */
 export type LoginResult = {
+[x: string]: any;
+[x: string]: any;
   /** token */
   access_token: string;
 };

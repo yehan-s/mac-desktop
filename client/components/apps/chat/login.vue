@@ -30,6 +30,7 @@
         placeholder="Password"
         class="h-full w-[130px] text-lg focus:outline-none"
         v-model="password"
+        @keydown.enter="loginHandler"
       />
       <div class="h-full w-[60px] bg-white"></div>
     </div>
@@ -67,7 +68,7 @@
 import { ref } from "vue";
 import type { LoginData } from "~/api/user/types.ts";
 // @ts-ignore
-import { loginForClient } from "~/api/user/index.ts";
+import { loginForClient, findUserInfo } from "~/api/user/index.ts";
 import { useUserStore } from "~/store/user";
 const userStore = useUserStore();
 
@@ -107,14 +108,24 @@ const loginHandler = async () => {
   let res = await loginForClient(loginData);
   // console.log("res", res);
   // console.log("他的类型是", typeof res);
-  userStore.access_token = res.access_token;
-  console.log("token", userStore.access_token);
+  if (res) {
+    userStore.login = true;
+    userStore.access_token = res.access_token;
+  }
 
-  userStore.login = true;
+  if (userStore.login) {
+    let userInfo = await findUserInfo(username.value);
+    console.log("我想获取到信息", userInfo);
+    if (userInfo) {
+      userStore.id = userInfo.id;
+      userStore.username = userInfo.username;
+      userStore.avatar = userInfo.avatar;
+      userStore.role = userInfo.role;
+      userStore.createdAt = userInfo.createdAt;
+    }
+  }
+
   // alert("这是登录按钮");
-
-  // let res = await $fetch("/user/findAll");
-  // console.log(res);
 
   //   if (!check.value) return;
   //   try {

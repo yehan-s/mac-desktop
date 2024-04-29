@@ -10,7 +10,7 @@ export class UserService {
     private userRepository: Repository<User>,
   ) {}
   async findAll() {
-    const res = await this.userRepository.find();
+    const res = await this.userRepository.find({ relations: ['chats'] });
     return res;
   }
 

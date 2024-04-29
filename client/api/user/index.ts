@@ -17,3 +17,11 @@ export function loginForClient(data: UserTypes.LoginData) {
     body: data,
   });
 }
+
+// 登陆后查询用户详细信息
+export function findUserInfo(username: string) {
+  return useClientRequest<UserTypes.LoginResult>(`/user/${username}`, {
+    method: "GET",
+    // params: data,
+  });
+}
