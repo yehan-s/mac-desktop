@@ -8,7 +8,7 @@ import {
 } from '@nestjs/websockets';
 import { ChatService } from './chat.service';
 import { Server, Socket } from 'socket.io';
-import { Chat } from './chat.entity';
+// import { Chat } from './chat.entity';
 
 @WebSocketGateway(81, {
   namespace: 'chat',
@@ -31,14 +31,14 @@ export class ChatGateway implements OnGatewayConnection {
     return '连接成功';
   }
 
-  @SubscribeMessage('createMessage')
-  handleMessage(
-    @MessageBody() data: Partial<Chat>,
-    @ConnectedSocket() client: Socket,
-  ): string {
-    // this.chatService.create()
-    console.log('接收到了消息', data, client.rooms);
-    this.chatService.create(data);
-    return 'Hello world!';
-  }
+  // @SubscribeMessage('createMessage')
+  // handleMessage(
+  //   @MessageBody() data: Partial<Chat>,
+  //   @ConnectedSocket() client: Socket,
+  // ): string {
+  //   // this.chatService.create()
+  //   console.log('接收到了消息', data, client.rooms);
+  //   this.chatService.create(data);
+  //   return 'Hello world!';
+  // }
 }

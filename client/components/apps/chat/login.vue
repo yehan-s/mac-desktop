@@ -81,22 +81,8 @@ const chatIcon = "img/icons/qq.png";
 
 // const userStore = useUserStore();
 
-const setUsername = (value) => {
-  //   username.value = value;
-};
-
-const setPassword = (value) => {
-  //   password.value = value;
-};
-
 const toggleCheck = () => {
   check.value = !check.value;
-};
-
-const handleKeyDown = (event) => {
-  //   if (event.key === 'Enter') {
-  //     loginHandler();
-  //   }
 };
 
 const loginHandler = async () => {

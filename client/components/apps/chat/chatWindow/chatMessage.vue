@@ -1,6 +1,6 @@
 <template>
   <div
-    class=" chatlist  overflow-y-scroll overflow-hidden scroll-smooth border-t"
+    class="chatlist overflow-y-scroll overflow-hidden scroll-smooth border-t"
     :class="[border]"
     @mouseenter="onMouseEnter"
     @mouseleave="onMouseLeave"
@@ -197,15 +197,15 @@ const removeMessage = (e, message) => {
 
 const animatingMessages = ref(props.messages.slice(lastChangedIndex.value));
 
-const onMouseEnter = (event) => {
+const onMouseEnter = (event: MouseEvent) => {
   console.log(event.currentTarget);
-  event.currentTarget.classList.remove("chatlist");
-  event.currentTarget.classList.add("chatlist_");
+  (event.currentTarget as HTMLElement).classList.remove("chatlist");
+  (event.currentTarget as HTMLElement).classList.add("chatlist_");
 };
-const onMouseLeave = (event) => {
+const onMouseLeave = (event: MouseEvent) => {
   console.log("leave");
-  event.currentTarget.classList.remove("chatlist_");
-  event.currentTarget.classList.add("chatlist");
+  (event.currentTarget as HTMLElement).classList.remove("chatlist_");
+  (event.currentTarget as HTMLElement).classList.add("chatlist");
 };
 </script>
 

@@ -89,25 +89,7 @@ const onMouseLeave = (event: MouseEvent) => {
 //   socket.connect();
 // }),
 
-onMounted(() => {
-  socket.connect();
-  socket.on("connect", () => {
-    console.log("连接成功");
-  });
-  // socket.emit("creatMessage",'哈哈')
-  socket.on("getMessages", (data) => {
-    if (data) {
-      console.log(data);
-    }
-  });
-  socket.on("disconnect", (reason) => {
-    console.log("断开连接", reason);
-  });
-});
 
-onUnmounted(() => {
-  socket.disconnect();
-});
 </script>
 
 <style scoped></style>
