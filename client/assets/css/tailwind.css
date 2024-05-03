@@ -94,32 +94,50 @@ button {
   cursor: url("cursors/normal-select.svg"), auto;
 }
 
+/* 所有需要溢出带滚动条 */
+/* 仅适用于 Chrome, Safari, Opera 浏览器 */
 .chatlist::-webkit-scrollbar {
   width: 8px;
+  /* 隐藏滚动条 */
+  /* display: none; */
 }
 .chatlist::-webkit-scrollbar-thumb {
   visibility: hidden;
   border-radius: 5px;
-  background-color: #585858;
+  /* background-color: #585858; */
+  background-color: transparent;
 }
 .chatlist::-webkit-scrollbar-track {
   background-color: transparent;
 }
 .chatlist::-webkit-scrollbar-thumb:hover {
-  background-color: #585858;
+  background-color: transparent;
 }
 
 .chatlist_::-webkit-scrollbar {
   width: 8px;
+  /* display: none; */
 }
 .chatlist_::-webkit-scrollbar-thumb {
   visibility: visible;
   border-radius: 5px;
-  background-color: #585858;
+  /* background-color: #585858; */
+  background-color: transparent;
 }
 .chatlist_::-webkit-scrollbar-track {
   background-color: transparent;
 }
 .chatlist_::-webkit-scrollbar-thumb:hover {
-  background-color: #585858;
+  /* background-color: #585858; */
+  background-color: transparent;
+}
+
+/* 适用于 Firefox */
+.chatlist {
+  scrollbar-color: transparent transparent; 
+  scrollbar-width: none;
+}
+.chatlist_ {
+  scrollbar-color: transparent transparent; 
+  scrollbar-width: none; 
 }

@@ -31,6 +31,7 @@ module.exports = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      // 取的 tailwind.css 中 :root 的颜色
       colors: {
         "primary-50": "rgb(var(--primary-50))",
         "primary-100": "rgb(var(--primary-100))",
@@ -75,5 +76,5 @@ module.exports = {
       },
     ],
   },
-  plugins: [ require("tailwindcss-animated"),require("daisyui"),],
+  plugins: [require("tailwindcss-animated"), require("daisyui")],
 };

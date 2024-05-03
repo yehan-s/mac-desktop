@@ -8,17 +8,27 @@
     <div class="w-full h-7 flex"></div>
     <Search />
     <div
-      class="chatlist w-full flex-1 overflow-y-scroll overflow-x:hidden scroll-smooth"
+      class="chatlist w-full flex-1 overflow-y-scroll  scroll-smooth"
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"
     >
-      <Chat />
+      <ChatMember />
+      <ChatMember />
+      <ChatMember />
+      <ChatMember />
+      <ChatMember />
+      <ChatMember />
+      <ChatMember />
+      <ChatMember />
+      <ChatMember />
+      <ChatMember />
+      <ChatMember />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import Chat from "./chatMember.vue";
+import ChatMember from "./chatMember.vue";
 import Search from "./search.vue";
 import { useThemeStore } from "@/store/theme";
 const themeStore = useThemeStore();
