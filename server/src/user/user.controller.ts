@@ -10,6 +10,7 @@ import {
 import { UserService } from './user.service';
 import { User } from './user.entity';
 import { AuthGuard } from '@nestjs/passport';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('user')
 export class UserController {
@@ -29,7 +30,7 @@ export class UserController {
   }
 
   @Post()
-  addUser(@Body() dto): any {
+  addUser(@Body() dto: CreateUserDto): any {
     const user = dto as User;
     // console.log('post', dto, req, query);
     return this.userService.create(user);

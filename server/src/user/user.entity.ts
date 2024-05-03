@@ -6,6 +6,7 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
+  BeforeInsert,
 } from 'typeorm';
 import { Friend } from '../chat/entitys/friend.entity';
 import { Message } from '../chat/entitys/message.entity';
@@ -62,4 +63,11 @@ export class User {
   @ManyToMany(() => GroupChat, { eager: true })
   @JoinTable()
   joinedGroups: GroupChat[];
+
+  @BeforeInsert()
+  async setNickname() {
+    if (!this.nickname) {
+      this.nickname = this.username;
+    }
+  }
 }
