@@ -1,13 +1,10 @@
-// types.ts
 /** 登录参数类型 */
-export type LoginData = {
+export interface LoginData {
   username: string;
   password: string;
-};
+}
 /** 登录返回结果 */
-export type LoginResult = {
-[x: string]: any;
-[x: string]: any;
+export interface LoginResult {
   /** token */
   access_token: string;
-};
+}

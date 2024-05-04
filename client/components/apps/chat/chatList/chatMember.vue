@@ -14,7 +14,7 @@
     <div class="flex flex-col w-full">
       <div class="flex">
         <div class="flex-1" :class="[themeStore.dark ? '' : 'text-black']">
-          TurboRoom
+          {{ props.name }}
         </div>
         <div class="flex-1 h-full"></div>
         <div>date</div>
@@ -27,6 +27,13 @@
 <script setup lang="ts">
 import { useThemeStore } from "@/store/theme";
 const themeStore = useThemeStore();
+
+let props = defineProps<{
+  name: string;
+  // avatar: string;
+  // lastMessage: string;
+  // date: string;
+}>();
 </script>
 
 <style scoped></style>

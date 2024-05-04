@@ -27,7 +27,7 @@ export class User {
   // @Column()
   // phone: string;
 
-  @Column({ nullable: true })
+  @Column({ default: 'https://img2.imgtp.com/2024/05/04/Db7YhuWN.png' })
   avatar: string;
 
   @Column({ nullable: true })

@@ -1,6 +1,6 @@
 <template>
   <div class="flex h-[600px] w-[900px] backdrop-blur-sm">
-    <SiderBar />
+    <SiderBar :avatar="themeStore.avatar" />
     <ChatList />
     <ChatWindow />
     <!-- <div className="{`flex-1" flex-center ${bg}`}>

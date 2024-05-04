@@ -8,21 +8,12 @@
     <div class="w-full h-7 flex"></div>
     <Search />
     <div
-      class="chatlist w-full flex-1 overflow-y-scroll  scroll-smooth"
+      class="chatlist w-full flex-1 overflow-y-scroll scroll-smooth"
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"
     >
-      <ChatMember />
-      <ChatMember />
-      <ChatMember />
-      <ChatMember />
-      <ChatMember />
-      <ChatMember />
-      <ChatMember />
-      <ChatMember />
-      <ChatMember />
-      <ChatMember />
-      <ChatMember />
+      <ChatMember name="turboRoom" />
+      <ChatMember name="corse"/>
     </div>
   </div>
 </template>
