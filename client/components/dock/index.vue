@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Dock :model="items" unstyled :pt="presets.dock">
+    <Dock :model="items" unstyled :pt="persets.dock">
       <template #item="{ item }">
         <a
           v-tooltip.top="item.label"
@@ -25,7 +25,7 @@
 <script setup lang="ts">
 import Dock from "primevue/dock";
 import { ref, onMounted, onBeforeUnmount } from "vue";
-import { useToast } from "primevue/usetoast";
+import persets from "~/config/persets";
 import { useAppStore } from "~/store/app";
 
 const appStore = useAppStore();
@@ -146,90 +146,6 @@ const onDockItemClick = (event: { preventDefault: () => void }, item: any) => {
 //     },
 //   },
 // ]);
-
-interface Position {
-  position: string;
-}
-
-// 预设
-const presets = ref({
-  dock: {
-    // props: DockItem
-    root: ({ props }: { props: Position }) => ({
-      class: [
-        // Positioning
-        "absolute z-1",
-        {
-          "left-0 bottom-4 w-full": props.position == "bottom",
-          "left-0 top-0 w-full": props.position == "top",
-          "left-0 top-0 h-full": props.position == "left",
-          "right-0 top-0 h-full": props.position == "right",
-        },
-        // Flexbox & Alignment
-        "flex justify-center items-center",
-        // Interactivity
-        "pointer-events-none",
-      ],
-    }),
-    container: {
-      class: [
-        "flex",
-        "rounded-md",
-        "bg-surface-0/10 dark:bg-surface-900/20 border border-surface-0/20",
-        "backdrop-blur-sm",
-        "p-2",
-        "pointer-events-auto",
-      ],
-    },
-    menu: ({ props }: { props: Position }) => ({
-      class: [
-        // Flexbox & Alignment
-        "flex items-center justify-center",
-        {
-          "flex-col": props.position == "left" || props.position == "right",
-        },
-        // List Style
-        "m-0 p-0 list-none",
-        // Shape
-        "outline-none",
-      ],
-    }),
-    // @ts-ignore
-    menuitem: ({ props, context, instance }) => ({
-      class: [
-        // Spacing & Shape
-        "p-2 rounded-md",
-        // Conditional Scaling
-        {
-          "hover:scale-150": instance.currentIndex === context.index,
-          "scale-125":
-            instance.currentIndex - 1 === context.index ||
-            instance.currentIndex + 1 === context.index,
-          "scale-110":
-            instance.currentIndex - 2 === context.index ||
-            instance.currentIndex + 2 === context.index,
-        },
-        // Positioning & Hover States
-        {
-          "origin-bottom hover:mx-6": props.position == "bottom",
-          "origin-top hover:mx-6": props.position == "top",
-          "origin-left hover:my-6": props.position == "left",
-          "origin-right hover:my-6": props.position == "right",
-        },
-        // Transitions & Transform
-        "transition-all duration-200 ease-cubic-bezier-will-change-transform transform",
-      ],
-    }),
-    action: {
-      class: [
-        "flex flex-col items-center justify-center",
-        "relative",
-        "w-16 h-16",
-        "cursor-default overflow-hidden",
-      ],
-    },
-  },
-});
 </script>
 
 <style scoped></style>
