@@ -27,7 +27,7 @@
 import { useThemeStore } from "@/store/theme";
 const themeStore = useThemeStore();
 
-let props = defineProps({
+const props = defineProps({
   onClick: {
     type: Function,
     default: null,

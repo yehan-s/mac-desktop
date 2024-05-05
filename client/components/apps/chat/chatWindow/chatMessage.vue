@@ -73,7 +73,7 @@ const themeStore = useThemeStore();
 //   createAt :Date
 // }
 
-let props = defineProps({
+const props = defineProps({
   messages: {
     type: Array,
     default: [

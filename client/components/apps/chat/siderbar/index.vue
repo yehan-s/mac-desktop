@@ -6,8 +6,9 @@
       <img :src="props.avatar" width="35px" alt="qqavatar" height="35px" />
     </div>
     <div class="flex flex-col h-[160px] p-3 space-y-2">
-      <TopIcon name="chat" />
-      <TopIcon name="people" />
+      <TopIcon name="message" :onClick="chatListStore.setListType" />
+      <TopIcon name="friend" :onClick="chatListStore.setListType" />
+      <!-- <TopIcon name="friend" :onclick="chatListStore.setListType" /> -->
       <TopIcon name="qqspace" />
     </div>
     <div class="flex-1 w-full"></div>
@@ -62,9 +63,7 @@
           <div class="flex border-b-2 pb-2 mb-2">
             <div class="avatar mr-6">
               <div class="w-24 h-24 rounded">
-                <img
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-                />
+                <img :src="userInfo.avatar" />
               </div>
             </div>
             <div>
@@ -104,7 +103,7 @@
                 placeholder="-"
                 class="input input-ghost w-5/6 border-0 input-sm"
                 disabled
-                v-model="username"
+                v-model="userInfo.username"
               />
             </div>
             <div class="flex justify-between items-center mb-1">
@@ -138,8 +137,14 @@ import BottomIcon from "./bottomIcon.vue";
 import persets from "~/config/persets";
 import { useThemeStore } from "~/store/theme";
 import { useUserStore } from "~/store/user";
+import { useChatListStore } from "~/store/chatList";
 const themeStore = useThemeStore();
 const userStore = useUserStore();
+const chatListStore = useChatListStore();
+
+const demo = () => {
+  console.log("demo");
+};
 
 let props = defineProps<{
   avatar: string;
@@ -149,7 +154,7 @@ let bg = themeStore.dark ? "bg-[#262626] " : "bg-[#e4e4e5]";
 // 是否在编辑状态
 let isEdit = ref<boolean>(false);
 
-let userProfile = ref<boolean>(true);
+let userProfile = ref<boolean>(false);
 let userInfo = reactive({
   username: "yehan",
   nickname: "夜寒",

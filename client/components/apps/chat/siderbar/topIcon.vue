@@ -1,6 +1,6 @@
 <!-- 左侧上三icon -->
 <template>
-  <div class="rounded-lg w-full h-[46px] flex-center" @click="onClick">
+  <div class="rounded-lg w-full h-[46px] flex-center" @click="onClick(name)">
     <img
       :src="`chat/siderbar/${imageSrc}.svg`"
       alt="qqappicon"
@@ -14,7 +14,7 @@
 import { useThemeStore } from "@/store/theme";
 const themeStore = useThemeStore();
 
-let props = defineProps({
+const props = defineProps({
   onClick: {
     type: Function,
     default: null,
@@ -24,12 +24,20 @@ let props = defineProps({
     default: "",
   },
 });
+// const props = defineProps<{
+//   onClick: function;
+//   name: string;
+// }>();
+// const props = defineProps<{
+//   onClick: () => void;
+//   name: string;
+// }>();
 
 const bg = ref(themeStore.dark ? "bg-[#262626]" : "bg-[#fff] text-black");
 const imageSrc = ref(themeStore.dark ? props.name : `${props.name}_dark`);
-const onClick = () => {
-  console.log('topIcon clicked')
-};
+// const onClick = () => {
+//   console.log('topIcon clicked')
+// };
 </script>
 
 <style scoped></style>
