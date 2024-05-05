@@ -10,7 +10,7 @@ export class UserService {
     private userRepository: Repository<User>,
   ) {}
   async findAll() {
-    const res = await this.userRepository.find();
+    const res = await this.userRepository.find({ relations: ['friendGroups'] });
     return res;
   }
 
@@ -27,7 +27,7 @@ export class UserService {
   find(username: string) {
     return this.userRepository.findOne({
       where: { username },
-      relations: ['roles'],
+      relations: ['friend_group'],
     });
   }
 
@@ -42,7 +42,7 @@ export class UserService {
     // console.log('findUserResult', user);
   }
 
-  findUserByUsername(username: string) {
+  async findUserByUsername(username: string) {
     console.log('findUserByUsername', username);
     if (!username) {
       return null;

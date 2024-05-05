@@ -5,6 +5,7 @@ import {
   Column,
   ManyToOne,
   OneToMany,
+  JoinColumn,
 } from 'typeorm';
 import { User } from '../../user/user.entity';
 import { Friend } from './friend.entity';
@@ -14,12 +15,14 @@ export class FriendGroup {
   @PrimaryGeneratedColumn()
   id: number;
 
+  // 绑定user的id
   @Column()
   user_id: number;
 
-  @Column()
-  username: string;
+  // @Column()
+  // username: string;
 
+  // 分组名称
   @Column()
   name: string;
 
@@ -30,6 +33,7 @@ export class FriendGroup {
   updated_at: Date;
 
   @ManyToOne(() => User, (user) => user.friendGroups)
+  @JoinColumn({ name: 'user_id' }) // 指定外键列的名称
   user: User;
 
   @OneToMany(() => Friend, (friend) => friend.group)

@@ -12,6 +12,7 @@ import { Friend } from '../chat/entitys/friend.entity';
 import { Message } from '../chat/entitys/message.entity';
 import { GroupChat } from '../chat/entitys/group-chat.entity';
 import { GroupMembers } from '../chat/entitys/group-members.entity';
+import { FriendGroup } from '../chat/entitys/friend-group.entity';
 
 @Entity()
 export class User {
@@ -51,7 +52,7 @@ export class User {
   @OneToMany(() => Message, (message) => message.receiver)
   receivedMessages: Message[];
 
-  @OneToMany(() => Friend, (friend) => friend.user)
+  @OneToMany(() => FriendGroup, (friendGroup) => friendGroup.user)
   friendGroups: Friend[];
 
   @OneToMany(() => GroupChat, (groupChat) => groupChat.creator)

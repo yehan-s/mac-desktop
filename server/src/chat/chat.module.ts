@@ -10,6 +10,7 @@ import { FriendGroup } from './entitys/friend-group.entity';
 import { GroupMembers } from './entitys/group-members.entity';
 import { Message } from './entitys/message.entity';
 import { MessageStatistics } from './entitys/message-statistics.entity';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { MessageStatistics } from './entitys/message-statistics.entity';
       FriendGroup,
       MessageStatistics,
     ]),
+    UserModule,
   ],
   providers: [ChatService, ChatGateway],
   controllers: [ChatController],

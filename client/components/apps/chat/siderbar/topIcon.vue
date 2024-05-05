@@ -1,6 +1,11 @@
 <!-- 左侧上三icon -->
 <template>
-  <div class="rounded-lg w-full h-[46px] flex-center" @click="onClick(name)">
+  <div
+    class="rounded-lg w-full h-[46px] flex-center"
+    @click="onClick(name)"
+    @mouseenter="onMouseEnter"
+    @mouseleave="onMouseLeave"
+  >
     <img
       :src="`chat/siderbar/${imageSrc}.svg`"
       alt="qqappicon"
@@ -24,20 +29,23 @@ const props = defineProps({
     default: "",
   },
 });
-// const props = defineProps<{
-//   onClick: function;
-//   name: string;
-// }>();
-// const props = defineProps<{
-//   onClick: () => void;
-//   name: string;
-// }>();
 
 const bg = ref(themeStore.dark ? "bg-[#262626]" : "bg-[#fff] text-black");
 const imageSrc = ref(themeStore.dark ? props.name : `${props.name}_dark`);
-// const onClick = () => {
-//   console.log('topIcon clicked')
-// };
+
+const onMouseEnter = (e) => {
+  e.currentTarget.children[0].setAttribute(
+    "src",
+    `chat/siderbar/${props.name}_fill.svg`
+  );
+};
+
+const onMouseLeave = (e) => {
+  e.currentTarget.children[0].setAttribute(
+    "src",
+    `chat/siderbar/${imageSrc.value}.svg`
+  );
+};
 </script>
 
 <style scoped></style>
