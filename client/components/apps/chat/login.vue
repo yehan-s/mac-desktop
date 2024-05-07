@@ -103,11 +103,7 @@ const loginHandler = async () => {
     let userInfo = await findUserInfo(username.value);
     console.log("我想获取到信息", userInfo);
     if (userInfo) {
-      userStore.id = userInfo.id;
-      userStore.username = userInfo.username;
-      userStore.avatar = userInfo.avatar;
-      userStore.role = userInfo.role;
-      userStore.createdAt = userInfo.createdAt;
+      userStore.saveUserInfo(userInfo);
     }
   }
 

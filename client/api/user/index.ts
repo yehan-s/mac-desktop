@@ -1,6 +1,7 @@
 // index.ts
 import { useClientRequest, useRequest } from "~/composables/useRequest";
 import type * as UserTypes from "./types";
+import type { User } from "@/types/user";
 
 /** 登录 */
 export function login(data: UserTypes.LoginData) {
@@ -19,8 +20,8 @@ export function loginForClient(data: UserTypes.LoginData) {
 }
 
 // 登陆后查询用户详细信息
-export function findUserInfo(username: string) {
-  return useClientRequest<UserTypes.LoginResult>(`/user/${username}`, {
+export function findUserInfo(username: string): Promise<User> {
+  return useClientRequest<User>(`/user/${username}`, {
     method: "GET",
     // params: data,
   });

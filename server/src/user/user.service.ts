@@ -27,7 +27,7 @@ export class UserService {
   find(username: string) {
     return this.userRepository.findOne({
       where: { username },
-      relations: ['friend_group'],
+      relations: ['friendGroups'],
     });
   }
 
@@ -43,12 +43,13 @@ export class UserService {
   }
 
   async findUserByUsername(username: string) {
-    console.log('findUserByUsername', username);
+    // console.log('findUserByUsername', username);
     if (!username) {
       return null;
     }
     return this.userRepository.findOne({
       where: { username },
+      relations: ['friendGroups'],
     });
   }
 }

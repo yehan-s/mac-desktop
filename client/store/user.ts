@@ -1,3 +1,5 @@
+import type { FriendGroup } from "~/types/user";
+
 interface userState {
   [index: string]: any;
   login: Ref<boolean>;
@@ -10,10 +12,12 @@ interface userState {
   signature: Ref<string>;
   role: Ref<string>;
   createdAt: Ref<string>;
+  friendGroups: Ref<FriendGroup[]>;
+  joinedGroups: Ref<any[]>;
 }
 
 export const useUserStore = defineStore("user", (): userState => {
-  let login = ref(true);
+  let login = ref(false);
   let access_token = ref("wu");
   let id = ref("3c33f19c-b5be-4fd4-b9e7-6b5882c4a078");
   let nickname = ref("yehan");
@@ -23,6 +27,8 @@ export const useUserStore = defineStore("user", (): userState => {
   let signature = ref("随性的，我们唱起歌随性的，我们唱起歌随性的");
   let role = ref("user");
   let createdAt = ref("2024-04-24T16:32:46.898Z");
+  let friendGroups = ref([]);
+  let joinedGroups = ref([]);
 
   const updateNickname = (newNickname: string) => {
     nickname.value = newNickname;
@@ -33,6 +39,18 @@ export const useUserStore = defineStore("user", (): userState => {
   const updateAvatar = (newAvatar: string) => {
     avatar.value = newAvatar;
   };
+
+  const saveUserInfo = (userInfo: any) => {
+    id.value = userInfo.id;
+    nickname.value = userInfo.nickname;
+    username.value = userInfo.username;
+    password.value = userInfo.password;
+    avatar.value = userInfo.avatar;
+    signature.value = userInfo.signature;
+    createdAt.value = userInfo.createdAt;
+    friendGroups.value = userInfo.friendGroups;
+    joinedGroups.value = userInfo.joinedGroups;
+  }
 
   return {
     login,
@@ -45,8 +63,11 @@ export const useUserStore = defineStore("user", (): userState => {
     signature,
     role,
     createdAt,
+    friendGroups,
+    joinedGroups,
     updateNickname,
     updateSignature,
     updateAvatar,
+    saveUserInfo
   };
 });
