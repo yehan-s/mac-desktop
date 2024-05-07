@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString, Length } from 'class-validator';
 
-export class CreateUserDto {
+export class CreateFriendGroupDto {
   @IsString()
   @IsNotEmpty()
   @Length(4, 20)

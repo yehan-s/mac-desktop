@@ -35,7 +35,7 @@ export class AuthService {
 
     if (!user) {
       // 如果比对不通过
-      return new UnauthorizedException('用户名或者密码错误');
+      throw new UnauthorizedException('用户名或者密码错误');
     }
 
     // 生成token

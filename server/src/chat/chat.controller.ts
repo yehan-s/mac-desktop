@@ -10,6 +10,11 @@ export class ChatController {
     // return 'haa';
     const friendGroup = dto;
     return this.chatService.createFriendGroup(friendGroup);
-    // const res = await this.chatService.createFriendGroup(body);
+  }
+
+  @Post('/createFriend')
+  addFriend(@Body() dto) {
+    const friend = dto;
+    return this.chatService.createFriend(friend);
   }
 }
