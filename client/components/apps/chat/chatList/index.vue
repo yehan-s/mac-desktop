@@ -25,10 +25,15 @@
           chatListStore.listType === 'group'
         "
       >
+        <!-- 分组菜单 -->
         <TabMenu :model="tabMenuItems" :pt="persets.tabmenu" />
-
+        <!-- 分组列表 -->
         <PanelMenu
-          :model="chatListStore.listType === 'group' ? groupItems : friendItems"
+          :model="
+            chatListStore.listType === 'group'
+              ? groupItems
+              : chatListStore.friendGroup
+          "
           multiple
           class="w-full"
           :pt="persets.panelmenu"
@@ -40,12 +45,11 @@
                   <img :src="item.avatar" />
                 </div>
               </div>
-              <div :class="{ 'font-bold': item.prop === 'title' }">
+              <div :class="{ 'font-bold': item.prop === 'title'}">
                 {{ item.label }}
               </div>
             </div>
           </template>
-
         </PanelMenu>
       </div>
     </div>
@@ -57,8 +61,10 @@ import PanelMenu from "primevue/panelmenu";
 import ChatMember from "./chatMember.vue";
 import Search from "./search.vue";
 import { useThemeStore } from "@/store/theme";
+import { useUserStore } from "~/store/user";
 import { useChatListStore } from "@/store/chatList";
 const themeStore = useThemeStore();
+const userStore = useUserStore();
 const chatListStore = useChatListStore();
 
 // 移入带有滚动条的元素中时，对滚动条进行样式调整
@@ -89,18 +95,23 @@ const expandedKeys = ref({
   // "2_1": true,
   // "2_2": true,
 });
-const friendItems = ref([
-  {
-    label: "我的好友",
-    prop: "title",
-    items: [
-      {
-        label: "yehan",
-        avatar: "https://avatars.githubusercontent.com/u/44036559?v=4",
-      },
-    ],
-  },
-]);
+// const friendItems = ref([
+//   {
+//     label: "我的好友",
+//     prop: "title",
+//     items: [
+//       {
+//         label: "yehan",
+//         avatar: "https://avatars.githubusercontent.com/u/44036559?v=4",
+//       },
+//     ],
+//   },
+// ]);
+
+// const fgTemp
+
+const friendItems = ref([]);
+
 const groupItems = ref([
   {
     label: "这是一个吃瓜群",
@@ -122,6 +133,11 @@ const tabMenuItems = ref([
     },
   },
 ]);
+
+onMounted(() => {
+  // console.log("我人呢");
+  // getItem();
+});
 
 const persets = ref({
   panelmenu: {

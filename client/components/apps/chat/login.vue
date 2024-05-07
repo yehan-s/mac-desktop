@@ -70,7 +70,9 @@ import type { LoginData } from "~/api/user/types.ts";
 // @ts-ignore
 import { loginForClient, findUserInfo } from "~/api/user/index.ts";
 import { useUserStore } from "~/store/user";
+import { useChatListStore } from "~/store/chatList";
 const userStore = useUserStore();
+const chatListStore = useChatListStore();
 
 let username = ref("");
 let password = ref("");
@@ -101,12 +103,13 @@ const loginHandler = async () => {
 
   if (userStore.login) {
     let userInfo = await findUserInfo(username.value);
-    console.log("我想获取到信息", userInfo);
+    // console.log("我想获取到信息", userInfo);
     if (userInfo) {
       userStore.saveUserInfo(userInfo);
     }
   }
-
+  // 获取分组的信息
+  chatListStore.getFGItem(userStore.friendGroups);
   // alert("这是登录按钮");
 
   //   if (!check.value) return;

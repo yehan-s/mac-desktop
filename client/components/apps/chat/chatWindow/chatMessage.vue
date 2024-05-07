@@ -198,12 +198,12 @@ const removeMessage = (e, message) => {
 const animatingMessages = ref(props.messages.slice(lastChangedIndex.value));
 
 const onMouseEnter = (event: MouseEvent) => {
-  console.log(event.currentTarget);
+  // console.log(event.currentTarget);
   (event.currentTarget as HTMLElement).classList.remove("chatlist");
   (event.currentTarget as HTMLElement).classList.add("chatlist_");
 };
 const onMouseLeave = (event: MouseEvent) => {
-  console.log("leave");
+  // console.log("leave");
   (event.currentTarget as HTMLElement).classList.remove("chatlist_");
   (event.currentTarget as HTMLElement).classList.add("chatlist");
 };
