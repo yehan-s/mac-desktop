@@ -22,6 +22,9 @@ export class Friend {
   @Column()
   username: string;
 
+  @Column()
+  nickname: string;
+
   @Column({
     default: 'https://img2.imgtp.com/2024/05/04/Db7YhuWN.png',
   })

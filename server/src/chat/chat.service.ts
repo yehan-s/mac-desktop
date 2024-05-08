@@ -31,6 +31,15 @@ export class ChatService {
     return res;
   }
 
+  // 查找好友通过分组id
+  async findFriendByGroupId(group_id: number) {
+    // return '哈哈';
+    const res = await this.friendRepository.find({
+      where: { group_id },
+    });
+    return res;
+  }
+
   // async create(chat: Partial<Chat>) {
   //   const chatTemp = await this.chatRepository.create(chat);
   //   const res = await this.chatRepository.save(chatTemp);

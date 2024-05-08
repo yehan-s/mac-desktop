@@ -70,7 +70,7 @@ const chatListStore = useChatListStore();
 // 移入带有滚动条的元素中时，对滚动条进行样式调整
 // 已经隐藏滚动条
 const onMouseEnter = (event: MouseEvent) => {
-  console.log(event);
+  // console.log(event);
   (event.currentTarget as HTMLElement).classList.remove("chatlist");
   (event.currentTarget as HTMLElement).classList.add("chatlist_");
 };
@@ -110,7 +110,7 @@ const expandedKeys = ref({
 
 // const fgTemp
 
-const friendItems = ref([]);
+// const friendItems = ref([]);
 
 const groupItems = ref([
   {

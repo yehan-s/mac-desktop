@@ -25,7 +25,6 @@ export class UserController {
   @Get('/:username')
   getUserByName(@Param() params): Promise<User> {
     const username = params.username;
-    console.log('bn', params);
     return this.userService.findUserByUsername(username);
   }
 
@@ -39,7 +38,6 @@ export class UserController {
   @Get()
   getUser(@Query() query) {
     const { username, password } = query;
-    console.log('get', query);
     return this.userService.findUser(username, password);
   }
 }

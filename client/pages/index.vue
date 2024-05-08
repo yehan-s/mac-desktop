@@ -41,16 +41,16 @@ const backgroundStyle = computed(() => {
 
 import { searchUser } from "@/api/search";
 onMounted(() => {
-  searchUser("yehan").then((res) => {
-    const arr = res.friendGroups;
-    console.log(arr);
-    console.log(arr[0]);
-    console.log(arr[1]);
-    console.log(Array.isArray(arr));
-  });
-  searchUser("jsss").then((res) => {
-    console.log(res);
-  });
+  // searchUser("yehan").then((res) => {
+  //   const arr = res.friendGroups;
+  //   console.log(arr);
+  //   console.log(arr[0]);
+  //   console.log(arr[1]);
+  //   console.log(Array.isArray(arr));
+  // });
+  // searchUser("jsss").then((res) => {
+  //   console.log(res);
+  // });
 });
 </script>
 
