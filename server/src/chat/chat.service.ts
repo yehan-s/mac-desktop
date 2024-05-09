@@ -4,6 +4,7 @@ import { FriendGroup } from './entitys/friend-group.entity';
 import { Repository } from 'typeorm';
 import { UserService } from 'src/user/user.service';
 import { Friend } from './entitys/friend.entity';
+import { GroupChat } from './entitys/group-chat.entity';
 
 @Injectable()
 export class ChatService {
@@ -12,6 +13,8 @@ export class ChatService {
     private friendGroupRepository: Repository<FriendGroup>,
     @InjectRepository(Friend)
     private friendRepository: Repository<Friend>,
+    @InjectRepository(GroupChat)
+    private groupChatRepository: Repository<GroupChat>,
     private userService: UserService,
   ) {}
 
@@ -25,7 +28,6 @@ export class ChatService {
 
   // 创建好友
   async createFriend(friend: Partial<Friend>) {
-    // return '哈哈';
     const friendTemp = this.friendRepository.create(friend);
     const res = await this.friendRepository.save(friendTemp);
     return res;
@@ -33,16 +35,20 @@ export class ChatService {
 
   // 查找好友通过分组id
   async findFriendByGroupId(group_id: number) {
-    // return '哈哈';
     const res = await this.friendRepository.find({
       where: { group_id },
     });
     return res;
   }
 
-  // async create(chat: Partial<Chat>) {
-  //   const chatTemp = await this.chatRepository.create(chat);
-  //   const res = await this.chatRepository.save(chatTemp);
-  //   return res;
-  // }
+  // 创建群聊
+  async createGroup(group: Partial<GroupChat>) {
+    const groupTemp = this.groupChatRepository.create(group);
+    const creator = await this.userService.findUserByUserId(group.creator_id);
+    // 添加创建者到群聊的成员数组中
+    groupTemp.members = [creator];
+    // 这样中间表会添加数据
+    const res = await this.groupChatRepository.save(groupTemp);
+    return res;
+  }
 }

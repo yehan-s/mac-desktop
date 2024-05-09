@@ -12,7 +12,7 @@ export class UserService {
   // 查找全部
   async findAll() {
     const res = await this.userRepository.find({
-      relations: ['friendGroups', 'friends'],
+      relations: ['friendGroups', 'friends', 'groupChats'],
     });
     return res;
   }
@@ -28,7 +28,13 @@ export class UserService {
   find(username: string) {
     return this.userRepository.findOne({
       where: { username },
-      relations: ['friendGroups', 'friends'],
+      relations: ['friendGroups', 'friends', 'groupChats'],
+    });
+  }
+  findUserByUserId(id: number) {
+    return this.userRepository.findOne({
+      where: { id },
+      // relations: ['friendGroups', 'friends'],
     });
   }
   // 通过用户名和密码查找

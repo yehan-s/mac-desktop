@@ -24,4 +24,10 @@ export class ChatController {
     const groupId = params.group_id;
     return this.chatService.findFriendByGroupId(groupId);
   }
+  // 创建群聊
+  @Post('/createGroupchat')
+  addGroup(@Body() dto) {
+    const group = dto;
+    return this.chatService.createGroup(group);
+  }
 }

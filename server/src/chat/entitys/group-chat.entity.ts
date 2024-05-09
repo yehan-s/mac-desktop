@@ -4,10 +4,12 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
-  OneToMany,
+  // OneToMany,
+  ManyToMany,
+  JoinColumn,
 } from 'typeorm';
 import { User } from '../../user/user.entity';
-import { GroupMembers } from './group-members.entity';
+// import { GroupMembers } from './group-members.entity';
 
 @Entity()
 export class GroupChat {
@@ -20,7 +22,7 @@ export class GroupChat {
   @Column()
   creator_id: number;
 
-  @Column({ nullable: true })
+  @Column({ default: 'https://img2.imgtp.com/2024/05/04/Db7YhuWN.png' })
   avatar: string;
 
   @Column({ nullable: true, type: 'text' })
@@ -36,8 +38,14 @@ export class GroupChat {
   updated_at: Date;
 
   @ManyToOne(() => User, (user) => user.createdGroups)
+  @JoinColumn({ name: 'creator_id' }) // 指定外键列的名称
   creator: User;
 
-  @OneToMany(() => GroupMembers, (groupMembers) => groupMembers.group)
-  members: GroupMembers[];
+  // @OneToMany(() => GroupMembers, (groupMembers) => groupMembers.group)
+  // members: GroupMembers[];
+
+  // @ManyToMany(() => User, (user) => user.joinedGroups)
+  // membersUser: User[];
+  @ManyToMany(() => User, (user) => user.groupChats)
+  members: User[];
 }

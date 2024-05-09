@@ -61,9 +61,14 @@ export class User {
   @OneToMany(() => GroupMembers, (groupMembers) => groupMembers.user)
   groupMemberships: GroupMembers[];
 
-  @ManyToMany(() => GroupChat, { eager: true })
-  @JoinTable()
-  joinedGroups: GroupChat[];
+  // @ManyToMany(() => GroupChat, (groupChat) => groupChat.membersUser, {
+  //   cascade: ['insert'],
+  // })
+  // @JoinTable({ name: 'users_chats' })
+  // joinedGroups: GroupChat[];
+  @ManyToMany(() => GroupChat, (groupChat) => groupChat.members)
+  @JoinTable({ name: 'users_GroupChats' })
+  groupChats: GroupChat[];
 
   @BeforeInsert()
   async setNickname() {
