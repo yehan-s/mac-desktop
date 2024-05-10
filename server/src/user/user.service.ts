@@ -56,7 +56,7 @@ export class UserService {
     }
     return this.userRepository.findOne({
       where: { username },
-      relations: ['friendGroups', 'friends'],
+      relations: ['friendGroups', 'friends', 'groupChats'],
     });
   }
 }

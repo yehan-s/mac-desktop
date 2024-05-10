@@ -31,8 +31,8 @@
         <PanelMenu
           :model="
             chatListStore.listType === 'group'
-              ? groupItems
-              : chatListStore.friendGroup
+              ? chatListStore.groupChatList
+              : chatListStore.friendGroupList
           "
           multiple
           class="w-full"
@@ -45,7 +45,7 @@
                   <img :src="item.avatar" />
                 </div>
               </div>
-              <div :class="{ 'font-bold': item.prop === 'title'}">
+              <div :class="{ 'font-bold': item.prop === 'title' }">
                 {{ item.label }}
               </div>
             </div>
@@ -63,6 +63,7 @@ import Search from "./search.vue";
 import { useThemeStore } from "@/store/theme";
 import { useUserStore } from "~/store/user";
 import { useChatListStore } from "@/store/chatList";
+import type { MenuItem } from "primevue/menuitem";
 const themeStore = useThemeStore();
 const userStore = useUserStore();
 const chatListStore = useChatListStore();
@@ -139,6 +140,19 @@ onMounted(() => {
   // getItem();
 });
 
+interface PanelMenuContext {
+  item: any;
+  index: number;
+  active: boolean;
+  focused: boolean;
+  disabled: boolean;
+}
+interface PanelMenuState {
+  d_activeIndex: number;
+  id: string;
+  activeItem: MenuItem[];
+}
+
 const persets = ref({
   panelmenu: {
     panel: {
@@ -151,7 +165,13 @@ const persets = ref({
         "focus-visible:outline-none focus-visible:outline-offset-0 focus-visible:ring focus-visible:ring-primary-400/50 dark:focus-visible:ring-primary-300/50",
       ],
     },
-    headercontent: ({ context, instance }) => {
+    headercontent: ({
+      context,
+      instance,
+    }: {
+      context: PanelMenuContext;
+      instance: any;
+    }) => {
       var _a, _b;
       return {
         class: [
@@ -218,7 +238,7 @@ const persets = ref({
         "transition-shadow duration-200",
       ],
     },
-    action: ({ context }) => ({
+    action: ({ context }: { context: PanelMenuContext }) => ({
       class: [
         "relative",
         // Font
@@ -277,7 +297,13 @@ const persets = ref({
     menuitem: {
       class: "mr-0",
     },
-    action: ({ context, state }) => ({
+    action: ({
+      context,
+      state,
+    }: {
+      context: PanelMenuContext;
+      state: PanelMenuState;
+    }) => ({
       class: [
         "relative",
         // Font

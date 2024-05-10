@@ -13,6 +13,7 @@ interface userState {
   role: Ref<string>;
   createdAt: Ref<string>;
   friendGroups: Ref<FriendGroup[]>;
+  groupChats: Ref<any[]>;
   joinedGroups: Ref<any[]>;
 }
 
@@ -28,6 +29,7 @@ export const useUserStore = defineStore("user", (): userState => {
   let role = ref("user");
   let createdAt = ref("2024-04-24T16:32:46.898Z");
   let friendGroups = ref([]);
+  let groupChats = ref([]);
   let joinedGroups = ref([]);
 
   const updateNickname = (newNickname: string) => {
@@ -49,8 +51,9 @@ export const useUserStore = defineStore("user", (): userState => {
     signature.value = userInfo.signature;
     createdAt.value = userInfo.createdAt;
     friendGroups.value = userInfo.friendGroups;
+    groupChats.value = userInfo.groupChats;
     joinedGroups.value = userInfo.joinedGroups;
-  }
+  };
 
   return {
     login,
@@ -64,10 +67,11 @@ export const useUserStore = defineStore("user", (): userState => {
     role,
     createdAt,
     friendGroups,
+    groupChats,
     joinedGroups,
     updateNickname,
     updateSignature,
     updateAvatar,
-    saveUserInfo
+    saveUserInfo,
   };
 });

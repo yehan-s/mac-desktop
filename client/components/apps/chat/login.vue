@@ -108,11 +108,13 @@ const loginHandler = async () => {
       userStore.saveUserInfo(userInfo);
     }
   }
-  // 获取分组的信息
+  // 获取好友分组的信息
   chatListStore.getFGItem(userStore.friendGroups);
+  // 获取群聊分组的信息
+  chatListStore.getGroupItem(userStore.groupChats);
   // alert("这是登录按钮");
 
-  //   if (!check.value) return;
+  //   if (!check.value) return;a
   //   try {
   //     const res = await Login({ username: username.value, password: password.value });
   //     const data = res.data as LoginData;
