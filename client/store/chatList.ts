@@ -31,39 +31,24 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
     listType.value = type;
   };
 
-  // 获取好友分组
+  // 获取好友分组 
   const getFGItem = async (friendGroups: any) => {
-    console.log("这是之前的", friendGroups);
-    // 分组的每一项
-    let fgItemTemp: GroupList = {
-      label: "",
-      prop: "",
-      items: [],
-    };
-    // 好友的每一项
-    let fmItemTemp: GroupItem = {
-      label: "",
-      avatar: "",
-    };
-    // 遍历好友分组，往其中添加好友
-    for (const item of friendGroups) {
-      fgItemTemp = {
+    friendGroups.forEach((item: any) => {
+      let fgItemTemp: GroupList = {
         label: item.name,
         prop: "title",
         items: [],
       };
-      // 查找该分组id下所有好友
-      const fmList = await searchGroupFriend(item.id);
-      // 将好友依次添加到分组当中
-      fmList.forEach((friend: Friend) => {
-        fmItemTemp = {
-          label: friend.nickname,
-          avatar: friend.avatar,
+      item.friends.forEach((friend: any) => {
+        let userItem = friend.user;
+        let fmItemTemp: GroupItem = {
+          label: userItem.nickname,
+          avatar: userItem.avatar,
         };
         fgItemTemp.items.push(fmItemTemp);
       });
       friendGroupList.value.push(fgItemTemp);
-    }
+    });
   };
 
   // 获取群聊

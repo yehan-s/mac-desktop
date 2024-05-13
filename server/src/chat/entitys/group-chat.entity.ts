@@ -16,6 +16,7 @@ export class GroupChat {
   @PrimaryGeneratedColumn()
   id: number;
 
+  // 群名
   @Column()
   name: string;
 

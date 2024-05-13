@@ -12,13 +12,13 @@ export class ChatController {
     const friendGroup = dto;
     return this.chatService.createFriendGroup(friendGroup);
   }
-  // 添加好友
+  // 创建好友
   @Post('/createFriend')
   addFriend(@Body() dto) {
     const friend = dto;
     return this.chatService.createFriend(friend);
   }
-  // 查找好友
+  // 查找分组下好友
   @Get('/findFriend/:group_id')
   findFriend(@Param() params) {
     const groupId = params.group_id;
@@ -29,5 +29,16 @@ export class ChatController {
   addGroup(@Body() dto) {
     const group = dto;
     return this.chatService.createGroup(group);
+  }
+  // 创建消息
+  @Post('/createMessage')
+  addMessage(@Body() dto) {
+    return this.chatService.createMessage(dto);
+  }
+  // 查找消息 通过接收者的id
+  @Get('/findMessage/:receiver_id')
+  findMessage(@Param() params) {
+    const receiverId = params.receiver_id;
+    return this.chatService.findMessageByReceiverId(receiverId);
   }
 }

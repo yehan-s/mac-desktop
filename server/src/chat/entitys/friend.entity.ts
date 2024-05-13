@@ -19,22 +19,8 @@ export class Friend {
   @Column()
   user_id: number;
 
-  @Column()
-  username: string;
-
-  @Column()
-  nickname: string;
-
-  @Column({
-    default: 'https://img2.imgtp.com/2024/05/04/Db7YhuWN.png',
-  })
-  avatar: string;
-
   @Column({ default: 'offline' })
   online_status: string;
-
-  @Column({ nullable: true })
-  remark: string;
 
   @Column({ nullable: true })
   group_id: number;
@@ -53,7 +39,7 @@ export class Friend {
   updated_at: Date;
 
   @ManyToOne(() => User, (user) => user.friends)
-  @JoinColumn({ name: 'user_id' }) // 指定外键列的名称
+  @JoinColumn({ name: 'user_id' }) // 指定外键列的名字
   user: User;
 
   @ManyToOne(() => FriendGroup, (friendGroup) => friendGroup.friends)

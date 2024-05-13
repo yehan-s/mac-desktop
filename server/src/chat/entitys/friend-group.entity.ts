@@ -19,9 +19,6 @@ export class FriendGroup {
   @Column()
   user_id: number;
 
-  // @Column()
-  // username: string;
-
   // 分组名称
   @Column()
   name: string;

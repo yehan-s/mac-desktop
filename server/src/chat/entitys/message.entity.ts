@@ -1,5 +1,11 @@
 // 创建消息 message 表
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { User } from '../../user/user.entity';
 
 @Entity()
@@ -34,8 +40,10 @@ export class Message {
   created_at: Date;
 
   @ManyToOne(() => User, (user) => user.sentMessages)
+  @JoinColumn({ name: 'sender_id' })
   sender: User;
 
   @ManyToOne(() => User, (user) => user.receivedMessages)
+  @JoinColumn({ name: 'receiver_id' })
   receiver: User;
 }

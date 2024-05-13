@@ -53,7 +53,7 @@ export class User {
   receivedMessages: Message[];
 
   @OneToMany(() => FriendGroup, (friendGroup) => friendGroup.user)
-  friendGroups: Friend[];
+  friendGroups: FriendGroup[];
 
   @OneToMany(() => GroupChat, (groupChat) => groupChat.creator)
   createdGroups: GroupChat[];

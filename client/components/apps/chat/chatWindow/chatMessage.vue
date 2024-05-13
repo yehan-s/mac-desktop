@@ -14,9 +14,9 @@
           <div class="w-4 h-4 flex items-center">＋</div>
         </button>
       </div>
-
-      <ul class="w-full mt-4">
-        <!-- <transition-group name="message" tag="div"> -->
+      <!-- 消息 -->
+      <!-- <ul class="w-full mt-4">
+        <transition-group name="message" tag="div">
         <li
           v-for="message in message2"
           :key="message.id"
@@ -45,8 +45,45 @@
             </button>
           </div>
         </li>
-        <!-- </transition-group> -->
-      </ul>
+        </transition-group>
+      </ul> -->
+      <!-- 消息冒泡 -->
+      <div class="chat chat-start" v-for="item in 10">
+        <!-- 头像 -->
+        <div class="chat-image avatar">
+          <div class="w-10 rounded-full">
+            <img
+              alt="Tailwind CSS chat bubble component"
+              :src="message2[0].avatar"
+            />
+          </div>
+        </div>
+        <!-- 头部 名字和时间  -->
+        <div class="chat-header">
+          {{ message2[0].username }}
+          <time class="text-xs opacity-50">{{ message2[0].createAt }}</time>
+        </div>
+        <!-- 内容 -->
+        <div class="chat-bubble chat-bubble-primary">
+          {{ message2[0].content }}
+        </div>
+      </div>
+      <!-- 我们接收的消息 -->
+      <div class="chat chat-end">
+        <div class="chat-image avatar">
+          <div class="w-10 rounded-full">
+            <img
+              alt="Tailwind CSS chat bubble component"
+              src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+            />
+          </div>
+        </div>
+        <div class="chat-header">
+          Anakin
+          <time class="text-xs opacity-50">{{ message2[0].createAt }}</time>
+        </div>
+        <div class="chat-bubble chat-bubble-primary">I hate you!</div>
+      </div>
     </div>
   </div>
 </template>
@@ -108,49 +145,23 @@ const props = defineProps({
 let message2 = ref<Message[]>([
   {
     id: 2,
-    userId: "jinshu",
+    username: "jinshu",
     roomId: "turboroom",
     content: "Your mom said it's time to come home",
+    avatar:
+      "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg",
     type: "text",
     createAt: new Date(),
+    sender_id: 1,
+    recivied_id: 4,
   },
   {
     id: 3,
-    userId: "yh",
+    username: "yh",
     roomId: "turboroom",
     content: "i kown",
-    type: "text",
-    createAt: new Date(),
-  },
-  {
-    id: 3,
-    userId: "yh",
-    roomId: "turboroom",
-    content: "i kown",
-    type: "text",
-    createAt: new Date(),
-  },
-  {
-    id: 3,
-    userId: "yh",
-    roomId: "turboroom",
-    content: "i kown",
-    type: "text",
-    createAt: new Date(),
-  },
-  {
-    id: 3,
-    userId: "yh",
-    roomId: "turboroom",
-    content: "i kown",
-    type: "text",
-    createAt: new Date(),
-  },
-  {
-    id: 3,
-    userId: "yh",
-    roomId: "turboroom",
-    content: "i kown",
+    avatar:
+      "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg",
     type: "text",
     createAt: new Date(),
   },

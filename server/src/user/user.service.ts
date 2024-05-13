@@ -11,13 +11,25 @@ export class UserService {
   ) {}
   // 查找全部
   async findAll() {
-    const res = await this.userRepository.find({
-      relations: ['friendGroups', 'friends', 'groupChats'],
-    });
+    // const res = await this.userRepository.find({
+    //   relations: [
+    //     'friendGroups',
+    //     'friends',
+    //     'groupChats',
+    //     'sentMessages',
+    //     'receivedMessages',
+    //   ],
+    // });
+    const res = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.friendGroups', 'friendGroups')
+      .leftJoinAndSelect('friendGroups.friends', 'friends')
+      .leftJoinAndSelect('friends.user', 'userInfo')
+      .getMany();
     return res;
   }
   // 创建用户
-  async create(user: Partial<User>): Promise<any> {
+  async create(user: Partial<User>): Promise<User> {
     const userTemp = this.userRepository.create(user);
     // 密码加密
     // userTemp.password = await argon2.hash(userTemp.password);
@@ -25,12 +37,16 @@ export class UserService {
     return res;
   }
   // 通过用户名查找(未用)
-  find(username: string) {
-    return this.userRepository.findOne({
-      where: { username },
-      relations: ['friendGroups', 'friends', 'groupChats'],
-    });
+  async find(username: string) {
+    const res = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.username = :username', { username })
+      .leftJoinAndSelect('user.friendGroups', 'friendGroups')
+      .leftJoinAndSelect('friendGroups.friends', 'friends')
+      .getMany();
+    return res;
   }
+
   findUserByUserId(id: number) {
     return this.userRepository.findOne({
       where: { id },
@@ -49,14 +65,18 @@ export class UserService {
     // console.log('findUserResult', user);
   }
   // 通过用户名查找
-  async findUserByUsername(username: string) {
+  async findUserByUsername(username: string): Promise<any> {
     // console.log('findUserByUsername', username);
     if (!username) {
-      return null;
+      throw new NotFoundException('用户名不能为空');
     }
-    return this.userRepository.findOne({
-      where: { username },
-      relations: ['friendGroups', 'friends', 'groupChats'],
-    });
+    const res = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.username = :username', { username })
+      .leftJoinAndSelect('user.friendGroups', 'friendGroups')
+      .leftJoinAndSelect('friendGroups.friends', 'friends')
+      .leftJoinAndSelect('friends.user', 'userInfo')
+      .getOne();
+    return res;
   }
 }

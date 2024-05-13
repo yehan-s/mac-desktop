@@ -103,7 +103,7 @@ const loginHandler = async () => {
 
   if (userStore.login) {
     let userInfo = await findUserInfo(username.value);
-    // console.log("我想获取到信息", userInfo);
+    console.log("我想获取到信息", userInfo);
     if (userInfo) {
       userStore.saveUserInfo(userInfo);
     }
@@ -111,7 +111,7 @@ const loginHandler = async () => {
   // 获取好友分组的信息
   chatListStore.getFGItem(userStore.friendGroups);
   // 获取群聊分组的信息
-  chatListStore.getGroupItem(userStore.groupChats);
+  // chatListStore.getGroupItem(userStore.groupChats);
   // alert("这是登录按钮");
 
   //   if (!check.value) return;a

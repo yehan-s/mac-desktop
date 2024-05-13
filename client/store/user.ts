@@ -48,11 +48,11 @@ export const useUserStore = defineStore("user", (): userState => {
     username.value = userInfo.username;
     password.value = userInfo.password;
     avatar.value = userInfo.avatar;
-    signature.value = userInfo.signature;
+    signature.value = userInfo.signature || "";
     createdAt.value = userInfo.createdAt;
     friendGroups.value = userInfo.friendGroups;
-    groupChats.value = userInfo.groupChats;
-    joinedGroups.value = userInfo.joinedGroups;
+    // groupChats.value = userInfo.groupChats;
+    // joinedGroups.value = userInfo.joinedGroups;
   };
 
   return {
