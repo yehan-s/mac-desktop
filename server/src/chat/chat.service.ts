@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FriendGroup } from './entitys/friend-group.entity';
 import { Repository } from 'typeorm';
@@ -6,6 +6,7 @@ import { UserService } from 'src/user/user.service';
 import { Friend } from './entitys/friend.entity';
 import { GroupChat } from './entitys/group-chat.entity';
 import { Message } from './entitys/message.entity';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class ChatService {
@@ -29,15 +30,63 @@ export class ChatService {
     return res;
   }
 
-  // 创建好友
-  async createFriend(friend: Partial<Friend>) {
-    const friendTemp = this.friendRepository.create(friend);
-    const res = await this.friendRepository.save(friendTemp);
-    return res;
-    // const friendGroup = await this.friendGroupRepository.findOne({
-    //   where: { name: '我的好友' },
-    // });
-    // return friendGroup;
+  // 创建好友  需要双方都添加 1.查找需要添加好友的用户id 2.查找我的好友分组id 3.添加好友
+  async createFriend(friend: {
+    user_id: number;
+    friend_id: number;
+    room?: string;
+  }) {
+    // user_id是我方的id friend_id是对方的id
+    // 这里是需要添加的好友的id，保存下来，待会作为用户id
+    let user_id = friend.user_id;
+    let friend_id = friend.friend_id;
+    // 房间id是socket.io的房间id，待会同样需要用到
+    // 现在还没写方法，所以房间号先写死
+    // let room_id = friend.room;
+    const uuid = uuidv4();
+    friend.room = uuid;
+    // 查找要添加的分组下
+    const friendGroup1 = await this.friendGroupRepository.findOne({
+      where: { name: '我的好友', user_id },
+      relations: ['friends'],
+    });
+
+    // return friendGroup1;
+    if (friendGroup1.user_id === friend_id) {
+      throw new ForbiddenException('不能添加自己为好友');
+    }
+    // 查找是否已经是好友
+    const isFriend = friendGroup1.friends.some(
+      (item) => item.user_id === friend_id,
+    );
+    if (isFriend) {
+      throw new ForbiddenException('已经是好友');
+    }
+    // 我方的好友添加完成
+    const friendTemp1 = this.friendRepository.create({
+      // 好友的id 7
+      user_id: friend_id,
+      room: friend.room,
+      group_id: friendGroup1.id,
+    });
+    await this.friendRepository.save(friendTemp1);
+    // return friendGroup1;
+    // 此时用户相互转换
+    user_id = friend.friend_id;
+    friend_id = friend.user_id;
+
+    const friendGroup2 = await this.friendGroupRepository.findOne({
+      where: { name: '我的好友', user_id },
+    });
+    // friend.group_id = friendGroup1.id;
+    // 我方的好友添加完成
+    const friendTemp2 = this.friendRepository.create({
+      user_id: friend_id,
+      room: friend.room,
+      group_id: friendGroup2.id,
+    });
+    await this.friendRepository.save(friendTemp2);
+    return '添加好友成功';
   }
 
   // 查找好友 通过分组id
@@ -86,14 +135,16 @@ export class ChatService {
   //   });
   //   return res;
   // }
-  async findMessageByReceiverId(receiver_id: number) {
-    const res = await this.messageRepository
-      .createQueryBuilder('message')
-      .select('message.content')
-      .addSelect('message.created_at')
-      // .leftJoinAndSelect('message.sender', 'senderss')
-      .getMany();
-    return res;
-    // return '呵呵';
-  }
+
+  // async findMessageByReceiverId(receiver_id: number) {
+  //   // config.server
+  //   const res = await this.messageRepository
+  //     .createQueryBuilder('message')
+  //     .select('message.content')
+  //     .addSelect('message.created_at')
+  //     // .leftJoinAndSelect('message.sender', 'senderss')
+  //     .getMany();
+  //   return res;
+  //   // return '呵呵';
+  // }
 }

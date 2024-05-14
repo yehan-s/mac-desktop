@@ -31,8 +31,10 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
     listType.value = type;
   };
 
-  // 获取好友分组 
+  // 获取好友分组
   const getFGItem = async (friendGroups: any) => {
+    // 更新分组时需清空
+    friendGroupList.value = [];
     friendGroups.forEach((item: any) => {
       let fgItemTemp: GroupList = {
         label: item.name,

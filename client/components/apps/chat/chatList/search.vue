@@ -71,7 +71,7 @@
           <h2 class="card-title">{{ searchResult?.nickname }}</h2>
           <p>{{ searchResult?.username }}</p>
           <div class="card-actions justify-end">
-            <button class="btn btn-primary">添加</button>
+            <button class="btn btn-primary" @click="addHandler">添加</button>
           </div>
         </div>
       </div>
@@ -86,8 +86,15 @@ const addImg = "chat/chatlist/add.svg";
 import Dialog from "primevue/dialog";
 import persets from "~/config/persets";
 import { searchUser } from "@/api/search";
+import { addFriend } from "~/api/add";
 import { useThemeStore } from "@/store/theme";
+import { useUserStore } from "@/store/user";
+import { useChatListStore } from "~/store/chatList";
+import type { AddFriendData } from "~/api/add/types";
+import { findUserInfo } from "~/api/user";
 const themeStore = useThemeStore();
+const userStore = useUserStore();
+const chatListStore = useChatListStore();
 
 let visible = ref(false);
 
@@ -117,6 +124,23 @@ const searchHandler = async () => {
   } else {
     console.log("无值");
   }
+};
+
+const addHandler = async () => {
+  const friend: AddFriendData = {
+    user_id: userStore.id,
+    friend_id: searchResult.value?.id!,
+  };
+  // 更新好友列表
+  await addFriend(friend);
+  if (userStore.login) {
+    let userInfo = await findUserInfo(userStore.username);
+    console.log("更新信息", userInfo);
+    if (userInfo) {
+      userStore.saveUserInfo(userInfo);
+    }
+  }
+  chatListStore.getFGItem(userStore.friendGroups);
 };
 
 // dialog的预设

@@ -36,9 +36,9 @@ export class ChatController {
     return this.chatService.createMessage(dto);
   }
   // 查找消息 通过接收者的id
-  @Get('/findMessage/:receiver_id')
-  findMessage(@Param() params) {
-    const receiverId = params.receiver_id;
-    return this.chatService.findMessageByReceiverId(receiverId);
-  }
+  // @Get('/findMessage/:receiver_id')
+  // findMessage(@Param() params) {
+  //   const receiverId = params.receiver_id;
+  //   return this.chatService.findMessageByReceiverId(receiverId);
+  // }
 }

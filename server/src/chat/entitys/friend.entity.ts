@@ -5,7 +5,6 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
-  Generated,
 } from 'typeorm';
 import { User } from '../../user/user.entity';
 import { FriendGroup } from './friend-group.entity';
@@ -26,7 +25,7 @@ export class Friend {
   group_id: number;
 
   @Column()
-  @Generated('uuid')
+  // @Generated('uuid')
   room: string;
 
   @Column({ default: 0 })
