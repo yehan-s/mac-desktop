@@ -15,8 +15,10 @@
     >
       <!-- 聊天消息列表 -->
       <div v-if="chatListStore.listType === 'message'">
-        <ChatMember name="turboRoom" />
-        <ChatMember name="corse" />
+        <ClientOnly>
+          <ChatMember name="turboRoom" />
+          <ChatMember name="corse" />
+        </ClientOnly>
       </div>
       <!-- 好友 群组列表 -->
       <div

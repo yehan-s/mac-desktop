@@ -45,6 +45,7 @@ export class ChatService {
     // let room_id = friend.room;
     const uuid = uuidv4();
     friend.room = uuid;
+    console.log('uuid', uuid);
     // 查找要添加的分组下
     const friendGroup1 = await this.friendGroupRepository.findOne({
       where: { name: '我的好友', user_id },
@@ -122,12 +123,20 @@ export class ChatService {
 
   // 创建消息
   async createMessage(message: Partial<Message>) {
-    // return '创建消息';
     const messageTemp = this.messageRepository.create(message);
     const res = await this.messageRepository.save(messageTemp);
     return res;
   }
 
+  // 查找消息 通过RoomId
+  async findMessageByRoom(room: string) {
+    const res = await this.messageRepository
+      .createQueryBuilder('message')
+      .where('message.room = :room', { room })
+      .orderBy('message.created_at', 'DESC')
+      .getOne();
+    return res;
+  }
   // 查找消息 通过接收者的id
   // async findMessageByReceiverId(receiver_id: number) {
   //   const res = await this.messageRepository.find({

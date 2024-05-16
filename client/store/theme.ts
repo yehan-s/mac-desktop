@@ -8,7 +8,7 @@ interface ThemeState {
   setBrightness: (value: number) => void;
 }
 
-export const useThemeStore = defineStore("theme.ts", (): ThemeState => {
+export const useThemeStore = defineStore("theme", (): ThemeState => {
   let dark = ref(false);
   let brightness = ref(80);
   let sound = ref(80);

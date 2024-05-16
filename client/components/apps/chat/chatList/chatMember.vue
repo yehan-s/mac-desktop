@@ -26,7 +26,43 @@
 
 <script setup lang="ts">
 import { useThemeStore } from "@/store/theme";
+import { findLastMessage } from "~/api/message";
 const themeStore = useThemeStore();
+import { useUserStore } from "~/store/user";
+const userStore = useUserStore();
+
+// 需要 username, avatar, lastMessage, date, room
+interface chatListItem {
+  nickname: string;
+  avatar: string;
+  lastMessage?: string;
+  date?: Date;
+  room?: string;
+}
+let chatListItem: chatListItem = {} as chatListItem;
+let chatList: chatListItem[] = [];
+let friendsList: any[] = [];
+// 获取一个好友列表
+userStore.friendGroups.forEach((item: any) => {
+  item.friends.forEach((friend: any) => {
+    friendsList.push(friend);
+  });
+});
+console.log("friendsList", friendsList);
+
+const getLMToChatList = async () => {
+  for (let item of friendsList) {
+    chatListItem.nickname = item.user.nickname;
+    chatListItem.avatar = item.user.avatar;
+    let MessageTemp = await findLastMessage(item.room);
+    // item.lastMessage = MessageTemp.content;
+    chatListItem.lastMessage = MessageTemp.content;
+    chatListItem.date = MessageTemp.created_at;
+    chatListItem.room = MessageTemp.room;
+    console.log("在这呢看看", MessageTemp);
+    chatList.push(chatListItem);
+  }
+};
 
 let props = defineProps<{
   name: string;
@@ -34,6 +70,11 @@ let props = defineProps<{
   // lastMessage: string;
   // date: string;
 }>();
+
+onMounted(() => {
+  console.log("进入了onm");
+  getLMToChatList();
+});
 </script>
 
 <style scoped></style>

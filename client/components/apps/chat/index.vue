@@ -8,6 +8,7 @@
     <!-- <div v-else class="flex-1 flex-center">
         <img :src="src" alt="123" class="w-[140px] h-[140px]" />
       </div> -->
+
     <Login v-if="!userStore.login" />
     <Main v-else></Main>
   </div>

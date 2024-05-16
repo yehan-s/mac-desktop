@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ChatService } from './chat.service';
+import { CreateMessageDto } from './dto/create-message.dto';
 
 @Controller('chat')
 export class ChatController {
@@ -8,7 +9,6 @@ export class ChatController {
   // 创建好友分组
   @Post('/createFriendgroup')
   addFriendGroup(@Body() dto) {
-    // return 'haa';
     const friendGroup = dto;
     return this.chatService.createFriendGroup(friendGroup);
   }
@@ -32,8 +32,14 @@ export class ChatController {
   }
   // 创建消息
   @Post('/createMessage')
-  addMessage(@Body() dto) {
+  addMessage(@Body() dto: CreateMessageDto) {
     return this.chatService.createMessage(dto);
+  }
+  // 查找消息 通过RoomId
+  @Get('/findMessage/:room')
+  findMessageByRoomId(@Param() params) {
+    const room = params.room;
+    return this.chatService.findMessageByRoom(room);
   }
   // 查找消息 通过接收者的id
   // @Get('/findMessage/:receiver_id')
