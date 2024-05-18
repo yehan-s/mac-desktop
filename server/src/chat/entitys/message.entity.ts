@@ -5,8 +5,11 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  CreateDateColumn,
 } from 'typeorm';
+// import { format } from 'date-fns'; // 确保您已经安装了date-fns库
 import { User } from '../../user/user.entity';
+// import { BeijingDateTimeTransformer } from 'src/utils/BeijingDateTimeTransformer';
 
 @Entity()
 export class Message {
@@ -36,7 +39,7 @@ export class Message {
   // @Column({ nullable: true })
   // file_size: number;
 
-  @Column({ default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
 
   @ManyToOne(() => User, (user) => user.sentMessages)
@@ -46,4 +49,9 @@ export class Message {
   @ManyToOne(() => User, (user) => user.receivedMessages)
   @JoinColumn({ name: 'receiver_id' })
   receiver: User;
+
+  // 计算属性来获取格式化的日期字符串
+  // get formattedCreatedAt(): string {
+  //   return format(this.created_at, 'yyyy-MM-dd HH:mm');
+  // }
 }

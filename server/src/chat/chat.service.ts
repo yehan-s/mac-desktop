@@ -135,7 +135,44 @@ export class ChatService {
       .where('message.room = :room', { room })
       .orderBy('message.created_at', 'DESC')
       .getOne();
-    return res;
+
+    if (!res) {
+      return null;
+    }
+    // 需求，如果create的时间离现在时间在24小时之内，则只返回HH:mm:ss，
+    // 如果大于24小时则只返回YYYY-MM-DD
+    const now = new Date();
+    const createdAt = new Date(res.created_at);
+    const timeDiff = now.getTime() - createdAt.getTime();
+    const hoursDiff = timeDiff / (1000 * 60 * 60);
+
+    let formattedDate: string;
+    if (hoursDiff <= 24) {
+      // 如果时间差在24小时之内，只返回小时、分钟和秒
+      formattedDate = createdAt.toLocaleString('zh-CN', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+        timeZone: 'Asia/Shanghai',
+      });
+    } else {
+      // 如果时间差大于24小时，只返回年、月和日
+      formattedDate = createdAt
+        .toLocaleString('zh-CN', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          timeZone: 'Asia/Shanghai',
+        })
+        .replace(/\//g, '-'); // 使用 - 替换 /
+    }
+
+    // 创建一个新对象来避免直接修改实体属性
+    const formattedMessage: any = { ...res };
+    formattedMessage.created_at = formattedDate;
+    return formattedMessage;
+    // return res;
   }
   // 查找消息 通过接收者的id
   // async findMessageByReceiverId(receiver_id: number) {

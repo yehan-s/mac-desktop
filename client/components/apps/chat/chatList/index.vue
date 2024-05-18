@@ -15,10 +15,14 @@
     >
       <!-- 聊天消息列表 -->
       <div v-if="chatListStore.listType === 'message'">
-        <ClientOnly>
-          <ChatMember name="turboRoom" />
-          <ChatMember name="corse" />
-        </ClientOnly>
+        <template v-for="item in chatList" :key="item.index">
+          <ChatMember
+            :name="item.nickname"
+            :avatar="item.avatar"
+            :lastMessage="item.lastMessage!"
+            :date="item.date!"
+          />
+        </template>
       </div>
       <!-- 好友 群组列表 -->
       <div
@@ -59,6 +63,7 @@
 </template>
 
 <script setup lang="ts">
+import { findLastMessage } from "~/api/message";
 import PanelMenu from "primevue/panelmenu";
 import ChatMember from "./chatMember.vue";
 import Search from "./search.vue";
@@ -137,9 +142,44 @@ const tabMenuItems = ref([
   },
 ]);
 
+// 需要 username, avatar, lastMessage, date, room
+interface chatListItem {
+  nickname: string;
+  avatar: string;
+  lastMessage?: string;
+  date?: Date;
+  room?: string;
+}
+let chatListItem: chatListItem = {} as chatListItem;
+let chatList: chatListItem[] = [];
+let friendsList: any[] = [];
+// 获取一个好友列表
+console.log("看看fg", userStore.friendGroups);
+userStore.friendGroups.forEach((item: any) => {
+  console.log("我来看看好友", item);
+  item.friends.forEach((friend: any) => {
+    friendsList.push(friend);
+  });
+});
+console.log("friendsList", friendsList);
+
+const getLMToChatList = async () => {
+  for (let item of friendsList) {
+    chatListItem.nickname = item.user.nickname;
+    chatListItem.avatar = item.user.avatar;
+    let MessageTemp = await findLastMessage(item.room);
+    // item.lastMessage = MessageTemp.content;
+    chatListItem.lastMessage = MessageTemp.content;
+    chatListItem.date = MessageTemp.created_at;
+    chatListItem.room = MessageTemp.room;
+    console.log("在这呢看看", MessageTemp);
+    chatList.push(chatListItem);
+  }
+  console.log("chatList", chatList);
+};
+
 onMounted(() => {
-  // console.log("我人呢");
-  // getItem();
+  getLMToChatList();
 });
 
 interface PanelMenuContext {

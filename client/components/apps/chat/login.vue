@@ -97,19 +97,21 @@ const loginHandler = async () => {
   // console.log("res", res);
   // console.log("他的类型是", typeof res);
   if (res) {
-    userStore.login = true;
     userStore.access_token = res.access_token;
   }
 
-  if (userStore.login) {
-    let userInfo = await findUserInfo(username.value);
-    console.log("我想获取到信息", userInfo);
-    if (userInfo) {
-      userStore.saveUserInfo(userInfo);
-    }
+  // if (userStore.login) {
+  let userInfo = await findUserInfo(username.value);
+  console.log("我想获取到信息", userInfo);
+  if (userInfo) {
+    userStore.saveUserInfo(userInfo);
   }
+  // }
+  console.log("login的时候", userStore.friendGroups);
   // 获取好友分组的信息
   chatListStore.getFGItem(userStore.friendGroups);
+  // 放在最后等到信息获取到再跳转
+  userStore.login = true;
   // 获取群聊分组的信息
   // chatListStore.getGroupItem(userStore.groupChats);
   // alert("这是登录按钮");

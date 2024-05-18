@@ -62,6 +62,7 @@
           <!-- 头像 昵称 签名 -->
           <div class="flex border-b-2 pb-2 mb-2">
             <div class="avatar mr-6">
+              <!-- 头像 -->
               <div class="w-24 h-24 rounded">
                 <img :src="userInfo.avatar" />
               </div>

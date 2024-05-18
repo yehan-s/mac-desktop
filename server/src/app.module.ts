@@ -25,6 +25,9 @@ import { ChatModule } from './chat/chat.module';
       autoLoadEntities: true,
       // entities: [User, Chat],
       synchronize: true,
+      extra: {
+        timezone: 'Asia/Shanghai', // 设置时区为中国
+      },
     } as TypeOrmModuleOptions),
     AuthModule,
     ChatModule,
