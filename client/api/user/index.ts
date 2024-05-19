@@ -26,3 +26,11 @@ export function findUserInfo(username: string): Promise<User> {
     // params: data,
   });
 }
+
+// 查找用户详情通过username
+// export function findUserByUsername(username: string): Promise<User> {
+//   return useClientRequest<User>(`/user/${username}`, {
+//     method: "GET",
+//     // params: data,
+//   });
+// }

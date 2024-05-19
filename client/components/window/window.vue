@@ -77,7 +77,7 @@ const toggleMax = () => {
 
 const setFocus = () => {
   appStore.setFocus(props.appName);
-  console.log(props.appName);
+  // console.log(props.appName);
 };
 
 // 监测最小化

@@ -69,13 +69,16 @@ import { ref } from "vue";
 import type { LoginData } from "~/api/user/types.ts";
 // @ts-ignore
 import { loginForClient, findUserInfo } from "~/api/user/index.ts";
+import socket from "~/utils/socket";
 import { useUserStore } from "~/store/user";
 import { useChatListStore } from "~/store/chatList";
+import { useChatStore } from "~/store/chat";
 const userStore = useUserStore();
 const chatListStore = useChatListStore();
+const chatStore = useChatStore();
 
-let username = ref("");
-let password = ref("");
+let username = ref("yehan");
+let password = ref("123456");
 const check = ref(false);
 
 const backgroundImage = "url(img/ui/loginbg.png)";
@@ -102,12 +105,16 @@ const loginHandler = async () => {
 
   // if (userStore.login) {
   let userInfo = await findUserInfo(username.value);
-  console.log("我想获取到信息", userInfo);
+  // console.log("我想获取到信息", userInfo);
   if (userInfo) {
     userStore.saveUserInfo(userInfo);
   }
   // }
-  console.log("login的时候", userStore.friendGroups);
+  // 记得删掉
+  chatStore.connectHandler();
+  // socket.connect();
+
+  // console.log("login的时候", userStore.friendGroups);
   // 获取好友分组的信息
   chatListStore.getFGItem(userStore.friendGroups);
   // 放在最后等到信息获取到再跳转
@@ -134,6 +141,8 @@ const loginHandler = async () => {
   // console.log(username.value);
   // console.log("loginHandler", username.value, password.value);
 };
+onMounted(() => {
+});
 </script>
 
 <style scoped>

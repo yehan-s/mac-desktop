@@ -10,7 +10,7 @@ export function sendMessage(data: MessageTypes.SendMessageData) {
 
 export function findLastMessage(Room: string) {
   return useClientRequest<MessageTypes.GetLastMessagesResult>(
-    `/chat/findMessage/${Room}`,
+    `/chat/findLastMessage/${Room}`,
     {
       method: "GET",
     }

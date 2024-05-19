@@ -31,7 +31,7 @@ import { useAppStore } from "~/store/app";
 const appStore = useAppStore();
 
 function command(this: { label: string; icon: string; command: () => void }) {
-  console.log(this.label);
+  // console.log(this.label);
   if (appStore.minimizeApps.includes(this.label)) {
     appStore.removeMinimizeApps(this.label);
   }

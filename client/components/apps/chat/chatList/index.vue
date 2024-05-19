@@ -21,6 +21,7 @@
             :avatar="item.avatar"
             :lastMessage="item.lastMessage!"
             :date="item.date!"
+            @click="chatStore.setRoom(item.room as string)"
           />
         </template>
       </div>
@@ -70,10 +71,12 @@ import Search from "./search.vue";
 import { useThemeStore } from "@/store/theme";
 import { useUserStore } from "~/store/user";
 import { useChatListStore } from "@/store/chatList";
+import { useChatStore } from "@/store/chat";
 import type { MenuItem } from "primevue/menuitem";
 const themeStore = useThemeStore();
 const userStore = useUserStore();
 const chatListStore = useChatListStore();
+const chatStore = useChatStore();
 
 // 移入带有滚动条的元素中时，对滚动条进行样式调整
 // 已经隐藏滚动条
@@ -116,10 +119,6 @@ const expandedKeys = ref({
 //   },
 // ]);
 
-// const fgTemp
-
-// const friendItems = ref([]);
-
 const groupItems = ref([
   {
     label: "这是一个吃瓜群",
@@ -147,35 +146,41 @@ interface chatListItem {
   nickname: string;
   avatar: string;
   lastMessage?: string;
-  date?: Date;
+  // 这里我们将时间戳转换为日期格式时，需要使用string类型
+  date?: string;
   room?: string;
 }
-let chatListItem: chatListItem = {} as chatListItem;
+// 消息列表
 let chatList: chatListItem[] = [];
+// 好友列表
 let friendsList: any[] = [];
 // 获取一个好友列表
-console.log("看看fg", userStore.friendGroups);
+// console.log("看看fg", userStore.friendGroups);
 userStore.friendGroups.forEach((item: any) => {
-  console.log("我来看看好友", item);
+  // console.log("我来看看好友", item);
   item.friends.forEach((friend: any) => {
     friendsList.push(friend);
   });
 });
-console.log("friendsList", friendsList);
+// console.log("friendsList", friendsList);
 
+// 获取消息列表
 const getLMToChatList = async () => {
   for (let item of friendsList) {
-    chatListItem.nickname = item.user.nickname;
-    chatListItem.avatar = item.user.avatar;
+    // 在循环内部创建一个新的 chatListItem 对象
+    let chatListItem: chatListItem = {
+      nickname: item.user.nickname,
+      avatar: item.user.avatar,
+    };
     let MessageTemp = await findLastMessage(item.room);
-    // item.lastMessage = MessageTemp.content;
     chatListItem.lastMessage = MessageTemp.content;
     chatListItem.date = MessageTemp.created_at;
     chatListItem.room = MessageTemp.room;
-    console.log("在这呢看看", MessageTemp);
+    // console.log("在这呢看看", MessageTemp);
+    // console.log("这是我要提交前的chatListItem", chatListItem);
     chatList.push(chatListItem);
   }
-  console.log("chatList", chatList);
+  // console.log("chatList", chatList);
 };
 
 onMounted(() => {

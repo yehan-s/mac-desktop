@@ -56,13 +56,14 @@ const sendMessage = (e: KeyboardEvent) => {
   let data = target.value.replace(/\r?\n|\r/g, "");
   target.value = "";
 
+  socket.emit("demo", data);
   // 创建一个消息
-  let tempChat: Partial<Message> = {
-    userId: "3c33f19c-b5be-4fd4-b9e7-6b5882c4a078",
-    content: data,
-    roomId: "TurboRoom",
-  };
-  socket.emit("createMessage", tempChat);
+  // let tempChat: Partial<Message> = {
+  //   userId: "3c33f19c-b5be-4fd4-b9e7-6b5882c4a078",
+  //   content: data,
+  //   roomId: "TurboRoom",
+  // };
+  // socket.emit("createMessage", tempChat);
 };
 const changeMessage = (e: any) => {
   console.log("changeMessage " + e.currentTarget);
@@ -88,8 +89,6 @@ const onMouseLeave = (event: MouseEvent) => {
 // onMounted(() => {
 //   socket.connect();
 // }),
-
-
 </script>
 
 <style scoped></style>

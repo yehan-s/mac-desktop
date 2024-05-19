@@ -13,5 +13,5 @@ export interface GetLastMessagesResult {
   room: string;
   type: "private";
   media_type: "text";
-  created_at: Date; // 或者可以使用 Date 类型，如果你想要一个日期对象
+  created_at: string; // 格式化后的时间是string类型
 }

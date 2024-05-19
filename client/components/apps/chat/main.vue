@@ -21,25 +21,25 @@ const flag = true;
 const bg = themeStore.dark ? "bg-[#1a1a1a]" : "bg-[#f2f2f2]";
 const src = themeStore.dark ? "/qq/logo/qq_dark.svg" : "/qq/logo/qq_.svg";
 
-onMounted(() => {
-  socket.connect();
-  socket.on("connect", () => {
-    console.log("连接成功");
-  });
-  // socket.emit("creatMessage",'哈哈')
-  socket.on("getMessages", (data) => {
-    if (data) {
-      console.log(data);
-    }
-  });
-  socket.on("disconnect", (reason) => {
-    console.log("断开连接", reason);
-  });
-});
+// onMounted(() => {
+//   socket.connect();
+//   socket.on("connect", () => {
+//     console.log("连接成功");
+//   });
+//   // socket.emit("creatMessage",'哈哈')
+//   socket.on("getMessages", (data) => {
+//     if (data) {
+//       console.log(data);
+//     }
+//   });
+//   socket.on("disconnect", (reason) => {
+//     console.log("断开连接", reason);
+//   });
+// });
 
-onUnmounted(() => {
-  socket.disconnect();
-});
+// onUnmounted(() => {
+//   socket.disconnect();
+// });
 </script>
 
 <style>

@@ -36,7 +36,7 @@ let props = defineProps<{
   name: string;
   avatar: string;
   lastMessage: string;
-  date: Date;
+  date: string;
 }>();
 
 // onMounted(() => {

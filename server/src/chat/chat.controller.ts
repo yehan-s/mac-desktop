@@ -36,6 +36,12 @@ export class ChatController {
     return this.chatService.createMessage(dto);
   }
   // 查找消息 通过RoomId
+  @Get('/findLastMessage/:room')
+  findLastMessageByRoomId(@Param() params) {
+    const room = params.room;
+    return this.chatService.findLastMessageByRoom(room);
+  }
+
   @Get('/findMessage/:room')
   findMessageByRoomId(@Param() params) {
     const room = params.room;

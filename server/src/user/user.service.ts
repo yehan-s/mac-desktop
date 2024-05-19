@@ -77,6 +77,7 @@ export class UserService {
       .leftJoinAndSelect('friendGroups.friends', 'friends')
       .leftJoinAndSelect('friends.user', 'userInfo')
       .leftJoinAndSelect('user.sentMessages', 'sentMessages')
+      .leftJoinAndSelect('user.friends', 'friendShip')
       .getOne();
     return res;
   }

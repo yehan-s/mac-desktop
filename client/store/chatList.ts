@@ -7,6 +7,7 @@ interface ChatListState {
   getFGItem: (friendGroups: any[]) => void;
   getGroupItem: (groupChats: any[]) => void;
 }
+// 分组需要的格式
 interface GroupList {
   label: string;
   prop: string;

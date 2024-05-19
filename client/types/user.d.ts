@@ -18,4 +18,5 @@ export interface User {
   created_at: string; // 日期通常作为字符串处理，除非你使用Date对象
   friendGroups: FriendGroup[];
   joinedGroups: any[]; // 如果你不清楚joinedGroups的具体结构，可以使用any
+  friends: any[];
 }
