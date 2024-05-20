@@ -11,12 +11,12 @@ export interface FriendGroup {
 export interface User {
   id: number;
   username: string;
-  password: string;
+  password?: string;
   avatar: string;
   nickname: string;
   signature: string | null; // 使用字符串或null来允许signature为空
-  created_at: string; // 日期通常作为字符串处理，除非你使用Date对象
-  friendGroups: FriendGroup[];
-  joinedGroups: any[]; // 如果你不清楚joinedGroups的具体结构，可以使用any
-  friends: any[];
+  created_at?: string | Date; // 日期通常作为字符串处理，除非你使用Date对象
+  friendGroups?: FriendGroup[];
+  joinedGroups?: any[]; // 如果你不清楚joinedGroups的具体结构，可以使用any
+  friends?: any[];
 }

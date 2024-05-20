@@ -47,11 +47,12 @@ export class UserService {
     return res;
   }
 
-  findUserByUserId(id: number) {
-    return this.userRepository.findOne({
+  async findUserByUserId(id: number) {
+    const res = this.userRepository.findOne({
       where: { id },
       // relations: ['friendGroups', 'friends'],
     });
+    return res;
   }
   // 通过用户名和密码查找
   async findUser(username: string, password: string) {

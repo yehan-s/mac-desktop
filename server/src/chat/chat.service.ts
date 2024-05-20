@@ -178,7 +178,7 @@ export class ChatService {
     const res = await this.messageRepository
       .createQueryBuilder('message')
       .where('message.room = :room', { room })
-      .orderBy('message.created_at', 'DESC')
+      .orderBy('message.created_at', 'ASC')
       .getMany();
     if (!res) {
       return null;

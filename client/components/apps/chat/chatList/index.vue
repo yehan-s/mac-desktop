@@ -21,7 +21,7 @@
             :avatar="item.avatar"
             :lastMessage="item.lastMessage!"
             :date="item.date!"
-            @click="chatStore.setRoom(item.room as string)"
+            @click="chatMemberHandler(item)"
           />
         </template>
       </div>
@@ -64,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import { findLastMessage } from "~/api/message";
+import { findLastMessage, findMessage } from "~/api/message";
 import PanelMenu from "primevue/panelmenu";
 import ChatMember from "./chatMember.vue";
 import Search from "./search.vue";
@@ -73,6 +73,7 @@ import { useUserStore } from "~/store/user";
 import { useChatListStore } from "@/store/chatList";
 import { useChatStore } from "@/store/chat";
 import type { MenuItem } from "primevue/menuitem";
+import type { Message } from "~/types";
 const themeStore = useThemeStore();
 const userStore = useUserStore();
 const chatListStore = useChatListStore();
@@ -126,6 +127,7 @@ const groupItems = ref([
   },
 ]);
 
+// 好友和群聊切换
 const tabMenuItems = ref([
   {
     label: "好友",
@@ -149,8 +151,10 @@ interface chatListItem {
   // 这里我们将时间戳转换为日期格式时，需要使用string类型
   date?: string;
   room?: string;
+  receiver_id?: number;
 }
 // 消息列表
+// let chatList: chatListItem[] = [];
 let chatList: chatListItem[] = [];
 // 好友列表
 let friendsList: any[] = [];
@@ -168,19 +172,39 @@ userStore.friendGroups.forEach((item: any) => {
 const getLMToChatList = async () => {
   for (let item of friendsList) {
     // 在循环内部创建一个新的 chatListItem 对象
+    // 修改
     let chatListItem: chatListItem = {
       nickname: item.user.nickname,
       avatar: item.user.avatar,
     };
     let MessageTemp = await findLastMessage(item.room);
     chatListItem.lastMessage = MessageTemp.content;
-    chatListItem.date = MessageTemp.created_at;
+    chatListItem.date = MessageTemp.created_at as string;
     chatListItem.room = MessageTemp.room;
-    // console.log("在这呢看看", MessageTemp);
+    // 因为最后一条消息可能是对方发的，也可能是我方发的
+    // 而这里必须拿到对方ID，方便后续操作
+    if (MessageTemp.sender_id === userStore.id) {
+      chatListItem.receiver_id = MessageTemp.receiver_id;
+    } else {
+      chatListItem.receiver_id = MessageTemp.sender_id;
+    }
+
+    console.log("在这呢看看", MessageTemp);
     // console.log("这是我要提交前的chatListItem", chatListItem);
     chatList.push(chatListItem);
+    // chatList.push(MessageTemp);
   }
-  // console.log("chatList", chatList);
+  console.log("chatList", chatList);
+};
+
+// 点击消息列表item
+const chatMemberHandler = async (item: chatListItem) => {
+  console.log(item);
+  chatStore.setReceiver(item.receiver_id as number);
+  chatStore.setRoom(item.room as string);
+  // 获取所有信息
+  // let allMessage = await findMessage(item.room);
+  chatStore.getAllMessage(item.room as string);
 };
 
 onMounted(() => {

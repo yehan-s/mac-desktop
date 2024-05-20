@@ -48,42 +48,45 @@
         </transition-group>
       </ul> -->
       <!-- 消息冒泡 -->
-      <div class="chat chat-start" v-for="item in 10">
-        <!-- 头像 -->
-        <div class="chat-image avatar">
-          <div class="w-10 rounded-full">
-            <img
-              alt="Tailwind CSS chat bubble component"
-              :src="message2[0].avatar"
-            />
+      <template v-for="item in chatStore.allMessage">
+        <!-- 根据消息的发送者是不是对方，从而决定冒泡在屏幕左右 -->
+        <div
+          class="chat"
+          :class="{
+            'chat-start':
+              item.sender_id === chatStore.currentChat.privateObject.id,
+            'chat-end':
+              item.sender_id !== chatStore.currentChat.privateObject.id,
+          }"
+        >
+          <!-- 头像 -->
+          <div class="chat-image avatar">
+            <div class="w-10 rounded-full">
+              <img
+                alt="Tailwind CSS chat bubble component"
+                :src="
+                  item.sender_id === chatStore.currentChat.privateObject.id
+                    ? chatStore.currentChat.privateObject.avatar
+                    : userStore.avatar
+                "
+              />
+            </div>
+          </div>
+          <!-- 头部 名字和时间  -->
+          <div class="chat-header">
+            {{
+              item.sender_id === chatStore.currentChat.privateObject.id
+                ? chatStore.currentChat.privateObject.nickname
+                : userStore.nickname
+            }}
+            <time class="text-xs opacity-50">{{ item.created_at }}</time>
+          </div>
+          <!-- 内容 -->
+          <div class="chat-bubble chat-bubble-primary">
+            {{ item.content }}
           </div>
         </div>
-        <!-- 头部 名字和时间  -->
-        <div class="chat-header">
-          {{ message2[0].username }}
-          <time class="text-xs opacity-50">{{ message2[0].createAt }}</time>
-        </div>
-        <!-- 内容 -->
-        <div class="chat-bubble chat-bubble-primary">
-          {{ message2[0].content }}
-        </div>
-      </div>
-      <!-- 我们接收的消息 -->
-      <div class="chat chat-end">
-        <div class="chat-image avatar">
-          <div class="w-10 rounded-full">
-            <img
-              alt="Tailwind CSS chat bubble component"
-              src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-            />
-          </div>
-        </div>
-        <div class="chat-header">
-          Anakin
-          <time class="text-xs opacity-50">{{ message2[0].createAt }}</time>
-        </div>
-        <div class="chat-bubble chat-bubble-primary">I hate you!</div>
-      </div>
+      </template>
     </div>
   </div>
 </template>
@@ -95,20 +98,11 @@
 import type { Message } from "~/tpyes/index.ts";
 import { useThemeStore } from "~/store/theme";
 import { ref, reactive } from "vue";
-// import type { Message } from './message';
-// import type {haha} from './types'
+import { useChatStore } from "~/store/chat";
+import { useUserStore } from "~/store/user";
 const themeStore = useThemeStore();
-// let yhh:haha={
-//   name:'yehan'
-// }
-// interface Message{
-//   id:number
-//   userId:string
-//   roomId:string
-//   content:string
-//   type:string
-//   createAt :Date
-// }
+const chatStore = useChatStore();
+const userStore = useUserStore();
 
 const props = defineProps({
   messages: {
@@ -132,40 +126,9 @@ const props = defineProps({
   },
 });
 
-// let mes =  ref([
-//   {
-//     id: 2,
-//     userId: "jinshu",
-//     roomId: "turboroom",
-//     content: "Your mom said it's time to come home",
-//     type: "text",
-//     createAt: new Date(),
-//   },
-// ]),
-let message2 = ref<Message[]>([
-  {
-    id: 2,
-    username: "jinshu",
-    roomId: "turboroom",
-    content: "Your mom said it's time to come home",
-    avatar:
-      "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg",
-    type: "text",
-    createAt: new Date(),
-    sender_id: 1,
-    recivied_id: 4,
-  },
-  {
-    id: 3,
-    username: "yh",
-    roomId: "turboroom",
-    content: "i kown",
-    avatar:
-      "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg",
-    type: "text",
-    createAt: new Date(),
-  },
-]);
+// let isPrivateObject = computed(()=>{
+//   return
+// })
 
 const border = computed(() =>
   themeStore.dark ? "border-[#232323]" : "border-[#e9e9e9]"
@@ -231,4 +194,4 @@ const onMouseLeave = (event: MouseEvent) => {
   opacity: 0;
 }
 </style>
-./types
+

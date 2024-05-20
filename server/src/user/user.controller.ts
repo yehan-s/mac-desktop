@@ -22,10 +22,16 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Get('/:username')
+  @Get('/username/:username')
   getUserByName(@Param() params): Promise<User> {
     const username = params.username;
     return this.userService.findUserByUsername(username);
+  }
+
+  @Get('/userId/:userId')
+  getUserById(@Param() params): Promise<User> {
+    const userId = params.userId;
+    return this.userService.findUserByUserId(userId);
   }
 
   @Post()

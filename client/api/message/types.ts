@@ -5,13 +5,13 @@ export interface SendMessageData {
   room: string;
 }
 
-export interface GetLastMessagesResult {
+export interface GetMessagesResult {
   id: number;
   sender_id: number;
   receiver_id: number;
   content: string;
   room: string;
-  type: "private";
-  media_type: "text";
-  created_at: string; // 格式化后的时间是string类型
+  type: "private" | "group";
+  media_type: "text" | "image" | "video" | "audio" | "file";
+  created_at: string | Date; // 格式化后的时间是string类型
 }

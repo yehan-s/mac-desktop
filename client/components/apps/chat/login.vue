@@ -68,7 +68,7 @@
 import { ref } from "vue";
 import type { LoginData } from "~/api/user/types.ts";
 // @ts-ignore
-import { loginForClient, findUserInfo } from "~/api/user/index.ts";
+import { loginForClient, findUserInfoByUsername } from "~/api/user/index.ts";
 import socket from "~/utils/socket";
 import { useUserStore } from "~/store/user";
 import { useChatListStore } from "~/store/chatList";
@@ -104,7 +104,7 @@ const loginHandler = async () => {
   }
 
   // if (userStore.login) {
-  let userInfo = await findUserInfo(username.value);
+  let userInfo = await findUserInfoByUsername(username.value);
   // console.log("我想获取到信息", userInfo);
   if (userInfo) {
     userStore.saveUserInfo(userInfo);

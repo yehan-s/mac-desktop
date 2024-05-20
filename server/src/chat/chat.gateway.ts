@@ -28,7 +28,6 @@ export class ChatGateway implements OnGatewayConnection {
   handleConnection(client: any) {
     // client.join(this.defaultGroup);
     console.log('有链接进入', client.id);
-
     return '连接成功';
   }
 

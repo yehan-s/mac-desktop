@@ -91,7 +91,7 @@ import { useThemeStore } from "@/store/theme";
 import { useUserStore } from "@/store/user";
 import { useChatListStore } from "~/store/chatList";
 import type { AddFriendData } from "~/api/add/types";
-import { findUserInfo } from "~/api/user";
+import { findUserInfoByUsername } from "~/api/user";
 const themeStore = useThemeStore();
 const userStore = useUserStore();
 const chatListStore = useChatListStore();
@@ -134,7 +134,7 @@ const addHandler = async () => {
   // 更新好友列表
   await addFriend(friend);
   if (userStore.login) {
-    let userInfo = await findUserInfo(userStore.username);
+    let userInfo = await findUserInfoByUsername(userStore.username);
     console.log("更新信息", userInfo);
     if (userInfo) {
       userStore.saveUserInfo(userInfo);

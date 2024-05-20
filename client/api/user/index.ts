@@ -19,9 +19,17 @@ export function loginForClient(data: UserTypes.LoginData) {
   });
 }
 
-// 登陆后查询用户详细信息
-export function findUserInfo(username: string): Promise<User> {
-  return useClientRequest<User>(`/user/${username}`, {
+// 登陆后查询用户详细信息 通过username
+export function findUserInfoByUsername(username: string): Promise<User> {
+  return useClientRequest<User>(`/user/username/${username}`, {
+    method: "GET",
+    // params: data,
+  });
+}
+
+// 登陆后查询用户详细信息 通过userId
+export function findUserInfoByUserId(userId: number): Promise<User> {
+  return useClientRequest<User>(`/user/userId/${userId}`, {
     method: "GET",
     // params: data,
   });
