@@ -32,7 +32,9 @@ import type { Message } from "~/types/message.d.ts";
 import Icon from "./icon.vue";
 import socket from "~/utils/socket";
 import { useThemeStore } from "~/store/theme";
+import { useChatStore } from "~/store/chat";
 const themeStore = useThemeStore();
+const chatStore = useChatStore();
 
 interface Message1 {
   id: number;
@@ -54,9 +56,13 @@ const sendMessage = (e: KeyboardEvent) => {
   const target = e.target as HTMLTextAreaElement;
   console.log("sendMessage " + target.value);
   let data = target.value.replace(/\r?\n|\r/g, "");
+
+  chatStore.sendPrivateMessage(data);
+
   target.value = "";
 
-  socket.emit("demo", data);
+  // socket.emit("demo", data);
+
   // 创建一个消息
   // let tempChat: Partial<Message> = {
   //   userId: "3c33f19c-b5be-4fd4-b9e7-6b5882c4a078",

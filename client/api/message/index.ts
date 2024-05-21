@@ -2,7 +2,7 @@ import { useClientRequest, useRequest } from "~/composables/useRequest";
 import type * as MessageTypes from "./types";
 
 export function sendMessage(data: MessageTypes.SendMessageData) {
-  return useClientRequest<MessageTypes.SendMessageData>("/chat/sendMessage", {
+  return useClientRequest<MessageTypes.SendMessageData>("/chat/createMessage", {
     method: "POST",
     body: data,
   });
@@ -27,3 +27,5 @@ export function findMessage(Room: string) {
     }
   );
 }
+
+

@@ -1,5 +1,5 @@
 import socket from "@/utils/socket";
-import { findMessage } from "~/api/message";
+import { findMessage, sendMessage } from "~/api/message";
 import { findUserInfoByUserId, findUserInfoByUsername } from "~/api/user";
 import type { Message } from "~/types";
 
@@ -10,6 +10,7 @@ export const useChatStore = defineStore("chat", () => {
   // "room": "de97ea22-7488-45eb-8bc7-f2854ada7fb2",
   // "type": "private",
   // "media_type": "text"
+
   const currentChat = reactive({
     privateObject: {
       id: 0,
@@ -17,12 +18,12 @@ export const useChatStore = defineStore("chat", () => {
       nickname: "",
     },
     sendMessage: {
-      sender_id: 4, //自己的id
+      sender_id: 0, //自己的id
       receiver_id: 0, //对方的id
       content: "", //消息内容
       room: "", //房间号
-      type: "private", //消息类型
-      media_type: "text", //媒体类型
+      type: "", //消息类型
+      media_type: "", //媒体类型
     },
   });
 
@@ -30,6 +31,9 @@ export const useChatStore = defineStore("chat", () => {
   const allMessage = ref([] as Message[]);
 
   // const chatSocket = reactive({});
+  const setSenderId = (id: number) => {
+    currentChat.sendMessage.sender_id = id;
+  };
 
   const setReceiver = async (receiver_id: number) => {
     currentChat.sendMessage.receiver_id = receiver_id;
@@ -40,6 +44,8 @@ export const useChatStore = defineStore("chat", () => {
     currentChat.sendMessage.room = room;
     console.log(room);
   };
+
+  const chatMessageRef = ref();
 
   // 将所有好友的连接都连上
   const connectHandler = async () => {
@@ -54,11 +60,19 @@ export const useChatStore = defineStore("chat", () => {
   };
 
   // 发送消息
-  const sendMessage = async () => {
+  const sendPrivateMessage = async (content: string) => {
     console.log("发送消息", currentChat);
-    socket.emit("createMessage", currentChat);
+    currentChat.sendMessage.content = content;
+    currentChat.sendMessage.type = "private";
+    currentChat.sendMessage.media_type = "text";
+    socket.emit("demo", currentChat.sendMessage);
+    // socket.emit("demo", '123123');
+    await sendMessage(currentChat.sendMessage);
+    await getAllMessage(currentChat.sendMessage.room);
+    chatMessageRef.value.scrollTop = chatMessageRef.value.scrollHeight;
   };
 
+  // 获取该房间下的所有消息
   const getAllMessage = async (room: string) => {
     allMessage.value = await findMessage(room);
   };
@@ -66,9 +80,11 @@ export const useChatStore = defineStore("chat", () => {
   return {
     currentChat,
     allMessage,
+    chatMessageRef,
     setReceiver,
     setRoom,
-    sendMessage,
+    sendPrivateMessage,
+    setSenderId,
     connectHandler,
     getAllMessage,
   };

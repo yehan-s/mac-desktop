@@ -4,6 +4,7 @@
     :class="[border]"
     @mouseenter="onMouseEnter"
     @mouseleave="onMouseLeave"
+    ref="chatMessageRef"
   >
     <div class="flex flex-col w-full">
       <div class="text-right">
@@ -130,6 +131,15 @@ const props = defineProps({
 //   return
 // })
 
+const chatMessageRef = ref(null);
+
+// provide('chatMessageRef', chatMessageRef);
+
+onMounted(() => {
+  // 把控制滚动条的ref传递给chatStore
+  chatStore.chatMessageRef = chatMessageRef.value;
+});
+
 const border = computed(() =>
   themeStore.dark ? "border-[#232323]" : "border-[#e9e9e9]"
 );
@@ -194,4 +204,3 @@ const onMouseLeave = (event: MouseEvent) => {
   opacity: 0;
 }
 </style>
-

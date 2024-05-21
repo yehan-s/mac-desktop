@@ -28,6 +28,7 @@ export const useUserStore = defineStore("user", (): userState => {
   let signature = ref("随性的，我们唱起歌随性的，我们唱起歌随性的");
   let role = ref("user");
   let createdAt = ref("2024-04-24T16:32:46.898Z");
+  
   let friendGroups = ref([]);
   let groupChats = ref([]);
   let joinedGroups = ref([]);

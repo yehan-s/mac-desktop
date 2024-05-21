@@ -108,6 +108,7 @@ const loginHandler = async () => {
   // console.log("我想获取到信息", userInfo);
   if (userInfo) {
     userStore.saveUserInfo(userInfo);
+    chatStore.setSenderId(userInfo.id);
   }
   // }
   // 记得删掉
@@ -141,8 +142,7 @@ const loginHandler = async () => {
   // console.log(username.value);
   // console.log("loginHandler", username.value, password.value);
 };
-onMounted(() => {
-});
+onMounted(() => {});
 </script>
 
 <style scoped>

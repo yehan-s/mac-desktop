@@ -159,9 +159,9 @@ let chatList: chatListItem[] = [];
 // 好友列表
 let friendsList: any[] = [];
 // 获取一个好友列表
-// console.log("看看fg", userStore.friendGroups);
+
+// userStore.friendGroups 的信息是用来遍历好友的,数据就是数据库返回的
 userStore.friendGroups.forEach((item: any) => {
-  // console.log("我来看看好友", item);
   item.friends.forEach((friend: any) => {
     friendsList.push(friend);
   });
@@ -192,9 +192,8 @@ const getLMToChatList = async () => {
     console.log("在这呢看看", MessageTemp);
     // console.log("这是我要提交前的chatListItem", chatListItem);
     chatList.push(chatListItem);
-    // chatList.push(MessageTemp);
   }
-  console.log("chatList", chatList);
+  // console.log("chatList", chatList);
 };
 
 // 点击消息列表item
