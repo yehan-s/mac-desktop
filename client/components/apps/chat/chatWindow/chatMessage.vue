@@ -97,6 +97,7 @@
 // import type  Message  from '~/types/message.d.ts';
 // @ts-ignore
 import type { Message } from "~/tpyes/index.ts";
+import socket from "~/utils/socket";
 import { useThemeStore } from "~/store/theme";
 import { ref, reactive } from "vue";
 import { useChatStore } from "~/store/chat";
@@ -133,11 +134,20 @@ const props = defineProps({
 
 const chatMessageRef = ref(null);
 
-// provide('chatMessageRef', chatMessageRef);
-
 onMounted(() => {
   // 把控制滚动条的ref传递给chatStore
   chatStore.chatMessageRef = chatMessageRef.value;
+
+  // socket.on("demo", (data) => {
+  //   console.log("超高校级的收到消息", data);
+  //   // addMessage(data);
+  //   alert("出现！！！！！");
+  // });
+
+  // socket.on("socketTest2", (data) => {
+  //   console.log("socketTest2");
+  //   alert("socketTest2");
+  // });
 });
 
 const border = computed(() =>

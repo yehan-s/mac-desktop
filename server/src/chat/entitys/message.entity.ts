@@ -38,6 +38,8 @@ export class Message {
 
   // @Column({ nullable: true })
   // file_size: number;
+  @Column({ default: 0 })
+  status: number;
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;

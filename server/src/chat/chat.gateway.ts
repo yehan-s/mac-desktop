@@ -37,7 +37,7 @@ export class ChatGateway implements OnGatewayConnection {
     @ConnectedSocket() client: Socket,
   ): string {
     console.log('接收到了消息', data);
-    this.server.to(this.defaultGroup).emit('demo', data);
+    client.broadcast.emit('demo', data);
     return 'Hello world!';
   }
 

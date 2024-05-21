@@ -62,19 +62,35 @@ export const useChatStore = defineStore("chat", () => {
   // 发送消息
   const sendPrivateMessage = async (content: string) => {
     console.log("发送消息", currentChat);
+
     currentChat.sendMessage.content = content;
     currentChat.sendMessage.type = "private";
     currentChat.sendMessage.media_type = "text";
+
     socket.emit("demo", currentChat.sendMessage);
-    // socket.emit("demo", '123123');
     await sendMessage(currentChat.sendMessage);
-    await getAllMessage(currentChat.sendMessage.room);
-    chatMessageRef.value.scrollTop = chatMessageRef.value.scrollHeight;
+    // await getAllMessage(currentChat.sendMessage.room);
+    // 直接添加到chatList就不需要请求数据库
+    addMessage(JSON.parse(JSON.stringify(currentChat.sendMessage)));
+
+    setTimeout(() => {
+      chatMessageRef.value.scrollTop = chatMessageRef.value.scrollHeight;
+    }, 0);
   };
+
+  socket.on("demo", (data) => {
+    addMessage(data);
+    chatMessageRef.value.scrollTop = chatMessageRef.value.scrollHeight;
+  });
 
   // 获取该房间下的所有消息
   const getAllMessage = async (room: string) => {
     allMessage.value = await findMessage(room);
+  };
+
+  // 添加消息
+  const addMessage = (message: Message) => {
+    allMessage.value.push(message);
   };
 
   return {

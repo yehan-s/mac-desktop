@@ -15,7 +15,7 @@
     >
       <!-- 聊天消息列表 -->
       <div v-if="chatListStore.listType === 'message'">
-        <template v-for="item in chatList" :key="item.index">
+        <template v-for="item in chatListStore.chatList" :key="item.index">
           <ChatMember
             :name="item.nickname"
             :avatar="item.avatar"
@@ -107,18 +107,6 @@ const expandedKeys = ref({
   // "2_1": true,
   // "2_2": true,
 });
-// const friendItems = ref([
-//   {
-//     label: "我的好友",
-//     prop: "title",
-//     items: [
-//       {
-//         label: "yehan",
-//         avatar: "https://avatars.githubusercontent.com/u/44036559?v=4",
-//       },
-//     ],
-//   },
-// ]);
 
 const groupItems = ref([
   {
@@ -153,48 +141,6 @@ interface chatListItem {
   room?: string;
   receiver_id?: number;
 }
-// 消息列表
-// let chatList: chatListItem[] = [];
-let chatList: chatListItem[] = [];
-// 好友列表
-let friendsList: any[] = [];
-// 获取一个好友列表
-
-// userStore.friendGroups 的信息是用来遍历好友的,数据就是数据库返回的
-userStore.friendGroups.forEach((item: any) => {
-  item.friends.forEach((friend: any) => {
-    friendsList.push(friend);
-  });
-});
-// console.log("friendsList", friendsList);
-
-// 获取消息列表
-const getLMToChatList = async () => {
-  for (let item of friendsList) {
-    // 在循环内部创建一个新的 chatListItem 对象
-    // 修改
-    let chatListItem: chatListItem = {
-      nickname: item.user.nickname,
-      avatar: item.user.avatar,
-    };
-    let MessageTemp = await findLastMessage(item.room);
-    chatListItem.lastMessage = MessageTemp.content;
-    chatListItem.date = MessageTemp.created_at as string;
-    chatListItem.room = MessageTemp.room;
-    // 因为最后一条消息可能是对方发的，也可能是我方发的
-    // 而这里必须拿到对方ID，方便后续操作
-    if (MessageTemp.sender_id === userStore.id) {
-      chatListItem.receiver_id = MessageTemp.receiver_id;
-    } else {
-      chatListItem.receiver_id = MessageTemp.sender_id;
-    }
-
-    console.log("在这呢看看", MessageTemp);
-    // console.log("这是我要提交前的chatListItem", chatListItem);
-    chatList.push(chatListItem);
-  }
-  // console.log("chatList", chatList);
-};
 
 // 点击消息列表item
 const chatMemberHandler = async (item: chatListItem) => {
@@ -207,7 +153,8 @@ const chatMemberHandler = async (item: chatListItem) => {
 };
 
 onMounted(() => {
-  getLMToChatList();
+  chatListStore.setFriendsList(userStore.friendGroups);
+  chatListStore.getLMToChatList(userStore.id);
 });
 
 interface PanelMenuContext {
