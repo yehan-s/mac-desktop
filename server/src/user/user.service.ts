@@ -48,10 +48,11 @@ export class UserService {
   }
 
   async findUserByUserId(id: number) {
-    const res = this.userRepository.findOne({
-      where: { id },
-      // relations: ['friendGroups', 'friends'],
-    });
+    const res = this.userRepository
+      .createQueryBuilder('user')
+      .where('user.id = :id', { id })
+      .leftJoinAndSelect('user.friends', 'friendShip')
+      .getOne();
     return res;
   }
   // 通过用户名和密码查找

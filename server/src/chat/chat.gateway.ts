@@ -31,13 +31,17 @@ export class ChatGateway implements OnGatewayConnection {
     return '连接成功';
   }
 
-  @SubscribeMessage('demo')
+  @SubscribeMessage('sendPrivate')
   handleMessage(
-    @MessageBody() data: string,
+    @MessageBody() data: { room: string; content: string },
     @ConnectedSocket() client: Socket,
   ): string {
     console.log('接收到了消息', data);
-    client.broadcast.emit('demo', data);
+    // 发送消息
+    client.to(data.room).emit('sendPrivate', data); // 将消息仅广播给 'roomName' 房间内的所有客户端
+    // 去更新左侧最后一条消息
+    client.to(data.room).emit('updateLastMessage', data); // 发送给房间内其他客户端
+    client.emit('updateLastMessage', data); // 也发送给自己
     return 'Hello world!';
   }
 

@@ -30,7 +30,7 @@ export const useChatStore = defineStore("chat", () => {
   // 储存聊天框所有信息，当左侧消息列表点击时，将对应的room传入，然后获取对应的聊天记录
   const allMessage = ref([] as Message[]);
 
-  // const chatSocket = reactive({});
+  // 登录的时候会被调用
   const setSenderId = (id: number) => {
     currentChat.sendMessage.sender_id = id;
   };
@@ -47,11 +47,11 @@ export const useChatStore = defineStore("chat", () => {
 
   const chatMessageRef = ref();
 
-  // 将所有好友的连接都连上
+  // 将所有好友的连接都连上 登录的时候会被调用
   const connectHandler = async () => {
     // 先查找所有好友关系，从而获取到好友的room
     // 然后将所有好友的room都加入
-    let res = await findUserInfoByUsername("yehan");
+    let res = await findUserInfoByUserId(currentChat.sendMessage.sender_id);
     // console.log("connectHandler", res);
     let friends = res.friends;
     console.log("friends", friends);
@@ -67,25 +67,32 @@ export const useChatStore = defineStore("chat", () => {
     currentChat.sendMessage.type = "private";
     currentChat.sendMessage.media_type = "text";
 
-    socket.emit("demo", currentChat.sendMessage);
     await sendMessage(currentChat.sendMessage);
-    // await getAllMessage(currentChat.sendMessage.room);
+    await getAllMessage(currentChat.sendMessage.room);
+    socket.emit("sendPrivate", currentChat.sendMessage);
     // 直接添加到chatList就不需要请求数据库
-    addMessage(JSON.parse(JSON.stringify(currentChat.sendMessage)));
+    // addMessage(JSON.parse(JSON.stringify(currentChat.sendMessage)));
 
-    setTimeout(() => {
-      chatMessageRef.value.scrollTop = chatMessageRef.value.scrollHeight;
-    }, 0);
+    scrollToBottom();
   };
 
-  socket.on("demo", (data) => {
-    addMessage(data);
-    chatMessageRef.value.scrollTop = chatMessageRef.value.scrollHeight;
+  socket.on("sendPrivate", async (data) => {
+    // addMessage(data);
+    // 发送消息，最后一条消息接收不到，肯能数据库还没刷出来把
+    await getAllMessage(currentChat.sendMessage.room);
+    scrollToBottom();
   });
 
   // 获取该房间下的所有消息
   const getAllMessage = async (room: string) => {
-    allMessage.value = await findMessage(room);
+    // room为空的话，说明是刚进入没页面，还没有选择聊天对象
+    if (room) {
+      allMessage.value = await findMessage(room);
+    }
+  };
+
+  const scrollToBottom = () => {
+    chatMessageRef.value.scrollTop = chatMessageRef.value.scrollHeight;
   };
 
   // 添加消息
@@ -103,5 +110,6 @@ export const useChatStore = defineStore("chat", () => {
     setSenderId,
     connectHandler,
     getAllMessage,
+    scrollToBottom,
   };
 });

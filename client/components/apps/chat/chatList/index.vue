@@ -15,7 +15,7 @@
     >
       <!-- 聊天消息列表 -->
       <div v-if="chatListStore.listType === 'message'">
-        <template v-for="item in chatListStore.chatList" :key="item.index">
+        <template v-for="item in chatListStore.chatList" :key="item.room">
           <ChatMember
             :name="item.nickname"
             :avatar="item.avatar"
@@ -65,6 +65,7 @@
 
 <script setup lang="ts">
 import { findLastMessage, findMessage } from "~/api/message";
+import socket from "~/utils/socket";
 import PanelMenu from "primevue/panelmenu";
 import ChatMember from "./chatMember.vue";
 import Search from "./search.vue";
@@ -144,17 +145,24 @@ interface chatListItem {
 
 // 点击消息列表item
 const chatMemberHandler = async (item: chatListItem) => {
-  console.log(item);
+  // console.log(item);
   chatStore.setReceiver(item.receiver_id as number);
   chatStore.setRoom(item.room as string);
   // 获取所有信息
-  // let allMessage = await findMessage(item.room);
   chatStore.getAllMessage(item.room as string);
+  setTimeout(() => {
+    chatStore.scrollToBottom();
+  }, 0);
 };
 
 onMounted(() => {
   chatListStore.setFriendsList(userStore.friendGroups);
   chatListStore.getLMToChatList(userStore.id);
+  // chatStore.scrollToBottom();
+
+  socket.on("updateLastMessage", () => {
+    chatListStore.getLMToChatList(userStore.id);
+  });
 });
 
 interface PanelMenuContext {

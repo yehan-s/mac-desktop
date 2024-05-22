@@ -36,6 +36,8 @@ interface chatListItem {
 import { findLastMessage } from "~/api/message";
 import { searchGroupFriend } from "~/api/search";
 import type { Friend } from "~/types";
+import socket from "~/utils/socket";
+
 export const useChatListStore = defineStore("chatList", (): ChatListState => {
   // 分组类型
   let listType = ref<"message" | "friend" | "group">("friend");
@@ -107,7 +109,11 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
   };
 
   // 获取消息列表
+  // 显示最后一条消息
   const getLMToChatList = async (userId: number) => {
+    // 把数组赋空
+    // chatList.value = [];
+    let chatListTemp: chatListItem[] = [];
     for (let item of friendsList) {
       // 在循环内部创建一个新的 chatListItem 对象
       // 修改
@@ -129,8 +135,10 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
 
       console.log("在这呢看看", MessageTemp);
       // console.log("这是我要提交前的chatListItem", chatListItem);
-      chatList.value.push(chatListItem);
+      chatListTemp.push(chatListItem);
     }
+    chatList.value = chatListTemp;
+    console.log("这是我要提交的chatList", chatList.value);
   };
 
   return {
