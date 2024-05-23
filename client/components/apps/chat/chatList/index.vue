@@ -1,5 +1,6 @@
 <!-- 消息列表-->
 <template>
+  <!-- 宽度250px -->
   <div
     class="w-[250px] h-full flex flex-col select-none"
     :class="[themeStore.dark ? 'bg-[#262626] ' : 'bg-red-200']"

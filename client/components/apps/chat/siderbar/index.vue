@@ -1,4 +1,5 @@
 <template>
+  <!-- 宽度66px -->
   <div class="w-[66px] h-full flex flex-col select-none">
     <!-- 顶部空余 h-7 -->
     <div class="w-full h-7"></div>
