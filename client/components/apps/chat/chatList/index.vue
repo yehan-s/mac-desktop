@@ -135,6 +135,7 @@ const tabMenuItems = ref([
 
 // 需要 username, avatar, lastMessage, date, room
 interface chatListItem {
+  type: string;
   nickname: string;
   avatar: string;
   lastMessage?: string;
@@ -146,9 +147,10 @@ interface chatListItem {
 
 // 点击消息列表item
 const chatMemberHandler = async (item: chatListItem) => {
-  // console.log(item);
+  console.log(item);
   chatStore.setReceiver(item.receiver_id as number);
   chatStore.setRoom(item.room as string);
+  chatStore.setType(item.type as string);
   // 获取所有信息
   chatStore.getAllMessage(item.room as string);
   setTimeout(() => {

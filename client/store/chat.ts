@@ -45,6 +45,10 @@ export const useChatStore = defineStore("chat", () => {
     console.log(room);
   };
 
+  const setType = (type: string) => {
+    currentChat.sendMessage.type = type;
+  };
+
   const chatMessageRef = ref();
 
   // 将所有好友的连接都连上 登录的时候会被调用
@@ -108,6 +112,7 @@ export const useChatStore = defineStore("chat", () => {
     setRoom,
     sendPrivateMessage,
     setSenderId,
+    setType,
     connectHandler,
     getAllMessage,
     scrollToBottom,

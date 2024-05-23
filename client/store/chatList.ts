@@ -31,6 +31,7 @@ interface chatListItem {
   date?: string;
   room?: string;
   receiver_id?: number;
+  type?: string;
 }
 
 import { findLastMessage } from "~/api/message";
@@ -125,6 +126,7 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
       chatListItem.lastMessage = MessageTemp.content;
       chatListItem.date = MessageTemp.created_at as string;
       chatListItem.room = MessageTemp.room;
+      chatListItem.type = MessageTemp.type;
       // 因为最后一条消息可能是对方发的，也可能是我方发的
       // 而这里必须拿到对方ID，方便后续操作
       if (MessageTemp.sender_id === userId) {
