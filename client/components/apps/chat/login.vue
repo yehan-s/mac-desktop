@@ -78,7 +78,7 @@ const chatListStore = useChatListStore();
 const chatStore = useChatStore();
 
 let username = ref("yehan");
-let password = ref("123456");
+let password = ref("123");
 const check = ref(false);
 
 const backgroundImage = "url(img/ui/loginbg.png)";

@@ -62,13 +62,16 @@
         />
         <button class="btn" @click="searchHandler">查找</button>
       </div>
+
       <!-- 查找的好友的卡片 -->
       <div class="card card-side bg-base-100 shadow-xl" v-show="searchResult">
         <figure class="w-2/5">
           <img :src="searchResult?.avatar" alt="avatar" />
         </figure>
         <div class="card-body">
-          <h2 class="card-title">{{ searchResult?.nickname }}</h2>
+          <h2 class="card-title">
+            {{ searchResult?.nickname || searchResult?.name }}
+          </h2>
           <p>{{ searchResult?.username }}</p>
           <div class="card-actions justify-end">
             <button class="btn btn-primary" @click="addHandler">添加</button>
@@ -92,6 +95,7 @@ import { useUserStore } from "@/store/user";
 import { useChatListStore } from "~/store/chatList";
 import type { AddFriendData } from "~/api/add/types";
 import { findUserInfoByUsername } from "~/api/user";
+import { addGroupMember, findGroupchat } from "~/api/message";
 const themeStore = useThemeStore();
 const userStore = useUserStore();
 const chatListStore = useChatListStore();
@@ -113,10 +117,17 @@ const changeSelect = (e: MouseEvent) => {
 };
 
 let search = ref("");
-let searchResult = ref<User>();
+// let searchResult = ref<User>();
+let searchResult = ref();
 
 const searchHandler = async () => {
-  searchResult.value = await searchUser(search.value);
+  // 为true则查找好友，为false则查找群
+  if (selectText.value) {
+    console.log("selectText", selectText);
+    searchResult.value = await searchUser(search.value);
+  } else {
+    searchResult.value = await findGroupchat(search.value);
+  }
   console.log("result", searchResult.value);
   console.log("result111", typeof searchResult.value);
   if (searchResult.value) {
@@ -127,20 +138,29 @@ const searchHandler = async () => {
 };
 
 const addHandler = async () => {
-  const friend: AddFriendData = {
-    user_id: userStore.id,
-    friend_id: searchResult.value?.id!,
-  };
   // 更新好友列表
-  await addFriend(friend);
-  if (userStore.login) {
-    let userInfo = await findUserInfoByUsername(userStore.username);
-    console.log("更新信息", userInfo);
-    if (userInfo) {
-      userStore.saveUserInfo(userInfo);
+  if (selectText.value) {
+    const friend: AddFriendData = {
+      user_id: userStore.id,
+      friend_id: searchResult.value?.id!,
+    };
+    await addFriend(friend);
+    if (userStore.login) {
+      let userInfo = await findUserInfoByUsername(userStore.username);
+      console.log("更新信息", userInfo);
+      if (userInfo) {
+        userStore.saveUserInfo(userInfo);
+      }
     }
+    chatListStore.getFGItem(userStore.friendGroups);
+  } else {
+    const group = {
+      user_id: userStore.id,
+      group_id: searchResult.value?.id!,
+    };
+    console.log("group", group);
+    await addGroupMember(group);
   }
-  chatListStore.getFGItem(userStore.friendGroups);
 };
 
 // dialog的预设

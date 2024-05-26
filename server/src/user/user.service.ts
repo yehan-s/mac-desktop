@@ -2,12 +2,15 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+// import { GroupChat } from 'src/chat/entitys/group-chat.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    // @InjectRepository(GroupChat)
+    // private groupChatRepository: Repository<GroupChat>,
   ) {}
   // 查找全部
   async findAll() {
@@ -25,6 +28,7 @@ export class UserService {
       .leftJoinAndSelect('user.friendGroups', 'friendGroups')
       .leftJoinAndSelect('friendGroups.friends', 'friends')
       .leftJoinAndSelect('friends.user', 'userInfo')
+      .leftJoinAndSelect('user.groupChats', 'groupChats')
       .getMany();
     return res;
   }

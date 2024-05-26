@@ -11,6 +11,7 @@ import { GroupMembers } from './entitys/group-members.entity';
 import { Message } from './entitys/message.entity';
 import { MessageStatistics } from './entitys/message-statistics.entity';
 import { UserModule } from 'src/user/user.module';
+import { User } from 'src/user/user.entity';
 
 @Module({
   imports: [
@@ -21,10 +22,12 @@ import { UserModule } from 'src/user/user.module';
       Message,
       FriendGroup,
       MessageStatistics,
+      User,
     ]),
     UserModule,
   ],
   providers: [ChatService, ChatGateway],
   controllers: [ChatController],
+  exports: [ChatService],
 })
 export class ChatModule {}

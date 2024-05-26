@@ -30,6 +30,21 @@ export class ChatController {
     const group = dto;
     return this.chatService.createGroup(group);
   }
+
+  // 添加群聊下的用户
+  @Post('/addGroupMember')
+  addGroupMember(@Body() dto): any {
+    // return '好了';
+    return this.chatService.createGroupMember(dto.user_id, dto.group_id);
+  }
+
+  // 查找群聊
+  @Get('/findGroupchat/:name')
+  findGroupchat(@Param() params) {
+    const name = params.name;
+    return this.chatService.findGroupchatByName(name);
+  }
+
   // 创建消息
   @Post('/createMessage')
   addMessage(@Body() dto: CreateMessageDto) {

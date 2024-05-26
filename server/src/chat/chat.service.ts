@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FriendGroup } from './entitys/friend-group.entity';
 import { Repository } from 'typeorm';
@@ -7,6 +11,7 @@ import { Friend } from './entitys/friend.entity';
 import { GroupChat } from './entitys/group-chat.entity';
 import { Message } from './entitys/message.entity';
 import { v4 as uuidv4 } from 'uuid';
+import { User } from 'src/user/user.entity';
 
 @Injectable()
 export class ChatService {
@@ -17,6 +22,9 @@ export class ChatService {
     private friendRepository: Repository<Friend>,
     @InjectRepository(GroupChat)
     private groupChatRepository: Repository<GroupChat>,
+    // 注入members属性
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
     @InjectRepository(Message)
     private messageRepository: Repository<Message>,
     private userService: UserService,
@@ -36,6 +44,7 @@ export class ChatService {
     friend_id: number;
     room?: string;
   }) {
+    console.log('friend', friend);
     // user_id是我方的id friend_id是对方的id
     // 这里是需要添加的好友的id，保存下来，待会作为用户id
     let user_id = friend.user_id;
@@ -118,6 +127,52 @@ export class ChatService {
     groupTemp.members = [creator];
     // 这样中间表会添加数据
     const res = await this.groupChatRepository.save(groupTemp);
+    return res;
+  }
+
+  // 往群聊里添加用户
+  async createGroupMember(user_id: number, group_id: number) {
+    // // 找到群聊;
+    const groupChat = await this.groupChatRepository.findOne({
+      where: {
+        id: group_id,
+      },
+      relations: ['members'],
+    });
+    if (!groupChat) {
+      throw new NotFoundException('Group chat not found');
+    }
+    console.log('groupChat', groupChat);
+    // 找到用户;
+    const user = await this.userService.findUserByUserId(user_id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    const memberlist: User[] = [];
+    groupChat.members.forEach((item) => {
+      memberlist.push(item);
+    });
+    if (!memberlist.find((member) => member.id === user.id)) {
+      memberlist.push(user);
+    } else {
+      throw new ForbiddenException('请勿的重复添加');
+    }
+
+    groupChat.members = memberlist;
+    // 将用户添加到群聊的成员列表中;
+    // groupChat.members.push(user);
+    // groupChat.members = [user];
+    // 保存群聊以更新数据库;
+    await this.groupChatRepository.save(groupChat);
+    return groupChat;
+  }
+
+  // 搜索群聊通过群名
+  async findGroupchatByName(name: string) {
+    const res = await this.groupChatRepository
+      .createQueryBuilder('groupChat')
+      .where({ name })
+      .getOne();
     return res;
   }
 

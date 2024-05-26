@@ -46,4 +46,10 @@ export class UserController {
     const { username, password } = query;
     return this.userService.findUser(username, password);
   }
+
+  // @Post('/addGroupMember')
+  // addGroupMember(@Body() dto): any {
+  //   // return '好了';
+  //   return this.userService.createGroupMember(dto.user_id, dto.group_id);
+  // }
 }

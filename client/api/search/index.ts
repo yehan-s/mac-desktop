@@ -5,7 +5,7 @@ import type { User, Friend } from "@/types/index";
 
 // 登陆后查询用户详细信息   用来搜友查找好友
 export function searchUser(username: string): Promise<User> {
-  return useClientRequest(`/user/${username}`, {
+  return useClientRequest(`/user/username/${username}`, {
     method: "GET",
     // params: data,
   });
