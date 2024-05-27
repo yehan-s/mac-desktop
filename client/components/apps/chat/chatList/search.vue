@@ -160,6 +160,8 @@ const addHandler = async () => {
     };
     console.log("group", group);
     await addGroupMember(group);
+
+    // 需要更新群组列表
   }
 };
 

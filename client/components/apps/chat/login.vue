@@ -118,6 +118,7 @@ const loginHandler = async () => {
   // console.log("login的时候", userStore.friendGroups);
   // 获取好友分组的信息
   chatListStore.getFGItem(userStore.friendGroups);
+  chatListStore.getGroupItem(userStore.groupChats);
   // 放在最后等到信息获取到再跳转
   userStore.login = true;
   // 获取群聊分组的信息

@@ -100,7 +100,8 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
     console.log("这里", groupChatList);
   };
 
-  // 获取好友列表
+  // 设置好友列表
+  // 获取关联的分组，把所有分组下的好友都放到一个数组中
   const setFriendsList = (friendGroups: any) => {
     friendGroups.forEach((item: any) => {
       item.friends.forEach((friend: any) => {

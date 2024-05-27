@@ -28,7 +28,7 @@ export const useUserStore = defineStore("user", (): userState => {
   let signature = ref("随性的，我们唱起歌随性的，我们唱起歌随性的");
   let role = ref("user");
   let createdAt = ref("2024-04-24T16:32:46.898Z");
-  
+
   let friendGroups = ref([]);
   let groupChats = ref([]);
   let joinedGroups = ref([]);
@@ -44,6 +44,7 @@ export const useUserStore = defineStore("user", (): userState => {
   };
 
   const saveUserInfo = (userInfo: any) => {
+    console.log("userInfo", userInfo);
     id.value = userInfo.id;
     nickname.value = userInfo.nickname;
     username.value = userInfo.username;
@@ -52,7 +53,7 @@ export const useUserStore = defineStore("user", (): userState => {
     signature.value = userInfo.signature || "";
     createdAt.value = userInfo.createdAt;
     friendGroups.value = userInfo.friendGroups;
-    // groupChats.value = userInfo.groupChats;
+    groupChats.value = userInfo.groupChats;
     // joinedGroups.value = userInfo.joinedGroups;
   };
 
