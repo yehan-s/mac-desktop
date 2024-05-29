@@ -20,6 +20,7 @@ interface GroupList {
 interface GroupItem {
   label: string;
   avatar: string;
+  room?: string;
 }
 
 // 需要 username, avatar, lastMessage, date, room
@@ -51,6 +52,7 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
   let chatList = ref([] as chatListItem[]);
   // 好友列表 只用来实际操作
   let friendsList: any[] = [];
+  // 群聊列表
 
   const setListType = (type: "message" | "friend" | "group") => {
     listType.value = type;
@@ -90,6 +92,7 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
       groupItemTemp = {
         label: item.name,
         avatar: item.avatar,
+        room: item.room,
       };
 
       // console.log(groupItemTemp);
@@ -97,7 +100,6 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
       groupChatList.value.push(groupItemTemp);
       // groupChatList.value.push(groupItemTemp);
     }
-    console.log("这里", groupChatList);
   };
 
   // 设置好友列表
@@ -109,6 +111,10 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
       });
     });
   };
+
+  // const setGroupchatList = (item)=>{
+
+  // }
 
   // 获取消息列表
   // 显示最后一条消息
@@ -124,6 +130,7 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
         avatar: item.user.avatar,
       };
       let MessageTemp = await findLastMessage(item.room);
+      console.log("!!!!!!!!!!!", MessageTemp);
       chatListItem.lastMessage = MessageTemp.content;
       chatListItem.date = MessageTemp.created_at as string;
       chatListItem.room = MessageTemp.room;
@@ -140,8 +147,38 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
       // console.log("这是我要提交前的chatListItem", chatListItem);
       chatListTemp.push(chatListItem);
     }
+
+    // 这里还需要添加群聊消息
+
+    for (let item of groupChatList.value) {
+      // 在循环内部创建一个新的 chatListItem 对象
+      // 修改
+      let chatListItem: chatListItem = {
+        nickname: item.label,
+        avatar: item.avatar,
+      };
+      let MessageTemp = await findLastMessage(item.room as string);
+      console.log("!!!!!!!!!!!", MessageTemp);
+      chatListItem.lastMessage = MessageTemp.content;
+      chatListItem.date = MessageTemp.created_at as string;
+      chatListItem.room = MessageTemp.room;
+      chatListItem.type = MessageTemp.type;
+      // 因为最后一条消息可能是对方发的，也可能是我方发的
+      // 而这里必须拿到对方ID，方便后续操作
+      if (MessageTemp.sender_id === userId) {
+        chatListItem.receiver_id = MessageTemp.receiver_id;
+      } else {
+        chatListItem.receiver_id = MessageTemp.sender_id;
+      }
+
+      console.log("在这呢看看", MessageTemp);
+      // console.log("这是我要提交前的chatListItem", chatListItem);
+      chatListTemp.push(chatListItem);
+    }
+    // let
     chatList.value = chatListTemp;
     console.log("这是我要提交的chatList", chatList.value);
+    console.log("-----------", friendsList);
   };
 
   return {

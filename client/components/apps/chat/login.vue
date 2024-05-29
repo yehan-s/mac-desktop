@@ -132,7 +132,7 @@ const loginHandler = async () => {
   //     userStore.setUserInfo(data.userInfo);
   //     localStorage.setItem('token', data.token);
   //     localStorage.setItem('userId', data.userInfo.id);
-  //     if (userStore.userInfo.username) {
+  //     if (userStore.userInfo.username) {p
   //       // Assuming closeApp and openApp are similar functions in the Vue store
   //       // closeApp('login');
   //       // openApp('qq');

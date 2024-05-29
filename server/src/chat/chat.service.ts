@@ -132,7 +132,7 @@ export class ChatService {
 
   // 往群聊里添加用户
   async createGroupMember(user_id: number, group_id: number) {
-    // // 找到群聊;
+    // 找到群聊;
     const groupChat = await this.groupChatRepository.findOne({
       where: {
         id: group_id,
@@ -143,11 +143,12 @@ export class ChatService {
       throw new NotFoundException('Group chat not found');
     }
     console.log('groupChat', groupChat);
-    // 找到用户;
+    // 找到用户
     const user = await this.userService.findUserByUserId(user_id);
     if (!user) {
       throw new NotFoundException('User not found');
     }
+    // 将用户添加到群聊的成员列表中;
     const memberlist: User[] = [];
     groupChat.members.forEach((item) => {
       memberlist.push(item);
@@ -157,11 +158,8 @@ export class ChatService {
     } else {
       throw new ForbiddenException('请勿的重复添加');
     }
-
     groupChat.members = memberlist;
-    // 将用户添加到群聊的成员列表中;
-    // groupChat.members.push(user);
-    // groupChat.members = [user];
+
     // 保存群聊以更新数据库;
     await this.groupChatRepository.save(groupChat);
     return groupChat;
