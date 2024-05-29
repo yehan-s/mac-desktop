@@ -27,8 +27,15 @@ export const useChatStore = defineStore("chat", () => {
     },
   });
 
+  // 消息原本是不需要带头像的，本地仓库存放了双方的头像
+  // 但是群聊中，不好都存放，多次请求也太消耗性能
+  // 因此直接放入数组
+  interface MessageWithAvatar extends Message {
+    avatar?: string;
+    nickname?: string;
+  }
   // 储存聊天框所有信息，当左侧消息列表点击时，将对应的room传入，然后获取对应的聊天记录
-  const allMessage = ref([] as Message[]);
+  const allMessage = ref([] as MessageWithAvatar[]);
 
   // 登录的时候会被调用
   const setSenderId = (id: number) => {
@@ -92,6 +99,18 @@ export const useChatStore = defineStore("chat", () => {
     // room为空的话，说明是刚进入没页面，还没有选择聊天对象
     if (room) {
       allMessage.value = await findMessage(room);
+
+      // 判断是否是群聊消息
+      // 是的话为每个消息添加上发送者头像
+      if (allMessage.value) {
+        if (allMessage.value[0].type === "group") {
+          for (let item of allMessage.value) {
+            const res = await findUserInfoByUserId(item.sender_id);
+            item.avatar = res.avatar;
+            item.nickname = res.nickname;
+          }
+        }
+      }
     }
   };
 

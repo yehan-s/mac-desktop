@@ -32,6 +32,7 @@ interface chatListItem {
   date?: string;
   room?: string;
   receiver_id?: number;
+  sender_id?: number;
   type?: string;
 }
 
@@ -137,10 +138,13 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
       chatListItem.type = MessageTemp.type;
       // 因为最后一条消息可能是对方发的，也可能是我方发的
       // 而这里必须拿到对方ID，方便后续操作
+      // 因此 chatListItem.reveicer_id 必须是对方id
       if (MessageTemp.sender_id === userId) {
         chatListItem.receiver_id = MessageTemp.receiver_id;
+        chatListItem.sender_id = MessageTemp.sender_id;
       } else {
         chatListItem.receiver_id = MessageTemp.sender_id;
+        chatListItem.sender_id = MessageTemp.receiver_id;
       }
 
       console.log("在这呢看看", MessageTemp);
@@ -167,8 +171,10 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
       // 而这里必须拿到对方ID，方便后续操作
       if (MessageTemp.sender_id === userId) {
         chatListItem.receiver_id = MessageTemp.receiver_id;
+        chatListItem.sender_id = MessageTemp.sender_id;
       } else {
         chatListItem.receiver_id = MessageTemp.sender_id;
+        chatListItem.sender_id = MessageTemp.receiver_id;
       }
 
       console.log("在这呢看看", MessageTemp);

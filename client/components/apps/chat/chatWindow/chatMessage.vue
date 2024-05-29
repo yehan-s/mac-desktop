@@ -54,10 +54,8 @@
         <div
           class="chat"
           :class="{
-            'chat-start':
-              item.sender_id === chatStore.currentChat.privateObject.id,
-            'chat-end':
-              item.sender_id !== chatStore.currentChat.privateObject.id,
+            'chat-start': getPosition(item),
+            'chat-end': !getPosition(item),
           }"
         >
           <!-- 头像 -->
@@ -65,21 +63,13 @@
             <div class="w-10 rounded-full">
               <img
                 alt="Tailwind CSS chat bubble component"
-                :src="
-                  item.sender_id === chatStore.currentChat.privateObject.id
-                    ? chatStore.currentChat.privateObject.avatar
-                    : userStore.avatar
-                "
+                :src="getAvatar(item)"
               />
             </div>
           </div>
           <!-- 头部 名字和时间  -->
           <div class="chat-header">
-            {{
-              item.sender_id === chatStore.currentChat.privateObject.id
-                ? chatStore.currentChat.privateObject.nickname
-                : userStore.nickname
-            }}
+            {{ getName(item) }}
             <time class="text-xs opacity-50">{{ item.created_at }}</time>
           </div>
           <!-- 内容 -->
@@ -128,31 +118,48 @@ const props = defineProps({
   },
 });
 
-// let isPrivateObject = computed(()=>{
-//   return
-// })
-
+// 传入chat仓库中进行控制
 const chatMessageRef = ref(null);
 
 onMounted(() => {
   // 把控制滚动条的ref传递给chatStore
   chatStore.chatMessageRef = chatMessageRef.value;
-
-  // socket.on("demo", (data) => {
-  //   console.log("超高校级的收到消息", data);
-  //   // addMessage(data);
-  //   alert("出现！！！！！");
-  // });
-
-  // socket.on("socketTest2", (data) => {
-  //   console.log("socketTest2");
-  //   alert("socketTest2");
-  // });
 });
 
 const border = computed(() =>
   themeStore.dark ? "border-[#232323]" : "border-[#e9e9e9]"
 );
+
+// 获取信息位置
+// 判断发送者是不是对方
+// 对方的消息判为true，放在左侧
+const getPosition = (item: any): boolean => {
+  return item.sender_id !== userStore.id;
+};
+
+// 获取头像
+// 如果是私聊就用保存在仓库的头像，如果是群聊则用allMessage中存储的
+// 只有群聊才会把头像存在allMessage中
+const getAvatar = (item: any): string => {
+  if (item.type === "private") {
+    return item.sender_id === chatStore.currentChat.privateObject.id
+      ? chatStore.currentChat.privateObject.avatar
+      : userStore.avatar;
+  } else {
+    return item.avatar;
+  }
+};
+
+// 获取昵称
+const getName = (item: any): string => {
+  if (item.type === "private") {
+    return item.sender_id === chatStore.currentChat.privateObject.id
+      ? chatStore.currentChat.privateObject.nickname
+      : userStore.nickname;
+  } else {
+    return item.nickname;
+  }
+};
 
 const lastChangedIndex = ref(0);
 
@@ -180,7 +187,7 @@ const addMessage = () => {
   // ]);
 };
 
-const removeMessage = (e, message) => {
+const removeMessage = (e: any, message: any) => {
   console.log("chatMessage,removeMessage");
   // e.preventDefault();
   // lastChangedIndex.value = props.messages.indexOf(message);
