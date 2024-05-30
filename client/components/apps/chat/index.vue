@@ -31,28 +31,4 @@ const dark = ref(false);
 const flag = ref(true);
 const src = dark.value ? "/qq/logo/qq_dark.svg" : "/qq/logo/qq_.svg";
 
-//   const updateMessages = (newMessages: Message[]) => {
-//     messages.value = newMessages;
-//   };
-
-//   onMounted(() => {
-//     socket.connect();
-//     socket.on('connect', () => {
-//       // console.log('connect');
-//     });
-
-//     socket.on('getMessages', (data) => {
-//       if (data) {
-//         updateMessages(data);
-//       }
-//     });
-
-//     socket.on('disconnect', () => {
-//       // do something
-//     });
-//   });
-
-//   onUnmounted(() => {
-//     socket.disconnect();
-//   });
 </script>

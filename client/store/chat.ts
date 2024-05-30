@@ -17,6 +17,7 @@ export const useChatStore = defineStore("chat", () => {
       avatar: "",
       nickname: "",
     },
+    groupObject: {},
     sendMessage: {
       sender_id: 0, //自己的id
       receiver_id: 0, //对方的id
@@ -65,9 +66,11 @@ export const useChatStore = defineStore("chat", () => {
     let res = await findUserInfoByUserId(currentChat.sendMessage.sender_id);
     // console.log("connectHandler", res);
     let friends = res.friends;
-    console.log("friends", friends);
+    let groupChats = res.groupChats;
+    const list = friends?.concat(groupChats);
+    // console.log("friends", friends);
     socket.connect();
-    socket.emit("inintialize", friends);
+    socket.emit("inintialize", list);
   };
 
   // 发送消息
@@ -75,7 +78,7 @@ export const useChatStore = defineStore("chat", () => {
     console.log("发送消息", currentChat);
 
     currentChat.sendMessage.content = content;
-    currentChat.sendMessage.type = "private";
+    currentChat.sendMessage.type = currentChat.sendMessage.type;
     currentChat.sendMessage.media_type = "text";
 
     await sendMessage(currentChat.sendMessage);
@@ -88,7 +91,6 @@ export const useChatStore = defineStore("chat", () => {
   };
 
   socket.on("sendPrivate", async (data) => {
-    // addMessage(data);
     // 发送消息，最后一条消息接收不到，肯能数据库还没刷出来把
     await getAllMessage(currentChat.sendMessage.room);
     scrollToBottom();

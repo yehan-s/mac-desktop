@@ -50,8 +50,6 @@ export class ChatService {
     let user_id = friend.user_id;
     let friend_id = friend.friend_id;
     // 房间id是socket.io的房间id，待会同样需要用到
-    // 现在还没写方法，所以房间号先写死
-    // let room_id = friend.room;
     const uuid = uuidv4();
     friend.room = uuid;
     console.log('uuid', uuid);
@@ -74,22 +72,20 @@ export class ChatService {
     }
     // 我方的好友添加完成
     const friendTemp1 = this.friendRepository.create({
-      // 好友的id 7
       user_id: friend_id,
       room: friend.room,
       group_id: friendGroup1.id,
     });
     await this.friendRepository.save(friendTemp1);
-    // return friendGroup1;
-    // 此时用户相互转换
+
+    // 此时用户相互转换 为对方也添加好友关系
     user_id = friend.friend_id;
     friend_id = friend.user_id;
 
     const friendGroup2 = await this.friendGroupRepository.findOne({
       where: { name: '我的好友', user_id },
     });
-    // friend.group_id = friendGroup1.id;
-    // 我方的好友添加完成
+    // 对方的好友添加完成
     const friendTemp2 = this.friendRepository.create({
       user_id: friend_id,
       room: friend.room,

@@ -53,6 +53,7 @@ export class ChatGateway implements OnGatewayConnection {
     data.forEach((item: any) => {
       client.join(item.room);
     });
+    console.log('初始化成功', data, client.rooms);
     return '初始化成功';
   }
 

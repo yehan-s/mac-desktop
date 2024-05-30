@@ -96,8 +96,7 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
         room: item.room,
       };
 
-      // console.log(groupItemTemp);
-      // console.log(groupChatList);
+
       groupChatList.value.push(groupItemTemp);
       // groupChatList.value.push(groupItemTemp);
     }
@@ -147,7 +146,7 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
         chatListItem.sender_id = MessageTemp.receiver_id;
       }
 
-      console.log("在这呢看看", MessageTemp);
+      // console.log("在这呢看看", MessageTemp);
       // console.log("这是我要提交前的chatListItem", chatListItem);
       chatListTemp.push(chatListItem);
     }

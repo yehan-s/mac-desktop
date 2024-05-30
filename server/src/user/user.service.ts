@@ -56,6 +56,7 @@ export class UserService {
       .createQueryBuilder('user')
       .where('user.id = :id', { id })
       .leftJoinAndSelect('user.friends', 'friendShip')
+      .leftJoinAndSelect('user.groupChats', 'groupChats')
       .getOne();
     return res;
   }

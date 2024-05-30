@@ -9,6 +9,7 @@ export interface FriendGroup {
 
 // 用户类型
 export interface User {
+  groupChats: any;
   id: number;
   username: string;
   password?: string;

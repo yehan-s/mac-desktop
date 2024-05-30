@@ -113,7 +113,6 @@ const loginHandler = async () => {
   // }
   // 记得删掉
   chatStore.connectHandler();
-  // socket.connect();
 
   // console.log("login的时候", userStore.friendGroups);
   // 获取好友分组的信息
