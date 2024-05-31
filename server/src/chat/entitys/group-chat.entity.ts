@@ -3,13 +3,12 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
-  // OneToMany,
-  ManyToMany,
   JoinColumn,
+  OneToMany,
+  ManyToOne,
 } from 'typeorm';
 import { User } from '../../user/user.entity';
-// import { GroupMembers } from './group-members.entity';
+import { GroupMember } from './group-members.entity';
 
 @Entity()
 export class GroupChat {
@@ -42,11 +41,13 @@ export class GroupChat {
   @JoinColumn({ name: 'creator_id' }) // 指定外键列的名称
   creator: User;
 
-  // @OneToMany(() => GroupMembers, (groupMembers) => groupMembers.group)
-  // members: GroupMembers[];
+  @OneToMany(() => GroupMember, (groupMember) => groupMember.group, {
+    cascade: true,
+  })
+  members: GroupMember[];
 
   // @ManyToMany(() => User, (user) => user.joinedGroups)
   // membersUser: User[];
-  @ManyToMany(() => User, (user) => user.groupChats)
-  members: User[];
+  // @ManyToMany(() => User, (user) => user.groupChats)
+  // members: User[];
 }

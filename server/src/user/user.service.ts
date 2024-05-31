@@ -56,7 +56,7 @@ export class UserService {
       .createQueryBuilder('user')
       .where('user.id = :id', { id })
       .leftJoinAndSelect('user.friends', 'friendShip')
-      .leftJoinAndSelect('user.groupChats', 'groupChats')
+      .leftJoinAndSelect('user.groupMembers', 'groupMembers')
       .getOne();
     return res;
   }
@@ -72,7 +72,7 @@ export class UserService {
     // console.log('findUserResult', user);
   }
   // 通过用户名查找
-  async findUserByUsername(username: string): Promise<any> {
+  async findUserByUsername(username: string): Promise<User> {
     // console.log('findUserByUsername', username);
     if (!username) {
       throw new NotFoundException('用户名不能为空');
@@ -85,8 +85,18 @@ export class UserService {
       .leftJoinAndSelect('friends.user', 'userInfo')
       .leftJoinAndSelect('user.sentMessages', 'sentMessages')
       .leftJoinAndSelect('user.friends', 'friendShip')
-      .leftJoinAndSelect('user.groupChats', 'groupChats')
+      // .leftJoinAndSelect('user.groupChats', 'groupChats')
+      .leftJoinAndSelect('user.groupMembers', 'groupMembers')
+      .leftJoinAndSelect('groupMembers.group', 'groupChat')
       .getOne();
+    // res.groupChats = res.groupMembers;
+    // res.groupChats.forEach((item) => {
+    //   return (item = item.group);
+    // });
+    // res.groupChats = res.groupChats.map((item) => {
+    //   return item.group;
+    // });
+
     return res;
   }
 }

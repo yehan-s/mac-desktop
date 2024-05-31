@@ -53,7 +53,10 @@ export const useUserStore = defineStore("user", (): userState => {
     signature.value = userInfo.signature || "";
     createdAt.value = userInfo.createdAt;
     friendGroups.value = userInfo.friendGroups;
-    groupChats.value = userInfo.groupChats;
+    // groupChats.value = userInfo.groupChats;
+    groupChats.value = userInfo.groupMembers.map(
+      (item: { group: any }) => item.group
+    );
     // joinedGroups.value = userInfo.joinedGroups;
   };
 

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 
@@ -24,6 +24,12 @@ export class ChatController {
     const groupId = params.group_id;
     return this.chatService.findFriendByGroupId(groupId);
   }
+  // 查找好友关系
+  @Get('findFriendByRoom')
+  findFriendByRoom(@Query() query) {
+    return this.chatService.findFriendByRoom(query.room, query.user_id);
+  }
+
   // 创建群聊
   @Post('/createGroupchat')
   addGroup(@Body() dto) {

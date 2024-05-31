@@ -12,6 +12,7 @@ import { GroupChat } from './entitys/group-chat.entity';
 import { Message } from './entitys/message.entity';
 import { v4 as uuidv4 } from 'uuid';
 import { User } from 'src/user/user.entity';
+import { GroupMember } from './entitys/group-members.entity';
 
 @Injectable()
 export class ChatService {
@@ -22,6 +23,8 @@ export class ChatService {
     private friendRepository: Repository<Friend>,
     @InjectRepository(GroupChat)
     private groupChatRepository: Repository<GroupChat>,
+    @InjectRepository(GroupMember)
+    private groupMemberRepository: Repository<GroupMember>,
     // 注入members属性
     @InjectRepository(User)
     private userRepository: Repository<User>,
@@ -108,6 +111,23 @@ export class ChatService {
     return res;
   }
 
+  // 查找好友关系 通过房间号
+  async findFriendByRoom(room: string, user_id: number) {
+    console.log('看看信息', room, user_id);
+    const res = await this.friendRepository
+      .createQueryBuilder('friend')
+      .where('friend.user_id = :user_id', {
+        user_id,
+      })
+      .leftJoinAndSelect('friend.user', 'user')
+      .getOne();
+    // const res = await this.friendRepository.findOne({ where: { user_id } });
+    if (res === null) {
+      return '没有找到好友';
+    }
+    return res;
+  }
+
   // 通过id查找name是 我的好友 的分组，然后添加好友
   // async addFriend() {
   //   const friendGroup = await this.friendGroupRepository.findOne({
@@ -119,10 +139,19 @@ export class ChatService {
   async createGroup(group: Partial<GroupChat>) {
     const groupTemp = this.groupChatRepository.create(group);
     const creator = await this.userService.findUserByUserId(group.creator_id);
+    if (!creator) {
+      throw new NotFoundException('creator not found');
+    }
     // 添加创建者到群聊的成员数组中
-    groupTemp.members = [creator];
+    // groupTemp.members = [creator];
+
     // 这样中间表会添加数据
     const res = await this.groupChatRepository.save(groupTemp);
+    const addGMData = {
+      user_id: res.creator_id,
+      group_id: res.id,
+    };
+    this.createGroupMember(addGMData.user_id, addGMData.group_id);
     return res;
   }
 
@@ -144,21 +173,24 @@ export class ChatService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
+    // 将用户添加到群聊的成员列表中（手动添加中间表）
+    const res = await this.groupMemberRepository.create({ user_id, group_id });
+    await this.groupMemberRepository.save(res);
+    return res;
     // 将用户添加到群聊的成员列表中;
-    const memberlist: User[] = [];
-    groupChat.members.forEach((item) => {
-      memberlist.push(item);
-    });
-    if (!memberlist.find((member) => member.id === user.id)) {
-      memberlist.push(user);
-    } else {
-      throw new ForbiddenException('请勿的重复添加');
-    }
-    groupChat.members = memberlist;
-
-    // 保存群聊以更新数据库;
-    await this.groupChatRepository.save(groupChat);
-    return groupChat;
+    // const memberlist: User[] = [];
+    // groupChat.members.forEach((item) => {
+    //   memberlist.push(item);
+    // });
+    //   if (!memberlist.find((member) => member.id === user.id)) {
+    //     memberlist.push(user);
+    //   } else {
+    //     throw new ForbiddenException('请勿的重复添加');
+    //   }
+    //   groupChat.members = memberlist;
+    //   // 保存群聊以更新数据库;
+    //   await this.groupChatRepository.save(groupChat);
+    //   return groupChat;
   }
 
   // 搜索群聊通过群名
@@ -166,6 +198,7 @@ export class ChatService {
     const res = await this.groupChatRepository
       .createQueryBuilder('groupChat')
       .where({ name })
+      .leftJoinAndSelect('groupChat.members', 'members')
       .getOne();
     return res;
   }
@@ -182,6 +215,7 @@ export class ChatService {
     const res = await this.messageRepository
       .createQueryBuilder('message')
       .where('message.room = :room', { room })
+      // .leftJoinAndSelect('message.receiver', 'receiver')
       .orderBy('message.created_at', 'DESC')
       .getOne();
     if (!res) {
