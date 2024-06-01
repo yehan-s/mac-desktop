@@ -105,7 +105,7 @@ const loginHandler = async () => {
 
   // if (userStore.login) {
   let userInfo = await findUserInfoByUsername(username.value);
-  // console.log("我想获取到信息", userInfo);
+  console.log("我想获取到信息", userInfo);
   if (userInfo) {
     userStore.saveUserInfo(userInfo);
     chatStore.setSenderId(userInfo.id);

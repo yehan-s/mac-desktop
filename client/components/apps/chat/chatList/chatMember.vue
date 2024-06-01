@@ -3,7 +3,12 @@
     class="flex w-full p-2 h-[70px]"
     :class="[themeStore.dark ? 'hover:bg-white/10' : 'hover:bg-[#f5f5f5]']"
   >
-    <div class="p-2 rounded-full">
+    <div class="p-2 rounded-full indicator">
+      <span
+        v-show="props.unread > 0"
+        class="indicator-item badge badge-secondary"
+        >{{ props.unread }}</span
+      >
       <img :src="props.avatar" alt="qq" width="50" height="50" />
     </div>
 
@@ -37,6 +42,7 @@ let props = defineProps<{
   avatar: string;
   lastMessage: string;
   date: string;
+  unread: number;
 }>();
 
 // onMounted(() => {

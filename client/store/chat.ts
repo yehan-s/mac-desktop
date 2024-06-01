@@ -1,5 +1,11 @@
 import socket from "@/utils/socket";
 import { findMessage, sendMessage } from "~/api/message";
+import {
+  addGroupUnread,
+  addPrivateUnread,
+  clearGroupUnread,
+  clearPrivateUnread,
+} from "~/api/search";
 import { findUserInfoByUserId, findUserInfoByUsername } from "~/api/user";
 import type { Message } from "~/types";
 
@@ -64,11 +70,16 @@ export const useChatStore = defineStore("chat", () => {
     // 先查找所有好友关系，从而获取到好友的room
     // 然后将所有好友的room都加入
     let res = await findUserInfoByUserId(currentChat.sendMessage.sender_id);
-    // console.log("connectHandler", res);
+    console.log("connectHandler", res);
     let friends = res.friends;
-    let groupChats = res.groupChats;
+    // let groupChats = res.groupChats;
+    let groupChats = res.groupMembers!.map(
+      (item: { group: any }) => item.group
+    );
+    console.log("这个很重要！！！！！！", groupChats);
     const list = friends?.concat(groupChats);
     // console.log("friends", friends);
+    console.log("记得删除！！！！！", list);
     socket.connect();
     socket.emit("inintialize", list);
   };
@@ -83,7 +94,21 @@ export const useChatStore = defineStore("chat", () => {
 
     await sendMessage(currentChat.sendMessage);
     await getAllMessage(currentChat.sendMessage.room);
-    socket.emit("sendPrivate", currentChat.sendMessage);
+
+    // 添加未读消息 传入的id是自己的，意思是别人对自己的未读消息+1
+    if (currentChat.sendMessage.type === "private") {
+      await addPrivateUnread({
+        room: currentChat.sendMessage.room,
+        user_id: currentChat.sendMessage.sender_id,
+      });
+      socket.emit("sendPrivate", currentChat.sendMessage);
+    } else if (currentChat.sendMessage.type === "group") {
+      await addGroupUnread({
+        room: currentChat.sendMessage.room,
+        user_id: currentChat.sendMessage.sender_id,
+      });
+      socket.emit("sendPrivate", currentChat.sendMessage);
+    }
     // 直接添加到chatList就不需要请求数据库
     // addMessage(JSON.parse(JSON.stringify(currentChat.sendMessage)));
 
@@ -116,6 +141,21 @@ export const useChatStore = defineStore("chat", () => {
     }
   };
 
+  // 清空未读消息
+  const clearUnread = async () => {
+    if (currentChat.sendMessage.type === "private") {
+      await clearPrivateUnread({
+        room: currentChat.sendMessage.room,
+        user_id: currentChat.sendMessage.receiver_id,
+      });
+    } else if (currentChat.sendMessage.type === "group") {
+      await clearGroupUnread({
+        room: currentChat.sendMessage.room,
+        user_id: currentChat.sendMessage.sender_id,
+      });
+    }
+  };
+
   const scrollToBottom = () => {
     chatMessageRef.value.scrollTop = chatMessageRef.value.scrollHeight;
   };
@@ -136,6 +176,7 @@ export const useChatStore = defineStore("chat", () => {
     setType,
     connectHandler,
     getAllMessage,
+    clearUnread,
     scrollToBottom,
   };
 });

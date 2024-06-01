@@ -27,7 +27,7 @@ export class ChatGateway implements OnGatewayConnection {
   // 有人连接时触发
   handleConnection(client: any) {
     // client.join(this.defaultGroup);
-    console.log('有链接进入', client.id);
+    // console.log('有链接进入', client.id);
     return '连接成功';
   }
 
@@ -50,10 +50,10 @@ export class ChatGateway implements OnGatewayConnection {
     @MessageBody() data: any,
     @ConnectedSocket() client: Socket,
   ): Promise<any> {
+    console.log('初始化成功', data);
     data.forEach((item: any) => {
       client.join(item.room);
     });
-    console.log('初始化成功', data, client.rooms);
     return '初始化成功';
   }
 

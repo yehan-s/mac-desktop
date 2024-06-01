@@ -20,4 +20,5 @@ export interface User {
   friendGroups?: FriendGroup[];
   joinedGroups?: any[]; // 如果你不清楚joinedGroups的具体结构，可以使用any
   friends?: any[];
+  groupMembers?: any[];
 }

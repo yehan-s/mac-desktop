@@ -9,5 +9,5 @@ export class UserGroupChat {
   @Column()
   group_id: number;
   @Column()
-  unRead: number;
+  unread: number;
 }

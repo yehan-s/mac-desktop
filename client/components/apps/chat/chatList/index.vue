@@ -22,6 +22,7 @@
             :avatar="item.avatar"
             :lastMessage="item.lastMessage!"
             :date="item.date!"
+            :unread="item.unread"
             @click="chatMemberHandler(item)"
           />
         </template>
@@ -153,6 +154,10 @@ const chatMemberHandler = async (item: chatListItem) => {
   chatStore.setType(item.type as string);
   // 获取所有信息
   chatStore.getAllMessage(item.room as string);
+  // 清空消息
+  // chatStore.clearUnread();
+  // chatListStore.getLMToChatList(userStore.id);
+
   setTimeout(() => {
     chatStore.scrollToBottom();
   }, 0);

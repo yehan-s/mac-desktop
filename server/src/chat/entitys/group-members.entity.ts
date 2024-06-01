@@ -15,7 +15,7 @@ export class GroupMember {
   user_id: number;
 
   @Column({ default: 0 })
-  unRead: number;
+  unread: number;
 
   @ManyToOne(() => GroupChat, (groupChat) => groupChat.members)
   @JoinColumn({ name: 'group_id' })

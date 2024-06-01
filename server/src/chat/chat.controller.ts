@@ -29,6 +29,32 @@ export class ChatController {
   findFriendByRoom(@Query() query) {
     return this.chatService.findFriendByRoom(query.room, query.user_id);
   }
+  // 添加私聊未读消息
+  @Post('/addPrivateUnread')
+  addPrivateUnread(@Body() dto): Promise<string> {
+    console.log('检测一下！！！！！', dto);
+    const fn = () => 'unread_msg_count + 1';
+    return this.chatService.updatePrivateUnread(dto.room, dto.user_id, fn);
+  }
+  // 清空私聊未读消息
+  @Post('/clearPrivateUnread')
+  claerPrivateUnread(@Body() dto): Promise<string> {
+    const fn = () => '0';
+    return this.chatService.updatePrivateUnread(dto.room, dto.user_id, fn);
+  }
+  // 添加群聊未读消息
+  @Post('/addGroupUnread')
+  addGroupUnread(@Body() dto) {
+    console.log('检测一下！！！！！', dto);
+    const fn = () => 'unread + 1';
+    return this.chatService.updateGroupUnread(dto.room, dto.user_id, fn);
+  }
+  // 清空群聊未读
+  @Post('/clearGroupUnread')
+  updateClearGroupUnread(@Body() dto) {
+    const fn = () => '0';
+    return this.chatService.updateGroupUnread(dto.room, dto.user_id, fn);
+  }
 
   // 创建群聊
   @Post('/createGroupchat')
@@ -42,6 +68,12 @@ export class ChatController {
   addGroupMember(@Body() dto): any {
     // return '好了';
     return this.chatService.createGroupMember(dto.user_id, dto.group_id);
+  }
+
+  // 查找群聊下的用户
+  @Get('/findGroupMember')
+  findGroupMember(@Query() query) {
+    return this.chatService.findGroupMember(query.room, query.user_id);
   }
 
   // 查找群聊

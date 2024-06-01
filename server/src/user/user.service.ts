@@ -55,8 +55,14 @@ export class UserService {
     const res = this.userRepository
       .createQueryBuilder('user')
       .where('user.id = :id', { id })
+      .leftJoinAndSelect('user.friendGroups', 'friendGroups')
+      .leftJoinAndSelect('friendGroups.friends', 'friends')
+      .leftJoinAndSelect('friends.user', 'userInfo')
+      .leftJoinAndSelect('user.sentMessages', 'sentMessages')
       .leftJoinAndSelect('user.friends', 'friendShip')
+      // .leftJoinAndSelect('user.groupChats', 'groupChats')
       .leftJoinAndSelect('user.groupMembers', 'groupMembers')
+      .leftJoinAndSelect('groupMembers.group', 'groupChat')
       .getOne();
     return res;
   }
@@ -84,7 +90,7 @@ export class UserService {
       .leftJoinAndSelect('friendGroups.friends', 'friends')
       .leftJoinAndSelect('friends.user', 'userInfo')
       .leftJoinAndSelect('user.sentMessages', 'sentMessages')
-      .leftJoinAndSelect('user.friends', 'friendShip')
+      // .leftJoinAndSelect('user.friends', 'friendShip')
       // .leftJoinAndSelect('user.groupChats', 'groupChats')
       .leftJoinAndSelect('user.groupMembers', 'groupMembers')
       .leftJoinAndSelect('groupMembers.group', 'groupChat')

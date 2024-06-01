@@ -100,9 +100,6 @@ export class ChatService {
 
   // 查找好友 通过分组id
   async findFriendByGroupId(group_id: number) {
-    // const res = await this.friendRepository.find({
-    //   where: { group_i d },
-    // });
     const res = await this.friendRepository
       .createQueryBuilder('friend')
       .where('friend.group_id = :group_id', { group_id })
@@ -113,7 +110,7 @@ export class ChatService {
 
   // 查找好友关系 通过房间号
   async findFriendByRoom(room: string, user_id: number) {
-    console.log('看看信息', room, user_id);
+    // console.log('看看信息', room, user_id);
     const res = await this.friendRepository
       .createQueryBuilder('friend')
       .where('friend.user_id = :user_id', {
@@ -126,6 +123,63 @@ export class ChatService {
       return '没有找到好友';
     }
     return res;
+  }
+
+  // 添加未读消息私聊
+  async updatePrivateUnread(room: string, user_id: number, fn) {
+    const res = await this.friendRepository
+      .createQueryBuilder('friend')
+      .where('friend.room = :room AND friend.user_id = :user_id', {
+        room,
+        user_id,
+      })
+      .update(Friend)
+      .set({ unread_msg_count: fn })
+      .execute();
+    if (!res) {
+      return '没有找到好友';
+    }
+    // res.unread_msg_count += 1;
+    return '添加成功';
+  }
+
+  // 添加未读消息群聊
+  async updateGroupUnread(room: string, user_id: number, fn) {
+    const groupchatResult = await this.groupChatRepository.findOne({
+      where: { room },
+    });
+    if (!groupchatResult) {
+      return '没有找到群聊';
+    }
+    const group_id = groupchatResult.id;
+    // return groupResult;
+    const res =
+      await this.groupMemberRepository.createQueryBuilder('groupMember');
+    // 不是0说明是要未读消息+1
+    if (fn() !== '0') {
+      res
+        .where('group_id = :group_id AND user_id != :user_id', {
+          group_id,
+          user_id,
+        })
+        .update(GroupMember)
+        .set({ unread: fn })
+        .execute();
+    } else {
+      res
+        .where('group_id = :group_id AND user_id = :user_id', {
+          group_id,
+          user_id,
+        })
+        .update(GroupMember)
+        .set({ unread: fn })
+        .execute();
+    }
+    if (!res) {
+      return '没有找到群成员关系';
+    }
+    // res.unread_msg_count += 1;
+    return '添加成功';
   }
 
   // 通过id查找name是 我的好友 的分组，然后添加好友
@@ -191,6 +245,22 @@ export class ChatService {
     //   // 保存群聊以更新数据库;
     //   await this.groupChatRepository.save(groupChat);
     //   return groupChat;
+  }
+
+  // 通过房间号查找群聊成员表（为了未读消息）
+  async findGroupMember(room: string, user_id: number) {
+    const groupchatResult = await this.groupChatRepository.findOne({
+      where: { room },
+      relations: ['members'],
+    });
+    if (!groupchatResult) {
+      return '没有找到群聊';
+    }
+    const group_id = groupchatResult.id;
+    const res = await this.groupMemberRepository.findOne({
+      where: { group_id, user_id },
+    });
+    return res;
   }
 
   // 搜索群聊通过群名

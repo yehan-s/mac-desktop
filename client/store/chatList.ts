@@ -21,6 +21,7 @@ interface GroupItem {
   label: string;
   avatar: string;
   room?: string;
+  unread?: number;
 }
 
 // 需要 username, avatar, lastMessage, date, room
@@ -34,10 +35,15 @@ interface chatListItem {
   receiver_id?: number;
   sender_id?: number;
   type?: string;
+  unread?: number;
 }
 
 import { findLastMessage } from "~/api/message";
-import { searchGroupFriend } from "~/api/search";
+import {
+  findGroupMember,
+  searchFriendByRoom,
+  searchGroupFriend,
+} from "~/api/search";
 import type { Friend } from "~/types";
 import socket from "~/utils/socket";
 
@@ -69,6 +75,7 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
         prop: "title",
         items: [],
       };
+      // 这里
       item.friends.forEach((friend: any) => {
         let userItem = friend.user;
         let fmItemTemp: GroupItem = {
@@ -83,6 +90,11 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
 
   // 获取群聊
   const getGroupItem = async (groupChats: any) => {
+    // let res = groupChats.map((item: any) => {
+    //   return item.group;
+    // });
+    console.log("这是我要提交的群聊之前", groupChats);
+    // console.log("这是我要提交的群聊", res);
     // 群聊的每一项
     let groupItemTemp: GroupItem = {
       label: "",
@@ -95,7 +107,6 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
         avatar: item.avatar,
         room: item.room,
       };
-
 
       groupChatList.value.push(groupItemTemp);
       // groupChatList.value.push(groupItemTemp);
@@ -130,7 +141,7 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
         avatar: item.user.avatar,
       };
       let MessageTemp = await findLastMessage(item.room);
-      console.log("!!!!!!!!!!!", MessageTemp);
+      // console.log("!!!!!!!!!!!", MessageTemp);
       chatListItem.lastMessage = MessageTemp.content;
       chatListItem.date = MessageTemp.created_at as string;
       chatListItem.room = MessageTemp.room;
@@ -146,13 +157,20 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
         chatListItem.sender_id = MessageTemp.receiver_id;
       }
 
-      // console.log("在这呢看看", MessageTemp);
-      // console.log("这是我要提交前的chatListItem", chatListItem);
+      // 因为最后才能确定receiver_id,因此放在最后取unRead
+      // 读取自己对 receiver 的unread
+      let searchFriendData = {
+        room: item.room,
+        user_id: chatListItem.receiver_id,
+      };
+      // 查找未读消息数量（私聊）
+      let friendship = await searchFriendByRoom(searchFriendData);
+      chatListItem.unread = friendship.unread_msg_count;
+
       chatListTemp.push(chatListItem);
     }
 
     // 这里还需要添加群聊消息
-
     for (let item of groupChatList.value) {
       // 在循环内部创建一个新的 chatListItem 对象
       // 修改
@@ -161,7 +179,6 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
         avatar: item.avatar,
       };
       let MessageTemp = await findLastMessage(item.room as string);
-      console.log("!!!!!!!!!!!", MessageTemp);
       chatListItem.lastMessage = MessageTemp.content;
       chatListItem.date = MessageTemp.created_at as string;
       chatListItem.room = MessageTemp.room;
@@ -176,8 +193,16 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
         chatListItem.sender_id = MessageTemp.receiver_id;
       }
 
-      console.log("在这呢看看", MessageTemp);
-      // console.log("这是我要提交前的chatListItem", chatListItem);
+      // 因为最后才能确定receiver_id,因此放在最后取unRead
+      // 读取自己对 receiver 的unread
+      let searchMemberData = {
+        room: item.room as string,
+        user_id: chatListItem.sender_id,
+      };
+      // 查找未读消息数量（群聊）
+      let res = await findGroupMember(searchMemberData);
+      chatListItem.unread = res?.unread;
+
       chatListTemp.push(chatListItem);
     }
     // let
