@@ -51,6 +51,7 @@ export const useChatStore = defineStore("chat", () => {
 
   const setReceiver = async (receiver_id: number) => {
     currentChat.sendMessage.receiver_id = receiver_id;
+    // 存储对方的 userInfo
     currentChat.privateObject = await findUserInfoByUserId(receiver_id);
   };
 
@@ -125,18 +126,23 @@ export const useChatStore = defineStore("chat", () => {
   const getAllMessage = async (room: string) => {
     // room为空的话，说明是刚进入没页面，还没有选择聊天对象
     if (room) {
-      allMessage.value = await findMessage(room);
+      // allMessage.value = await findMessage(room);
+      let allMessageTemp = await findMessage(room);
 
       // 判断是否是群聊消息
       // 是的话为每个消息添加上发送者头像
-      if (allMessage.value) {
-        if (allMessage.value[0].type === "group") {
-          for (let item of allMessage.value) {
+      if (allMessageTemp) {
+        if (allMessageTemp[0].type === "group") {
+          for (let item of allMessageTemp) {
             const res = await findUserInfoByUserId(item.sender_id);
+            // 会导致页面闪烁
             item.avatar = res.avatar;
             item.nickname = res.nickname;
           }
         }
+        allMessage.value = allMessageTemp;
+      } else {
+        allMessage.value = allMessageTemp;
       }
     }
   };

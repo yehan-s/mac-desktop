@@ -201,7 +201,7 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
       };
       // 查找未读消息数量（群聊）
       let res = await findGroupMember(searchMemberData);
-      chatListItem.unread = res?.unread;
+      chatListItem.unread = res.unread;
 
       chatListTemp.push(chatListItem);
     }

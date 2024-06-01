@@ -22,7 +22,7 @@
             :avatar="item.avatar"
             :lastMessage="item.lastMessage!"
             :date="item.date!"
-            :unread="item.unread"
+            :unread="item.unread!"
             @click="chatMemberHandler(item)"
           />
         </template>
@@ -148,7 +148,7 @@ interface chatListItem {
 
 // 点击消息列表item
 const chatMemberHandler = async (item: chatListItem) => {
-  console.log(item);
+  // console.log("记得删除--------", item);
   chatStore.setReceiver(item.receiver_id as number);
   chatStore.setRoom(item.room as string);
   chatStore.setType(item.type as string);

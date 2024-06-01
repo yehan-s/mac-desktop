@@ -62,7 +62,10 @@ export function clearGroupUnread(data: { room: string; user_id: number }) {
 }
 
 // 查找群成员 可以查找未读消息
-export function findGroupMember(data: { room: string; user_id: number }) {
+export function findGroupMember(data: {
+  room: string;
+  user_id: number;
+}): Promise<SearchTypes.GroupMember> {
   return useClientRequest(`/chat/findGroupMember`, {
     method: "GET",
     params: data,
