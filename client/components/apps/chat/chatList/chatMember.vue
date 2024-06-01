@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex w-full p-2 h-[70px]"
+    class="flex w-full p-2 h-[70px] active:bg-gray-200"
     :class="[themeStore.dark ? 'hover:bg-white/10' : 'hover:bg-[#f5f5f5]']"
   >
     <div class="p-2 rounded-full indicator">

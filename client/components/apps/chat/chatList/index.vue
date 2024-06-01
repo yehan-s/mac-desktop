@@ -10,7 +10,7 @@
     <Search />
     <!-- 聊天存放列表 -->
     <div
-      class="chatlist w-full flex-1 overflow-y-scroll scroll-smooth"
+      class="w-full flex-1 overflow-y-scroll scroll-smooth"
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"
     >
@@ -18,6 +18,7 @@
       <div v-if="chatListStore.listType === 'message'">
         <template v-for="item in chatListStore.chatList" :key="item.room">
           <ChatMember
+            :class="{ [itemBg]: isItemActive === item.room }"
             :name="item.nickname"
             :avatar="item.avatar"
             :lastMessage="item.lastMessage!"
@@ -94,6 +95,18 @@ const onMouseLeave = (event: MouseEvent) => {
   (event.currentTarget as HTMLElement).classList.add("chatlist");
 };
 
+// 点击消息item高亮
+let itemBg = computed(() => {
+  return themeStore.dark ? "bg-white/10" : "bg-[#f5f5f5]";
+});
+const getItemBgColor = () => {
+  return "bg-blue-200";
+};
+let isItemActive = ref<string>("");
+const setActive = (room: string) => {
+  isItemActive.value = room;
+};
+
 const expandedKeys = ref({
   // 渲染出来的值
   // "0": true,
@@ -149,14 +162,16 @@ interface chatListItem {
 // 点击消息列表item
 const chatMemberHandler = async (item: chatListItem) => {
   // console.log("记得删除--------", item);
+  // 点击item高亮
+  setActive(item.room!);
   chatStore.setReceiver(item.receiver_id as number);
   chatStore.setRoom(item.room as string);
   chatStore.setType(item.type as string);
   // 获取所有信息
   chatStore.getAllMessage(item.room as string);
   // 清空消息
-  // chatStore.clearUnread();
-  // chatListStore.getLMToChatList(userStore.id);
+  chatStore.clearUnread();
+  chatListStore.getLMToChatList(userStore.id);
 
   setTimeout(() => {
     chatStore.scrollToBottom();
