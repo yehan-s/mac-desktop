@@ -49,7 +49,10 @@
           :pt="persets.panelmenu"
         >
           <template #item="{ item }">
-            <div class="flex items-center p-4 cursor-pointer">
+            <div
+              class="flex items-center p-4 cursor-pointer"
+              @click="groupItemsHandler(item)"
+            >
               <div v-show="item.avatar" class="avatar mr-4">
                 <div class="w-8 rounded-xl">
                   <img :src="item.avatar" />
@@ -161,7 +164,7 @@ interface chatListItem {
 
 // 点击消息列表item
 const chatMemberHandler = async (item: chatListItem) => {
-  // console.log("记得删除--------", item);
+  console.log("记得删除--------", item);
   // 点击item高亮
   setActive(item.room!);
   chatStore.setReceiver(item.receiver_id as number);
@@ -176,6 +179,30 @@ const chatMemberHandler = async (item: chatListItem) => {
   setTimeout(() => {
     chatStore.scrollToBottom();
   }, 0);
+};
+
+// 点击分组列表item
+const groupItemsHandler = (item: any) => {
+  // 点击分组名不做处理
+  if (item.prop) {
+    return;
+  }
+  chatListStore.setListType("message");
+  chatListStore.chatList.forEach((messageItem) => {
+    // 只有群有room属性
+    if (messageItem.room === item.room) {
+      chatMemberHandler(messageItem as chatListItem);
+      return;
+    }
+    // 跳转四疗效
+    if (
+      messageItem.receiver_id === item.id ||
+      messageItem.sender_id === item.id
+    ) {
+      chatMemberHandler(messageItem as chatListItem);
+    }
+  });
+  console.log("groupItemsHandler", item);
 };
 
 onMounted(() => {

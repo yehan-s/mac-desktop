@@ -19,6 +19,8 @@
       <BottomIcon name="menu" />
     </div>
   </div>
+  
+  <!-- 个人资料 -->
   <Dialog
     v-model:visible="userProfile"
     modal
