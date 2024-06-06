@@ -19,7 +19,7 @@
       <BottomIcon name="menu" />
     </div>
   </div>
-  
+
   <!-- 个人资料 -->
   <Dialog
     v-model:visible="userProfile"
@@ -132,12 +132,16 @@
       </div>
     </template>
   </Dialog>
+
+  <!-- 音视频 -->
+  <Video />
 </template>
 
 <script setup lang="ts">
 import { nextTick } from "vue";
 import TopIcon from "./topIcon.vue";
 import BottomIcon from "./bottomIcon.vue";
+import Video from "../chatWindow/video.vue";
 import persets from "~/config/persets";
 import { useThemeStore } from "~/store/theme";
 import { useUserStore } from "~/store/user";

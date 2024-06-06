@@ -249,12 +249,13 @@ export const useChatStore = defineStore("chat", () => {
       });
       localStream = stream;
       // 私聊时，被邀请人显示自己的视频流需要单独渲染
-      if (currentChat.sendMessage.type === "private") {
-        if (myVideoRef.value) {
-          console.log("己方视频流已加载");
-          myVideoRef.value!.srcObject = localStream;
-        }
+      // 什么都没点击时，type时null
+      // if (currentChat.sendMessage.type === "private") {
+      if (myVideoRef.value) {
+        console.log("己方视频流已加载");
+        myVideoRef.value!.srcObject = localStream;
       }
+      // }
     } catch {
       // showMessage(
       //   "error",
@@ -321,7 +322,7 @@ export const useChatStore = defineStore("chat", () => {
   }
 
   // 收到视频通话申请 对方
-  function onReceiveVideo(userInfo: { nickname: any }) {
+  function onReceiveVideo(userInfo: { nickname: any; room: string }) {
     if (
       window.confirm(`你要接收该用户${userInfo.nickname}的视频通话邀请吗？`)
     ) {
@@ -334,10 +335,10 @@ export const useChatStore = defineStore("chat", () => {
   }
 
   // 用户接受通话申请 对方
-  async function acceptVideoCall(userInfo: { nickname: any }) {
+  async function acceptVideoCall(userInfo: { nickname: any; room: string }) {
     console.log("接听视频通话，方法不一定触发");
-    // 虽然上面发送请求的已经为room赋值，但是接收方是没有赋值的
-    myInfo.room = currentChat.sendMessage.room;
+    // 此时，对方的room可能是null，直接获取传过来的info
+    myInfo.room = userInfo.room;
     if (!videoIsOpen.value) {
       videoIsOpen.value = true;
     }
@@ -354,7 +355,6 @@ export const useChatStore = defineStore("chat", () => {
 
   // 用户正在接听视频 己方
   async function onAcceptVideo() {
-    console.log("i do it！！！！！！！！！！！！");
     // 接受通话化，此时打开音视频通话组件
     console.log("检测是否需要", !videoIsOpen.value);
     // if (!pc) {
@@ -393,13 +393,6 @@ export const useChatStore = defineStore("chat", () => {
         userInfo: myInfo,
       });
     }
-
-    // if (event.candidate) {
-    //   socket.emit("add_candidate", {
-    //     candidate: event.candidate,
-    //     userInfo: myInfo,
-    //   });
-    // }
   }
   // 检测WebRTC（Web实时通信）中的 ICE 连接状态 更改
   // "new"：初始状态，表示ICE代理已创建。
@@ -452,19 +445,28 @@ export const useChatStore = defineStore("chat", () => {
   async function onReceiveOffer(offer: RTCSessionDescriptionInit) {
     if (!pc) return;
     // 设置对方的 REMOTE OFFER
-    await pc.setRemoteDescription(offer);
-    console.log("接受offer，等待发送answer", pc.signalingState);
-    const answer: RTCSessionDescriptionInit = await pc.createAnswer();
-    pc.setLocalDescription(answer);
-    console.log("接收remote-offer,发送answer", pc.signalingState);
-    socket.emit("answer", { answer, userInfo: myInfo });
+    try {
+      await pc.setRemoteDescription(offer);
+      console.log("接受offer，等待发送answer", pc.signalingState);
+      const answer: RTCSessionDescriptionInit = await pc.createAnswer();
+      pc.setLocalDescription(answer);
+      console.log("接收remote-offer,发送answer", pc.signalingState);
+      console.log("answer这里我看看信息", myInfo);
+      socket.emit("answer", { answer, userInfo: myInfo });
+    } catch (error) {
+      console.warn("接受offer失败", error);
+    }
   }
 
   // 收到 answer 信令后（己方）、
   // 自己的pc设置setRemoteDescription（answer）
   async function onReceiveAnswer(answer: RTCSessionDescriptionInit) {
-    await pc!.setRemoteDescription(answer);
-    console.log("接受answer", pc!.signalingState);
+    try {
+      await pc!.setRemoteDescription(answer);
+      console.log("接受answer", pc!.signalingState);
+    } catch (error) {
+      console.warn("接受answer失败", error);
+    }
   }
 
   // 收到 candidate 信令后
@@ -472,6 +474,21 @@ export const useChatStore = defineStore("chat", () => {
     console.log("接收candidate", candidate);
     await pc!.addIceCandidate(candidate);
   }
+
+  // 点击通话开关
+  const videoHandler = () => {
+    videoIsOpen.value = true;
+    if (videoIsOpen.value) {
+      requestVideoCall();
+    } else {
+      // 结束通话
+      // socket.current?.send(JSON.stringify({ name: "reject" }));
+      // socket.current?.close();
+      // socket.current = null;
+      // localStream.current?.getAudioTracks()[0].stop();
+      // localStream.current!.getVideoTracks()[0].stop();
+    }
+  };
 
   return {
     currentChat,
@@ -492,5 +509,6 @@ export const useChatStore = defineStore("chat", () => {
     initSocket,
     initStream,
     requestVideoCall,
+    videoHandler,
   };
 });
