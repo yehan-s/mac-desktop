@@ -122,7 +122,6 @@ const props = defineProps({
 const chatMessageRef = ref(null);
 
 onMounted(() => {
-  // 把控制滚动条的ref传递给chatStore
   chatStore.chatMessageRef = chatMessageRef.value;
 });
 

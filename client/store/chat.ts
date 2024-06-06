@@ -7,7 +7,8 @@ import {
   clearPrivateUnread,
 } from "~/api/search";
 import { findUserInfoByUserId, findUserInfoByUsername } from "~/api/user";
-import type { Message } from "~/types";
+import type { Message, VideoType } from "~/types";
+import { CallStatus } from "~/types/video";
 
 export const useChatStore = defineStore("chat", () => {
   // "sender_id": 4,
@@ -77,10 +78,10 @@ export const useChatStore = defineStore("chat", () => {
     let groupChats = res.groupMembers!.map(
       (item: { group: any }) => item.group
     );
-    console.log("这个很重要！！！！！！", groupChats);
+    // console.log("这个很重要！！！！！！", groupChats);
     const list = friends?.concat(groupChats);
     // console.log("friends", friends);
-    console.log("记得删除！！！！！", list);
+    // console.log("记得删除！！！！！", list);
     socket.connect();
     socket.emit("inintialize", list);
   };
@@ -116,6 +117,7 @@ export const useChatStore = defineStore("chat", () => {
     scrollToBottom();
   };
 
+  // 接收私聊消息
   socket.on("sendPrivate", async (data) => {
     // 发送消息，最后一条消息接收不到，肯能数据库还没刷出来把
     await getAllMessage(currentChat.sendMessage.room);
@@ -171,6 +173,306 @@ export const useChatStore = defineStore("chat", () => {
     allMessage.value.push(message);
   };
 
+  // 音频
+  let videoIsOpen = ref(false); // 是否打开音视频通话组件
+  let localStream: MediaStream; // 本地音视频流，用于存储自己的音视频流，方便结束时关闭
+  let myVideoRef = ref<HTMLVideoElement | null>(null); // 本地音视频流 video 标签
+  let otherVideoRef = ref<HTMLVideoElement | null>(null); // 远程音视频流 video 标签
+  let isBusy = ref(false); // 是否正在通话中
+  let callStatus: VideoType.callStatusType = CallStatus.INITIATE; // 通话状态
+  let pc: RTCPeerConnection | null = null; // RTCPeerConnection 实例 本机
+  let myInfo = {
+    nickname: "夜寒",
+    avatar:
+      "https://cdn.jsdelivr.net/gh/linyuxuanlin/Warehouse/img/202108311547.jpg",
+    room: "",
+  }; // 自己的信息
+
+  // 连接socket
+  // 打开音视频通话组件时建立 websocket 连接
+  const initSocket = async () => {
+    // 连接时初始化
+    // myInfo.nickname = c
+    // 如果是通话发起人，则初始化音视频流并发送创建房间指令
+    // console.log("看看是不是true", callStatus === CallStatus.INITIATE);
+    // if (callStatus === CallStatus.INITIATE) {
+    //   try {
+    //     console.log("尝试初始化音视频流");
+    //     // 1、获取并设置自己的音视频流
+    //     await initStream();
+    //     // 2、给被邀请人发送创建房间的指令（mode 作用是区分是私聊还是群聊，callReceiverList 作用是说明哪些人需要被邀请加入通话）
+    //     // socket.current?.send(
+    //     //   JSON.stringify({
+    //     //     name: "create_room",
+    //     //     mode:
+    //     //       connectParams.type === "private"
+    //     //         ? "private_video"
+    //     //         : "group_video",
+    //     //     callReceiverList: callInfo.callReceiverList,
+    //     //   })
+    //     // );
+    //     console.log("正确初始化音视频流获取成功");
+    //   } catch {
+    //     // showMessage(
+    //     //   "error",
+    //     //   "获取音频流失败，请检查设备是否正常或者权限是否已开启"
+    //     // );
+    //     alert("获取音频流失败，请检查设备是否正常或者权限是否已开启  socket");
+    //     // socket.current?.send(JSON.stringify({ name: "reject" }));
+    //     // socket.current?.close();
+    //     // socket.current = null;
+    //     // localStream.current?.getAudioTracks()[0].stop();
+    //     // localStream.current!.getVideoTracks()[0].stop();
+    //     // setTimeout(() => {
+    //     //   handleModal(false);
+    //     // }, 1500);
+    //   }
+    // }
+    // socket.on("connected", onConnected);
+    // socket.on("room_created", onCreateRoom);
+    // socket.on("room_joined", onJoinRoomSuccess);
+    // socket.on("room_full", onJoinRoomFail);
+  };
+  socket.on("receive_video", onReceiveVideo);
+  socket.on("accept_video", onAcceptVideo);
+  socket.on("receive_offer", onReceiveOffer);
+  socket.on("receive_answer", onReceiveAnswer);
+  socket.on("receive_candidate", onAddCandidate);
+  // socket.on("request_video", acceptVideoCall); // 创建RTC实例
+
+  // 初始化本人音视频流
+  const initStream = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: false,
+      });
+      localStream = stream;
+      // 私聊时，被邀请人显示自己的视频流需要单独渲染
+      if (currentChat.sendMessage.type === "private") {
+        if (myVideoRef.value) {
+          console.log("己方视频流已加载");
+          myVideoRef.value!.srcObject = localStream;
+        }
+      }
+    } catch {
+      // showMessage(
+      //   "error",
+      //   "获取音频流失败，请检查设备是否正常或者权限是否已开启"
+      // );
+      // handleModal(false);
+      alert("获取音频流失败，请检查设备是否正常或者权限是否已开启");
+    }
+  };
+
+  // 初始化 PC 通道（为房间内每个能接收到自己音视频流的人创建一个专属的 RTCPeerConnection 连接实例，该实例是真正负责音视频通信的角色）
+  // const initPC = (username: string) => {
+  //   // pc是己方的RTCPeerConnection实例
+  //   const pc = new RTCPeerConnection();
+  //   // 给 PC 绑定 onicecandidate 事件，该事件将会 PC 通道双方彼此的 SDP（会话描述协议）设置完成之后自动触发，给对方发送自己的 candidate 数据（接收 candidate，交换 ICE 网络信息）
+  //   pc.onicecandidate = (evt) => {
+  //     if (evt.candidate) {
+  //       // socket.current?.send(
+  //       //   JSON.stringify({
+  //       //     name: `ice_candidate`,
+  //       //     data: {
+  //       //       id: evt.candidate.sdpMid,
+  //       //       label: evt.candidate.sdpMLineIndex,
+  //       //       sdpMLineIndex: evt.candidate.sdpMLineIndex,
+  //       //       candidate: evt.candidate.candidate,
+  //       //     },
+  //       //     receiver: username,
+  //       //   })
+  //       // );
+  //     }
+  //   };
+  //   // 给 PC 绑定 ontrack 事件，该事件用于接收远程视频流并播放，将会在双方交换并设置完 ICE 之后自动触发
+  //   pc.ontrack = (evt) => {
+  //     // if (evt.streams && evt.streams[0]) {
+  //     //   const video = document.querySelector(
+  //     //     `.video_${username}`
+  //     //   ) as HTMLVideoElement;
+  //     //   if (video) {
+  //     //     video.srcObject = evt.streams[0];
+  //     //   }
+  //     // }
+  //   };
+  //   // callListRef.current[username] = {
+  //   //   PC: pc,
+  //   //   alias:
+  //   //     callInfo.callReceiverList.find((item) => item.username === username)
+  //   //       ?.alias || "",
+  //   //   avatar:
+  //   //     callInfo.callReceiverList.find((item) => item.username === username)
+  //   //       ?.avatar || "",
+  //   // };
+  // };
+
+  // socket一系列操作
+
+  // 发起视频通话申请 己方
+  async function requestVideoCall() {
+    myInfo.room = currentChat.sendMessage.room;
+    socket.emit("request_video", myInfo); //自己info给对方
+    // 1、获取并设置自己的音视频流
+    await initStream();
+    // 2、创建并设置自己的 RTCPeerConnection 实例
+    createPeerConnection();
+  }
+
+  // 收到视频通话申请 对方
+  function onReceiveVideo(userInfo: { nickname: any }) {
+    if (
+      window.confirm(`你要接收该用户${userInfo.nickname}的视频通话邀请吗？`)
+    ) {
+      console.log("onReceiveVideo,有下一步跳转acceptVideoCall");
+      console.log("userInfo", userInfo);
+      acceptVideoCall(userInfo); //别人的info给自己
+    } else {
+      return;
+    }
+  }
+
+  // 用户接受通话申请 对方
+  async function acceptVideoCall(userInfo: { nickname: any }) {
+    console.log("接听视频通话，方法不一定触发");
+    // 虽然上面发送请求的已经为room赋值，但是接收方是没有赋值的
+    myInfo.room = currentChat.sendMessage.room;
+    if (!videoIsOpen.value) {
+      videoIsOpen.value = true;
+    }
+    await nextTick();
+    if (!pc) {
+      // 1、获取并设置自己的音视频流
+      await initStream();
+      // 2、创建并设置自己的 RTCPeerConnection 实例
+      createPeerConnection();
+    }
+    // onReceiveVideo("夜寒");
+    socket.emit("accept_video", userInfo); //别人的info
+  }
+
+  // 用户正在接听视频 己方
+  async function onAcceptVideo() {
+    console.log("i do it！！！！！！！！！！！！");
+    // 接受通话化，此时打开音视频通话组件
+    console.log("检测是否需要", !videoIsOpen.value);
+    // if (!pc) {
+    //   // 1、获取并设置自己的音视频流
+    //   await initStream();
+    //   // 2、创建并设置自己的 RTCPeerConnection 实例
+    //   createPeerConnection();
+    // }
+    // 3、给对方发送自己的 offer
+    await sendOffer();
+  }
+
+  // 建立点对点连接
+  function createPeerConnection() {
+    console.log("createPeerConnection已经初始化----");
+    if (!pc) {
+      pc = new RTCPeerConnection();
+    }
+
+    pc.onicecandidate = onIceCandidate;
+    pc.oniceconnectionstatechange = onIceConnectionStateChange;
+    pc.ontrack = onTrack;
+    pc.onicegatheringstatechange = onicegatheringstatechange;
+
+    localStream.getTracks().forEach((track) => {
+      pc?.addTrack(track, localStream);
+    });
+  }
+
+  function onIceCandidate(event: RTCPeerConnectionIceEvent) {
+    console.log("onIceCandidate", event.candidate);
+    // 最后一个会为null
+    if (event.candidate) {
+      socket.emit("add_candidate", {
+        candidate: event.candidate,
+        userInfo: myInfo,
+      });
+    }
+
+    // if (event.candidate) {
+    //   socket.emit("add_candidate", {
+    //     candidate: event.candidate,
+    //     userInfo: myInfo,
+    //   });
+    // }
+  }
+  // 检测WebRTC（Web实时通信）中的 ICE 连接状态 更改
+  // "new"：初始状态，表示ICE代理已创建。
+  // "checking"：ICE代理正在尝试收集候选者，并且正在进行STUN（会话遍历实用程序）或TURN（中继转发）服务器交互以验证网络连接性。
+  // "connected"：ICE代理已成功建立对等连接。
+  // "completed"：ICE代理已完成收集所有候选者，并且至少有一个合适的候选者已使用。
+  // "failed"：ICE代理无法建立连接，可能由于网络错误或STUN/TURN服务器不可用。
+  // "disconnected"：先前建立的连接已断开。
+  // "closed"：ICE代理已关闭。
+  function onIceConnectionStateChange() {
+    console.log(
+      `oniceconnectionstatechange, pc.iceConnectionState is ${pc!.iceConnectionState}.`
+    );
+  }
+  // 在接收到远程媒体轨道时执行操作
+  function onTrack(event: RTCTrackEvent) {
+    // document.getElementById("remote-video").srcObject = event.streams[0];
+    otherVideoRef.value!.srcObject = event.streams[0];
+    console.log("onTrack", event);
+  }
+  // 用于检测ICE收集状态的更改
+  // "new"：初始状态，表示ICE代理已创建。
+  // "gathering"：ICE代理正在收集候选者。
+  // "complete"：ICE代理已完成收集所有候选者。
+  function onicegatheringstatechange() {
+    if (pc!.iceGatheringState === "gathering") {
+      console.log("正在收集ICE候选...");
+    } else if (pc!.iceGatheringState === "complete") {
+      console.log("ICE候选收集完成");
+    }
+  }
+
+  // 发送方创建offer （己方）
+  // 自己的pc设置setLocalDescription（offer）
+  async function sendOffer() {
+    try {
+      const offer: RTCSessionDescriptionInit = await pc!.createOffer();
+      // 接下来，设置己方LOCAL OFFER，并将 offer 发送到对等方
+      await pc!.setLocalDescription(offer);
+      console.log("发送offer", pc!.signalingState);
+      // 发送 offer 到对等方...
+      socket.emit("offer", { offer, userInfo: myInfo });
+    } catch (error) {
+      console.error("创建 offer 失败", error);
+    }
+  }
+
+  // 收到 offer 信令后应答 （对方）
+  // 对方的pc设置setRemoteDescription（offer）
+  async function onReceiveOffer(offer: RTCSessionDescriptionInit) {
+    if (!pc) return;
+    // 设置对方的 REMOTE OFFER
+    await pc.setRemoteDescription(offer);
+    console.log("接受offer，等待发送answer", pc.signalingState);
+    const answer: RTCSessionDescriptionInit = await pc.createAnswer();
+    pc.setLocalDescription(answer);
+    console.log("接收remote-offer,发送answer", pc.signalingState);
+    socket.emit("answer", { answer, userInfo: myInfo });
+  }
+
+  // 收到 answer 信令后（己方）、
+  // 自己的pc设置setRemoteDescription（answer）
+  async function onReceiveAnswer(answer: RTCSessionDescriptionInit) {
+    await pc!.setRemoteDescription(answer);
+    console.log("接受answer", pc!.signalingState);
+  }
+
+  // 收到 candidate 信令后
+  async function onAddCandidate(candidate: RTCIceCandidateInit) {
+    console.log("接收candidate", candidate);
+    await pc!.addIceCandidate(candidate);
+  }
+
   return {
     currentChat,
     allMessage,
@@ -184,5 +486,11 @@ export const useChatStore = defineStore("chat", () => {
     getAllMessage,
     clearUnread,
     scrollToBottom,
+    videoIsOpen,
+    myVideoRef,
+    otherVideoRef,
+    initSocket,
+    initStream,
+    requestVideoCall,
   };
 });

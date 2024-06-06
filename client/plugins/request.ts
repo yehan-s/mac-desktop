@@ -27,7 +27,7 @@ export default defineNuxtPlugin(() => {
     },
     /** 响应拦截器 */
     onResponse({ response }) {
-      console.log("响应拦截器", response);
+      // console.log("响应拦截器", response);
       if (response.status >= 200 && response.status < 300) {
         return response._data;
       }

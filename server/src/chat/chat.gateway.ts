@@ -57,6 +57,49 @@ export class ChatGateway implements OnGatewayConnection {
     return '初始化成功';
   }
 
+  // 发送通话申请
+  @SubscribeMessage('request_video')
+  async request_video(
+    @MessageBody() data: any,
+    @ConnectedSocket() client: Socket,
+  ): Promise<any> {
+    console.log('请求视频', data, client.rooms);
+    client.to(data.room).emit('receive_video', data); // 将消息仅广播给 'roomName' 房间内的所有客户端
+    return '请求视频';
+  }
+  // 接受通话申请
+  @SubscribeMessage('accept_video')
+  async accept_video(
+    @MessageBody() data: any,
+    @ConnectedSocket() client: Socket,
+  ) {
+    console.log('我明明有', data);
+    // this.server.in(data.room).emit('accept_video');
+    client.to(data.room).emit('accept_video');
+  }
+
+  // 收到offer
+  @SubscribeMessage('offer')
+  async offer(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
+    console.log('offer', data);
+    client.to(data.userInfo.room).emit('receive_offer', data.offer);
+  }
+
+  @SubscribeMessage('answer')
+  async answer(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
+    console.log('answer', data);
+    client.to(data.userInfo.room).emit('receive_answer', data.answer);
+  }
+
+  @SubscribeMessage('add_candidate')
+  async add_candidate(
+    @MessageBody() data: any,
+    @ConnectedSocket() client: Socket,
+  ) {
+    console.log('add_candidate', data);
+    client.to(data.userInfo.room).emit('receive_candidate', data.candidate);
+  }
+
   // @SubscribeMessage('createMessage')
   // handleMessage(
   //   @MessageBody() data: Partial<Chat>,

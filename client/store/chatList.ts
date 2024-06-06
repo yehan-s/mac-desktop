@@ -190,10 +190,10 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
       // 因为最后一条消息可能是对方发的，也可能是我方发的
       // 而这里必须拿到对方ID，方便后续操作
       if (MessageTemp.sender_id === userId) {
-        chatListItem.receiver_id = MessageTemp.sender_id;
+        chatListItem.receiver_id = MessageTemp.receiver_id;
         chatListItem.sender_id = MessageTemp.sender_id;
       } else {
-        chatListItem.receiver_id = MessageTemp.receiver_id;
+        chatListItem.receiver_id = MessageTemp.sender_id;
         chatListItem.sender_id = MessageTemp.receiver_id;
       }
 
@@ -201,7 +201,7 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
       // 读取自己对 receiver 的unread
       let searchMemberData = {
         room: item.room as string,
-        user_id: userId,
+        user_id: chatListItem.sender_id,
       };
       // 查找未读消息数量（群聊）
       let res = await findGroupMember(searchMemberData);
