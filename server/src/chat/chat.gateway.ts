@@ -78,13 +78,14 @@ export class ChatGateway implements OnGatewayConnection {
     client.to(data.room).emit('accept_video');
   }
 
-  // 收到offer
+  // 发送offer
   @SubscribeMessage('offer')
   async offer(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
     console.log('offer', data);
     client.to(data.userInfo.room).emit('receive_offer', data.offer);
   }
 
+  // 发送answer
   @SubscribeMessage('answer')
   async answer(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
     console.log('answer', data);
@@ -98,6 +99,12 @@ export class ChatGateway implements OnGatewayConnection {
   ) {
     console.log('add_candidate', data);
     client.to(data.userInfo.room).emit('receive_candidate', data.candidate);
+  }
+
+  // 参收
+  @SubscribeMessage('closeVideo')
+  clsoeVideo(@MessageBody() data: any) {
+    this.server.in(data).emit('closeVideo');
   }
 
   // @SubscribeMessage('createMessage')

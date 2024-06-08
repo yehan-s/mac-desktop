@@ -8,7 +8,7 @@ import {
 } from "~/api/search";
 import { findUserInfoByUserId, findUserInfoByUsername } from "~/api/user";
 import type { Message, VideoType } from "~/types";
-import { CallStatus } from "~/types/video";
+import { CallStatus, type callStatusType } from "~/types/video";
 
 export const useChatStore = defineStore("chat", () => {
   // "sender_id": 4,
@@ -179,15 +179,20 @@ export const useChatStore = defineStore("chat", () => {
   let myVideoRef = ref<HTMLVideoElement | null>(null); // 本地音视频流 video 标签
   let otherVideoRef = ref<HTMLVideoElement | null>(null); // 远程音视频流 video 标签
   let isBusy = ref(false); // 是否正在通话中
-  let callStatus: VideoType.callStatusType = CallStatus.INITIATE; // 通话状态
+  let callStatus = ref<VideoType.callStatusType>(CallStatus.CLOSED); // 通话状态
   let pc: RTCPeerConnection | null = null; // RTCPeerConnection 实例 本机
-  let myInfo = {
-    nickname: "夜寒",
-    avatar:
-      "https://cdn.jsdelivr.net/gh/linyuxuanlin/Warehouse/img/202108311547.jpg",
+  let myInfo = reactive({
+    id: 0,
+    nickname: "",
+    avatar: "",
     room: "",
-  }; // 自己的信息
-
+  }); // 自己的信息
+  let receiveVideoInfo = reactive({
+    id: 0,
+    nickname: "",
+    avatar: "",
+    room: "",
+  });
   // 连接socket
   // 打开音视频通话组件时建立 websocket 连接
   const initSocket = async () => {
@@ -248,6 +253,7 @@ export const useChatStore = defineStore("chat", () => {
         audio: false,
       });
       localStream = stream;
+      console.log("初始化的stream", localStream);
       // 私聊时，被邀请人显示自己的视频流需要单独渲染
       // 什么都没点击时，type时null
       // if (currentChat.sendMessage.type === "private") {
@@ -315,53 +321,61 @@ export const useChatStore = defineStore("chat", () => {
   async function requestVideoCall() {
     myInfo.room = currentChat.sendMessage.room;
     socket.emit("request_video", myInfo); //自己info给对方
+    // 不能在这获取流，此时还没有DOM
+  }
+
+  // 收到视频通话申请 对方
+  function onReceiveVideo(userInfo: any) {
+    // 打开对话框
+    setCallStatus(CallStatus.RECEIVE);
+    if (!videoIsOpen.value) {
+      videoIsOpen.value = true;
+    }
+    console.log("onReceiveVideo,有下一步跳转acceptVideoCall");
+    console.log("userInfo", userInfo);
+    // @ts-ignore
+    receiveVideoInfo.id = userInfo.id;
+    receiveVideoInfo.nickname = userInfo.nickname;
+    receiveVideoInfo.room = userInfo.room;
+    receiveVideoInfo.avatar = userInfo.avatar;
+
+    // 点击接通手动触发
+    // acceptVideoCall(userInfo); //别人的info给自己
+  }
+
+  // 用户接受通话申请 对方
+  // 跳出对话框点击接收触发
+  async function acceptVideoCall() {
+    console.log("接听视频通话，方法不一定触发");
+    callStatus.value = CallStatus.CALLING;
+    // 此时，对方的room可能是null，直接获取传过来的info
+    // myInfo.room = userInfo.room;
+    // if (!videoIsOpen.value) {
+    //   videoIsOpen.value = true;
+    // }
+    await nextTick();
+    // if (!pc) {
     // 1、获取并设置自己的音视频流
     await initStream();
     // 2、创建并设置自己的 RTCPeerConnection 实例
     createPeerConnection();
-  }
-
-  // 收到视频通话申请 对方
-  function onReceiveVideo(userInfo: { nickname: any; room: string }) {
-    if (
-      window.confirm(`你要接收该用户${userInfo.nickname}的视频通话邀请吗？`)
-    ) {
-      console.log("onReceiveVideo,有下一步跳转acceptVideoCall");
-      console.log("userInfo", userInfo);
-      acceptVideoCall(userInfo); //别人的info给自己
-    } else {
-      return;
-    }
-  }
-
-  // 用户接受通话申请 对方
-  async function acceptVideoCall(userInfo: { nickname: any; room: string }) {
-    console.log("接听视频通话，方法不一定触发");
-    // 此时，对方的room可能是null，直接获取传过来的info
-    myInfo.room = userInfo.room;
-    if (!videoIsOpen.value) {
-      videoIsOpen.value = true;
-    }
-    await nextTick();
-    if (!pc) {
-      // 1、获取并设置自己的音视频流
-      await initStream();
-      // 2、创建并设置自己的 RTCPeerConnection 实例
-      createPeerConnection();
-    }
+    // }
     // onReceiveVideo("夜寒");
-    socket.emit("accept_video", userInfo); //别人的info
+    socket.emit("accept_video", receiveVideoInfo); //别人的info
+    // socket.emit("accept_video", userInfo); //别人的info
   }
 
   // 用户正在接听视频 己方
   async function onAcceptVideo() {
     // 接受通话化，此时打开音视频通话组件
     console.log("检测是否需要", !videoIsOpen.value);
+    callStatus.value = CallStatus.CALLING;
+    // 必须重新获取
     // if (!pc) {
-    //   // 1、获取并设置自己的音视频流
-    //   await initStream();
-    //   // 2、创建并设置自己的 RTCPeerConnection 实例
-    //   createPeerConnection();
+    // 1、获取并设置自己的音视频流
+    await initStream();
+    // 2、创建并设置自己的 RTCPeerConnection 实例
+    createPeerConnection();
     // }
     // 3、给对方发送自己的 offer
     await sendOffer();
@@ -370,15 +384,18 @@ export const useChatStore = defineStore("chat", () => {
   // 建立点对点连接
   function createPeerConnection() {
     console.log("createPeerConnection已经初始化----");
-    if (!pc) {
-      pc = new RTCPeerConnection();
-    }
+    console.log("看下pc状态", pc?.signalingState);
+    // if (!pc || pc.connectionState === "closed") {
+    pc = new RTCPeerConnection();
+    // }
 
     pc.onicecandidate = onIceCandidate;
     pc.oniceconnectionstatechange = onIceConnectionStateChange;
     pc.ontrack = onTrack;
     pc.onicegatheringstatechange = onicegatheringstatechange;
 
+    // console.log("给pc传入track", localStream);
+    // console.log("看看tracks", localStream.getTracks());
     localStream.getTracks().forEach((track) => {
       pc?.addTrack(track, localStream);
     });
@@ -451,8 +468,8 @@ export const useChatStore = defineStore("chat", () => {
       const answer: RTCSessionDescriptionInit = await pc.createAnswer();
       pc.setLocalDescription(answer);
       console.log("接收remote-offer,发送answer", pc.signalingState);
-      console.log("answer这里我看看信息", myInfo);
-      socket.emit("answer", { answer, userInfo: myInfo });
+      console.log("answer这里我看看信息", receiveVideoInfo);
+      socket.emit("answer", { answer, userInfo: receiveVideoInfo });
     } catch (error) {
       console.warn("接受offer失败", error);
     }
@@ -476,7 +493,17 @@ export const useChatStore = defineStore("chat", () => {
   }
 
   // 点击通话开关
-  const videoHandler = () => {
+  const videoHandler = (userInfo: {
+    id: number;
+    nickname: string;
+    avatar: string;
+  }) => {
+    // 将user的信息传入myInfo
+    myInfo.id = userInfo.id;
+    myInfo.nickname = userInfo.nickname;
+    myInfo.avatar = userInfo.avatar;
+    myInfo.room = currentChat.sendMessage.room;
+    setCallStatus(CallStatus.INITIATE);
     videoIsOpen.value = true;
     if (videoIsOpen.value) {
       requestVideoCall();
@@ -489,6 +516,71 @@ export const useChatStore = defineStore("chat", () => {
       // localStream.current!.getVideoTracks()[0].stop();
     }
   };
+
+  // 设置童话状态的改变
+  const setCallStatus = (val: callStatusType) => {
+    callStatus.value = val;
+  };
+
+  // 关闭通话
+  const closeVideo = () => {
+    // 如果是请求时关闭，需要先方便后续判断
+    if (callStatus.value === CallStatus.INITIATE) {
+      videoIsOpen.value = false;
+      setCallStatus(CallStatus.CLOSED);
+    }
+    // 需要关闭双方
+    // if (callStatus.value !== CallStatus.INITIATE) {
+    socket.emit("closeVideo", myInfo.room || receiveVideoInfo.room);
+    // }
+  };
+  socket.on("closeVideo", () => {
+    // 被拒绝接听 此时没生成流，无需关闭
+    if (callStatus.value === CallStatus.INITIATE) {
+      window.confirm("对方拒绝接听");
+      setCallStatus(CallStatus.CLOSED);
+    }
+    if (callStatus.value === CallStatus.CALLING) {
+      setCallStatus(CallStatus.CLOSED);
+      endCall();
+    }
+    videoIsOpen.value = false;
+  });
+
+  // 关闭媒体流：首先，你需要关闭本地和远端的媒体流。这可以通过调用每个MediaStream对象的getTracks方法来获取所有轨道（音频和视频），然后调用每个轨道的stop方法来实现。
+  function closeMediaStream(stream: MediaStream) {
+    stream.getTracks().forEach((track: MediaStreamTrack) => {
+      track.stop();
+    });
+    console.log("stream", stream);
+    console.log("stream", stream.getTracks());
+    console.log("getAudioTracks", stream.getAudioTracks());
+    console.log("getVideoTracks", stream.getVideoTracks());
+    // stream?.getAudioTracks()[0].stop();
+    // stream!.getVideoTracks()[0].stop();
+  }
+  // 关闭RTCPeerConnection：接下来，你需要关闭RTCPeerConnection。这可以通过调用其close方法来完成。
+  function closePeerConnection(peerConnection: RTCPeerConnection) {
+    peerConnection.close();
+  }
+  // 清理DOM：最后，你可能需要从DOM中移除视频元素和其他与通话相关的元素。
+  function removeVideoElements() {
+    if (myVideoRef.value) {
+      myVideoRef.value.srcObject = null;
+      myVideoRef.value.remove();
+    }
+    if (otherVideoRef.value) {
+      otherVideoRef.value.srcObject = null;
+      otherVideoRef.value.remove();
+    }
+  }
+  // 在实际的应用中，你可能需要将这些步骤组合在一起，以便在需要时可以优雅地断开连接。
+
+  function endCall() {
+    closeMediaStream(localStream);
+    closePeerConnection(pc!);
+    removeVideoElements();
+  }
 
   return {
     currentChat,
@@ -506,9 +598,15 @@ export const useChatStore = defineStore("chat", () => {
     videoIsOpen,
     myVideoRef,
     otherVideoRef,
+    myInfo,
+    receiveVideoInfo,
+    callStatus,
     initSocket,
     initStream,
     requestVideoCall,
     videoHandler,
+    acceptVideoCall,
+    setCallStatus,
+    closeVideo,
   };
 });

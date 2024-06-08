@@ -9,7 +9,17 @@
       <div class="flex mr-2 space-x-2">
         <Icon name="apps" desc="应用中心" />
         <Icon name="phone" desc="语音通话" />
-        <Icon name="video" desc="视频通话" @click="chatStore.videoHandler" />
+        <Icon
+          name="video"
+          desc="视频通话"
+          @click="
+            chatStore.videoHandler({
+              id: userStore.id,
+              nickname: userStore.nickname,
+              avatar: userStore.avatar,
+            })
+          "
+        />
         <Icon name="screen" desc="屏幕共享" />
         <Icon name="friend" desc="邀请进群" />
         <Icon name="more" desc="更多" />
@@ -24,8 +34,10 @@ import Icon from "./icon.vue";
 import Video from "./video.vue";
 import { useThemeStore } from "~/store/theme";
 import { useChatStore } from "~/store/chat";
+import { useUserStore } from "~/store/user";
 const themeStore = useThemeStore();
 const chatStore = useChatStore();
+const userStore = useUserStore();
 const textColor = computed(() =>
   themeStore.dark ? "text-[#fff]" : "text-[#000]"
 );

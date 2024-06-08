@@ -24,18 +24,19 @@ export interface ICallModalProps {
 }
 // 音视频通话对象信息 —— 在client\src\components\ChatTool\index.tsx中也被引用
 export interface ICallReceiverInfo {
-  username: string;
-  alias: string; // 好友备注或群昵称
+  nickname: string;
   avatar: string;
+  room: string;
 }
 // 音视频通话状态
 export enum CallStatus {
   INITIATE = "initiate",
   RECEIVE = "receive",
   CALLING = "calling",
+  CLOSED = "closed",
 }
 // 音视频通话状态类型 initiate: 发起通话 receive: 接收通话 calling: 通话中
-export type callStatusType = "initiate" | "receive" | "calling";
+export type callStatusType = "initiate" | "receive" | "calling" | "closed";
 // 音视频通话对象涉及的信息类型
 export interface ICallList {
   [username: string]: {
