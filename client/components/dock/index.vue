@@ -32,6 +32,7 @@ const appStore = useAppStore();
 
 function command(this: { label: string; icon: string; command: () => void }) {
   // console.log(this.label);
+  // 如果在最小化中，就从最小化list中移除
   if (appStore.minimizeApps.includes(this.label)) {
     appStore.removeMinimizeApps(this.label);
   }

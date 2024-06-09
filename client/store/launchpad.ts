@@ -7,7 +7,7 @@ interface launchapadState {
 export const useLaunchpadStore = defineStore(
   "launchpad",
   (): launchapadState => {
-    let show = ref(false);
+    let show = ref(true);
     const setShow = (value: boolean) => {
       show.value = value;
     };

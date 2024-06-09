@@ -23,6 +23,7 @@
     <!-- 存放app -->
     <div class="relative w-full h-full bg-green-200">
       <Chat v-if="props.appName === 'turbochat'" />
+      <Launchpad v-if="props.appName === 'launchpad'" />
     </div>
   </div>
 </template>

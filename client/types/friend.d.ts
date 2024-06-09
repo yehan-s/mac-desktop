@@ -1,8 +1,3 @@
-// export interface Friend {
-//   id: number;
-//   nickname: string;
-//   avatar: string;
-// }
 
 export interface Friend {
   id: number;
