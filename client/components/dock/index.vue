@@ -47,7 +47,7 @@ const items = ref([
     command,
   },
   {
-    label: "vscode",
+    label: "vsc",
     icon: "img/icons/vscode.png",
     command,
   },
