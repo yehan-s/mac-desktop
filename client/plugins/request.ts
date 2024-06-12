@@ -1,6 +1,3 @@
-// import { useUserStore } from "~/store/user";
-// const userStore = useUserStore();
-
 export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig();
   // console.log("process", process);
@@ -44,6 +41,7 @@ export default defineNuxtPlugin(() => {
   });
 
   return {
+    // useNuxtApp().$request 的形式触发
     provide: {
       request: $request,
     },
