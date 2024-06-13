@@ -82,7 +82,12 @@
           class="w-24 absolute right-0 top-0 z-50"
         ></video>
         <!-- {{ countTime }} -->
-        <div ref="timeRef"  class="absolute bottom-14 left-[50%] -translate-x-[50%]">00:00:00</div>
+        <div
+          ref="timeRef"
+          class="absolute bottom-14 left-[50%] -translate-x-[50%]"
+        >
+          00:00:00
+        </div>
         <img
           class="w-8 h-8 absolute bottom-4 left-[50%] -translate-x-[50%]"
           :src="CallIcons.REJECT"
@@ -94,6 +99,7 @@
       <template #footer> </template>
     </Dialog>
   </div>
+ 
 </template>
 
 <script setup lang="ts">
@@ -175,7 +181,6 @@ function animateTimer() {
 watch(
   () => chatStore.videoIsOpen,
   (newVal) => {
-    console.log("进入watch", newVal);
     if (newVal) {
       nextTick(() => {
         // 发起通话开始计时，超过则进行处理
@@ -215,6 +220,19 @@ watch(
     // 监测到CLOSED就会触发
     if (newVal === CallStatus.CLOSED) {
       pauseTimer();
+      // 通话结束
+      if (oldVal === CallStatus.CALLING) {
+        console.log(timeRef.value);
+        if (timeRef.value) {
+          console.log((timeRef.value as HTMLElement).textContent);
+          if (chatStore.myInfo.room) {
+            chatStore.sendPrivateMessage(
+              ("通话时长:" +
+                (timeRef.value as HTMLElement).textContent) as string
+            );
+          }
+        }
+      }
     }
   },
   { deep: true }
@@ -226,8 +244,13 @@ watch(
   currentTime,
   (newVal) => {
     // 超时 关闭对话框 关闭定时
-    if (chatStore.callStatus === CallStatus.INITIATE && newVal > 7000) {
-      window.alert("通话超时");
+    if (chatStore.callStatus === CallStatus.INITIATE && newVal > 5000) {
+      // window.alert("通话超时");
+      useNuxtApp().$toast.add({
+        severity: "warn",
+        detail: "通话超时",
+        life: 3000,
+      });
       chatStore.closeVideo();
       pauseTimer();
     }
@@ -241,4 +264,5 @@ let visible = ref(false);
 
 const myVideoRef = ref(null);
 const otherVideoRef = ref(null);
+
 </script>

@@ -31,6 +31,7 @@ export class ChatGateway implements OnGatewayConnection {
     return '连接成功';
   }
 
+  // 发送消息
   @SubscribeMessage('sendPrivate')
   handleMessage(
     @MessageBody() data: { room: string; content: string },
@@ -73,7 +74,7 @@ export class ChatGateway implements OnGatewayConnection {
     @MessageBody() data: any,
     @ConnectedSocket() client: Socket,
   ) {
-    console.log('我明明有', data);
+    console.log('接收通话', data);
     // this.server.in(data.room).emit('accept_video');
     client.to(data.room).emit('accept_video');
   }
@@ -98,7 +99,7 @@ export class ChatGateway implements OnGatewayConnection {
     @ConnectedSocket() client: Socket,
   ) {
     console.log('add_candidate', data);
-    client.to(data.userInfo.room).emit('receive_candidate', data.candidate);
+    client.to(data.room).emit('receive_candidate', data.candidate);
   }
 
   // 参收

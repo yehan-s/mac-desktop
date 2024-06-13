@@ -78,7 +78,6 @@ export const useChatStore = defineStore("chat", () => {
     let groupChats = res.groupMembers!.map(
       (item: { group: any }) => item.group
     );
-    // console.log("这个很重要！！！！！！", groupChats);
     const list = friends?.concat(groupChats);
     // console.log("friends", friends);
     // console.log("记得删除！！！！！", list);
@@ -87,18 +86,24 @@ export const useChatStore = defineStore("chat", () => {
   };
 
   // 发送消息
-  const sendPrivateMessage = async (content: string) => {
+  const sendPrivateMessage = async (content: string, media_type = "text") => {
     console.log("发送消息", currentChat);
 
     currentChat.sendMessage.content = content;
     currentChat.sendMessage.type = currentChat.sendMessage.type;
-    currentChat.sendMessage.media_type = "text";
+    currentChat.sendMessage.media_type = media_type;
 
+    // 往数据库存储消息，并读取最新消息
     await sendMessage(currentChat.sendMessage);
     await getAllMessage(currentChat.sendMessage.room);
 
     // 添加未读消息 传入的id是自己的，意思是别人对自己的未读消息+1
     if (currentChat.sendMessage.type === "private") {
+      // 如果是音频，不增加未读，不滚动屏幕
+      if (currentChat.sendMessage.media_type === "video") {
+      }
+
+      // 添加未读
       await addPrivateUnread({
         room: currentChat.sendMessage.room,
         user_id: currentChat.sendMessage.sender_id,
@@ -121,7 +126,12 @@ export const useChatStore = defineStore("chat", () => {
   socket.on("sendPrivate", async (data) => {
     // 发送消息，最后一条消息接收不到，肯能数据库还没刷出来把
     await getAllMessage(currentChat.sendMessage.room);
-    scrollToBottom();
+    // 不选择滚动
+    // bug:不是选定当前聊天框也会滚动
+    // 收到消息是当前选中框才会触发滚动
+    if (currentChat.sendMessage.room === data.room) {
+      scrollToBottom();
+    }
   });
 
   // 获取该房间下的所有消息
@@ -165,7 +175,11 @@ export const useChatStore = defineStore("chat", () => {
   };
 
   const scrollToBottom = () => {
-    chatMessageRef.value.scrollTop = chatMessageRef.value.scrollHeight;
+    if (chatMessageRef.value) {
+      chatMessageRef.value.scrollTop = chatMessageRef.value.scrollHeight;
+    } else {
+      console.log("没有选定聊天框，不滚动");
+    }
   };
 
   // 添加消息
@@ -339,6 +353,9 @@ export const useChatStore = defineStore("chat", () => {
     receiveVideoInfo.room = userInfo.room;
     receiveVideoInfo.avatar = userInfo.avatar;
 
+    // 清空myInfo
+    Object.assign(myInfo, {});
+
     // 点击接通手动触发
     // acceptVideoCall(userInfo); //别人的info给自己
   }
@@ -401,13 +418,14 @@ export const useChatStore = defineStore("chat", () => {
     });
   }
 
+  // 用于处理本地 PeerConnection 生成的 ICE 候选者。这些候选者是用来尝试在不同网络路径上建立连接的。当本地 PeerConnection 产生新的 ICE 候选者时，它会触发 onIceCandidate 事件，并将候选者信息传递给相应的处理函数。
   function onIceCandidate(event: RTCPeerConnectionIceEvent) {
     console.log("onIceCandidate", event.candidate);
     // 最后一个会为null
     if (event.candidate) {
       socket.emit("add_candidate", {
         candidate: event.candidate,
-        userInfo: myInfo,
+        room: myInfo.room || receiveVideoInfo.room,
       });
     }
   }
@@ -503,6 +521,7 @@ export const useChatStore = defineStore("chat", () => {
     myInfo.nickname = userInfo.nickname;
     myInfo.avatar = userInfo.avatar;
     myInfo.room = currentChat.sendMessage.room;
+    Object.assign(receiveVideoInfo, {});
     setCallStatus(CallStatus.INITIATE);
     videoIsOpen.value = true;
     if (videoIsOpen.value) {
@@ -537,7 +556,11 @@ export const useChatStore = defineStore("chat", () => {
   socket.on("closeVideo", () => {
     // 被拒绝接听 此时没生成流，无需关闭
     if (callStatus.value === CallStatus.INITIATE) {
-      window.confirm("对方拒绝接听");
+      useNuxtApp().$toast.add({
+        severity: "warn",
+        detail: "对方拒绝接听",
+        life: 3000,
+      });
       setCallStatus(CallStatus.CLOSED);
     }
     if (callStatus.value === CallStatus.CALLING) {
