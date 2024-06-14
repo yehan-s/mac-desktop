@@ -5,11 +5,13 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
+import { ChatService } from 'src/chat/chat.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
+    private chatService: ChatService,
     private jwt: JwtService,
   ) {}
   async signIn(username: string, password: string) {
@@ -60,6 +62,10 @@ export class AuthService {
       throw new ForbiddenException('用户名已存在');
     }
     const res = await this.userService.create({ username, password });
+
+    // 初始化需要新建一个好友分组
+    this.chatService.createFriendGroup({ user_id: res.id, name: '我的好友' });
+
     console.log('signup', res);
     return '注册成功';
   }

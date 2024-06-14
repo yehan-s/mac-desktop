@@ -191,11 +191,12 @@ export class ChatService {
 
   // 创建群聊
   async createGroup(group: Partial<GroupChat>) {
-    const groupTemp = this.groupChatRepository.create(group);
+    group.room = uuidv4();
     const creator = await this.userService.findUserByUserId(group.creator_id);
     if (!creator) {
       throw new NotFoundException('creator not found');
     }
+    const groupTemp = this.groupChatRepository.create(group);
     // 添加创建者到群聊的成员数组中
     // groupTemp.members = [creator];
 
@@ -206,6 +207,17 @@ export class ChatService {
       group_id: res.id,
     };
     this.createGroupMember(addGMData.user_id, addGMData.group_id);
+
+    // 发一条默认消息
+    const message = {
+      sender_id: group.creator_id,
+      receiver_id: group.creator_id,
+      content: '群的第一条消息',
+      room: group.room,
+      type: 'group',
+      media_type: 'text',
+    };
+    this.createMessage(message);
     return res;
   }
 

@@ -183,18 +183,18 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
         avatar: item.avatar,
       };
       let MessageTemp = await findLastMessage(item.room as string);
-      chatListItem.lastMessage = MessageTemp.content;
-      chatListItem.date = MessageTemp.created_at as string;
-      chatListItem.room = MessageTemp.room;
-      chatListItem.type = MessageTemp.type;
+      chatListItem.lastMessage = MessageTemp.content ?? "";
+      chatListItem.date = (MessageTemp.created_at as string) ?? "";
+      chatListItem.room = MessageTemp.room ?? "";
+      chatListItem.type = MessageTemp.type ?? "";
       // 因为最后一条消息可能是对方发的，也可能是我方发的
       // 而这里必须拿到对方ID，方便后续操作
       if (MessageTemp.sender_id === userId) {
-        chatListItem.receiver_id = MessageTemp.receiver_id;
-        chatListItem.sender_id = MessageTemp.sender_id;
+        chatListItem.receiver_id = MessageTemp.receiver_id ?? 0;
+        chatListItem.sender_id = MessageTemp.sender_id ?? 0;
       } else {
-        chatListItem.receiver_id = MessageTemp.sender_id;
-        chatListItem.sender_id = MessageTemp.receiver_id;
+        chatListItem.receiver_id = MessageTemp.sender_id ?? 0;
+        chatListItem.sender_id = MessageTemp.receiver_id ?? 0;
       }
 
       // 因为最后才能确定receiver_id,因此放在最后取unRead
