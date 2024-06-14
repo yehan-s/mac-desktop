@@ -25,6 +25,7 @@
       <Chat v-if="props.appName === 'turbochat'" />
       <Launchpad v-if="props.appName === 'launchpad'" />
       <Vsc v-if="props.appName === 'vsc'" />
+      <Terminal v-if="props.appName === 'terminal'" />
     </div>
   </div>
 </template>
@@ -34,6 +35,7 @@ import { ref, onMounted, defineProps, computed } from "vue";
 import TrafficHeader from "@/components/window/trafficLight.vue";
 import Chat from "@/components/apps/chat/index.vue";
 import Vsc from "@/components/apps/vsc/index.vue";
+import Terminal from "@/components/apps/terminal/index.vue";
 import { vDraggable, type DragOptions } from "@neodrag/vue";
 import { useAppStore } from "~/store/app";
 

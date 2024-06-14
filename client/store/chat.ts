@@ -50,10 +50,16 @@ export const useChatStore = defineStore("chat", () => {
     currentChat.sendMessage.sender_id = id;
   };
 
+  // 存储当前私聊对象的信息
   const setReceiver = async (receiver_id: number) => {
     currentChat.sendMessage.receiver_id = receiver_id;
     // 存储对方的 userInfo
     currentChat.privateObject = await findUserInfoByUserId(receiver_id);
+  };
+  // 存储当前群聊对象的信息
+  const setGroupReceiver = async (item: {}) => {
+    currentChat.groupObject = item;
+    currentChat.privateObject.nickname = "";
   };
 
   const setRoom = (room: string) => {
@@ -610,6 +616,7 @@ export const useChatStore = defineStore("chat", () => {
     allMessage,
     chatMessageRef,
     setReceiver,
+    setGroupReceiver,
     setRoom,
     sendPrivateMessage,
     setSenderId,

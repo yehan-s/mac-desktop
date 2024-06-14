@@ -164,12 +164,19 @@ interface chatListItem {
 
 // 点击消息列表item
 const chatMemberHandler = async (item: chatListItem) => {
+  if (item.type === "group") {
+    chatStore.setGroupReceiver(item);
+    // chatListStore.setListType("group");
+  } else {
+    chatStore.setReceiver(item.receiver_id as number);
+  }
+  // 设置房间号可以让右侧聊天窗口显示
+  chatStore.setRoom(item.room as string);
+  chatStore.setType(item.type as string);
   console.log("记得删除--------", item);
   // 点击item高亮
   setActive(item.room!);
-  chatStore.setReceiver(item.receiver_id as number);
-  chatStore.setRoom(item.room as string);
-  chatStore.setType(item.type as string);
+
   // 获取所有信息
   chatStore.getAllMessage(item.room as string);
   // 清空消息
@@ -210,7 +217,10 @@ onMounted(() => {
   chatListStore.getLMToChatList(userStore.id);
   // chatStore.scrollToBottom();
 
+  // 监听新消息
+  // 如果我们选中框有新消息，此时应该先把未读清空，发送方是统一都新增了未读
   socket.on("updateLastMessage", () => {
+    chatStore.clearUnread();
     chatListStore.getLMToChatList(userStore.id);
   });
 });

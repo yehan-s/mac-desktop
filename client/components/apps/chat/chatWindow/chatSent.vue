@@ -4,12 +4,24 @@
   <div class="h-[180px] flex flex-col">
     <div class="flex h-[40px] space-x-2 border-t" :class="[border]">
       <Icon name="smail" desc="表情" />
-      <Icon name="sc" desc="截图" />
+      <!-- <Icon name="sc" desc="截图" /> -->
       <Icon name="file" desc="文件" />
       <Icon name="img" desc="照片" />
-      <Icon name="voice" desc="语音输入" />
+      <!-- <Icon name="voice" desc="语音输入" /> -->
       <div class="flex-1"></div>
-      <Icon name="record" desc="历史记录" />
+      <Icon name="phone" desc="语音通话" />
+      <Icon
+        name="video"
+        desc="视频通话"
+        @click="
+          chatStore.videoHandler({
+            id: userStore.id,
+            nickname: userStore.nickname,
+            avatar: userStore.avatar,
+          })
+        "
+      />
+      <!-- <Icon name="record" desc="历史记录" /> -->
     </div>
     <div class="flex-1">
       <textarea
@@ -33,8 +45,10 @@ import Icon from "./icon.vue";
 import socket from "~/utils/socket";
 import { useThemeStore } from "~/store/theme";
 import { useChatStore } from "~/store/chat";
+import { useUserStore } from "~/store/user";
 const themeStore = useThemeStore();
 const chatStore = useChatStore();
+const userStore = useUserStore();
 
 interface Message1 {
   id: number;
