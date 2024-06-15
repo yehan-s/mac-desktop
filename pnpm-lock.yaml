@@ -53,6 +53,9 @@ importers:
       vue-router:
         specifier: ^4.3.0
         version: 4.3.0(vue@3.4.21)
+      vue-virtual-scroll-list:
+        specifier: ^2.3.5
+        version: 2.3.5
     devDependencies:
       '@nuxtjs/tailwindcss':
         specifier: ^6.11.4
@@ -11239,6 +11242,10 @@ packages:
     dependencies:
       '@vue/devtools-api': 6.6.1
       vue: 3.4.21
+    dev: false
+
+  /vue-virtual-scroll-list@2.3.5:
+    resolution: {integrity: sha512-YFK6u5yltqtAOfTBcij/KGAS2SoZvzbNIAf9qTULauPObEp53xj22tDuohrrM2vNkgoD5kejXICIUBt2Q4ZDqQ==}
     dev: false
 
   /vue-virtual-scroller@2.0.0-beta.8(vue@3.4.21):

@@ -19,7 +19,7 @@ export function findLastMessage(Room: string) {
   );
 }
 
-// 查找房间下所有
+// 查找房间下所有消息
 export function findMessage(Room: string) {
   return useClientRequest<MessageTypes.GetMessagesResult[]>(
     `/chat/findMessage/${Room}`,

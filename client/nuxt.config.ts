@@ -26,7 +26,7 @@ export default defineNuxtConfig({
     ],
 
     "@nuxtjs/tailwindcss",
-    "nuxt-primevue",
+    "nuxt-primevue", // 全局引入 PrimeVue
   ],
   primevue: {
     options: {

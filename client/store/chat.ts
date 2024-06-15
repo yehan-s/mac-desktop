@@ -53,6 +53,7 @@ export const useChatStore = defineStore("chat", () => {
   // 存储当前私聊对象的信息
   const setReceiver = async (receiver_id: number) => {
     currentChat.sendMessage.receiver_id = receiver_id;
+    console.log("存储消息的时候触发了一次获取信息");
     // 存储对方的 userInfo
     currentChat.privateObject = await findUserInfoByUserId(receiver_id);
   };
@@ -60,6 +61,8 @@ export const useChatStore = defineStore("chat", () => {
   const setGroupReceiver = async (item: {}) => {
     currentChat.groupObject = item;
     currentChat.privateObject.nickname = "";
+    // 群聊消息中 sender_id 和 recevier_id 是一样的
+    currentChat.sendMessage.receiver_id = item.sender_id;
   };
 
   const setRoom = (room: string) => {
@@ -77,6 +80,7 @@ export const useChatStore = defineStore("chat", () => {
   const connectHandler = async () => {
     // 先查找所有好友关系，从而获取到好友的room
     // 然后将所有好友的room都加入
+    console.log("初始化的时候获取信息");
     let res = await findUserInfoByUserId(currentChat.sendMessage.sender_id);
     console.log("connectHandler", res);
     let friends = res.friends;
@@ -151,8 +155,36 @@ export const useChatStore = defineStore("chat", () => {
       // 是的话为每个消息添加上发送者头像
       if (allMessageTemp) {
         if (allMessageTemp[0].type === "group") {
+          const objectInfo: { id: number; avatar: string; nickname: string }[] =
+            [];
+          // 存储返回信息 缺少类型
+          let res: any;
           for (let item of allMessageTemp) {
-            const res = await findUserInfoByUserId(item.sender_id);
+            // 触发了多次 bug
+            // 通过查找每个信息的发送者id，获取发送者的信息得到头像
+            // 减少查询次数，同样最好只查询一次
+            const foundObject = objectInfo.find(
+              (obj) => obj.id === item.sender_id
+            );
+            // 为true说明，已存过信息，不需要发请求，直接查找并赋值
+            // 为false说明，没有存过信息，需要发请求，存储信息
+            if (foundObject) {
+              console.log("我进入了哦");
+              objectInfo.forEach((obj) => {
+                if (obj.id === item.sender_id) {
+                  res.avatar = obj.avatar;
+                  res.nickname = obj.nickname;
+                }
+              });
+            } else {
+              console.log("获取所有信息的时候获取信息");
+              res = await findUserInfoByUserId(item.sender_id);
+              objectInfo.push({
+                id: item.sender_id,
+                avatar: res.avatar,
+                nickname: res.nickname,
+              });
+            }
             // 会导致页面闪烁
             item.avatar = res.avatar;
             item.nickname = res.nickname;

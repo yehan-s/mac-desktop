@@ -6,6 +6,7 @@
       <div class="flex flex-col flex-1 overflow-hidden" :class="[bg]">
         <!-- 消息显示区 -->
         <ChatMessage class="h-[350px]" />
+        <!-- <ChatMessage  /> -->
         <!-- 消息发送区 -->
         <ChatSent class="h-[180px]" />
       </div>

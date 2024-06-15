@@ -62,20 +62,17 @@ export class ChatController {
     const group = dto;
     return this.chatService.createGroup(group);
   }
-
   // 添加群聊下的用户
   @Post('/addGroupMember')
   addGroupMember(@Body() dto): any {
     // return '好了';
     return this.chatService.createGroupMember(dto.user_id, dto.group_id);
   }
-
   // 查找群聊下的用户
   @Get('/findGroupMember')
   findGroupMember(@Query() query) {
     return this.chatService.findGroupMember(query.room, query.user_id);
   }
-
   // 查找群聊
   @Get('/findGroupchat/:name')
   findGroupchat(@Param() params) {
@@ -88,16 +85,17 @@ export class ChatController {
   addMessage(@Body() dto: CreateMessageDto) {
     return this.chatService.createMessage(dto);
   }
-  // 查找消息 通过RoomId
+  // 查找消息 通过RoomId 查找最后一条
   @Get('/findLastMessage/:room')
   findLastMessageByRoomId(@Param() params) {
     const room = params.room;
     return this.chatService.findLastMessageByRoom(room);
   }
-
+  // 通过房间号查找消息
   @Get('/findMessage/:room')
   findMessageByRoomId(@Param() params) {
     const room = params.room;
+    // 房间号 take skip
     return this.chatService.findMessageByRoom(room);
   }
   // 查找消息 通过接收者的id

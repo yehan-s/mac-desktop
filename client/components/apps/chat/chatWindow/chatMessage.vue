@@ -15,39 +15,7 @@
           <div class="w-4 h-4 flex items-center">＋</div>
         </button>
       </div>
-      <!-- 消息 -->
-      <!-- <ul class="w-full mt-4">
-        <transition-group name="message" tag="div">
-        <li
-          v-for="message in message2"
-          :key="message.id"
-          :id="`message-${message.id}`"
-          class="p-[3px] flex"
-        >
-          <div class="my-2 rounded-full">
-            <img :src="imgSrc" width="30" height="30" alt="qq" />
-          </div>
-          <div class="flex flex-col">
-            <p>{{ message.userId }}</p>
-            <button
-              @click="removeMessage($event, message)"
-              :class="[
-                true ? 'bg-blue-500 ml-auto' : 'bg-gray-500 mr-auto',
-                'px-3 py-1',
-                'bg-blue-500',
-                'text-white',
-                'text-left',
-                'rounded-full',
-                'select-none',
-              ]"
-              style="-webkit-tap-highlight-color: transparent"
-            >
-              {{ message.content }}
-            </button>
-          </div>
-        </li>
-        </transition-group>
-      </ul> -->
+
       <!-- 消息冒泡 -->
       <template v-for="item in chatStore.allMessage">
         <!-- 根据消息的发送者是不是对方，从而决定冒泡在屏幕左右 -->

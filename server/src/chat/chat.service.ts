@@ -287,9 +287,13 @@ export class ChatService {
 
   // 创建消息
   async createMessage(message: Partial<Message>) {
-    const messageTemp = this.messageRepository.create(message);
-    const res = await this.messageRepository.save(messageTemp);
-    return res;
+    try {
+      const messageTemp = this.messageRepository.create(message);
+      const res = await this.messageRepository.save(messageTemp);
+      return res;
+    } catch (error) {
+      console.log('发送消息出错', error);
+    }
   }
 
   // 查找消息 通过RoomId
@@ -341,9 +345,19 @@ export class ChatService {
 
   async findMessageByRoom(room: string) {
     const res = await this.messageRepository
+      // .createQueryBuilder('message')
+      // .where('message.room = :room', { room })
+      // .orderBy('message.created_at', 'ASC')
+      // // .skip(40) // 跳过前20条记录
+      // .take(10) // 限制结果为10条记录
+      // .getMany();
+
+      // 先后获最后几个消息
       .createQueryBuilder('message')
       .where('message.room = :room', { room })
       .orderBy('message.created_at', 'ASC')
+      // .skip(40) // 跳过前20条记录
+      // .take(20) // 限制结果为10条记录
       .getMany();
     if (!res) {
       return null;
