@@ -99,7 +99,6 @@
       <template #footer> </template>
     </Dialog>
   </div>
- 
 </template>
 
 <script setup lang="ts">
@@ -264,5 +263,4 @@ let visible = ref(false);
 
 const myVideoRef = ref(null);
 const otherVideoRef = ref(null);
-
 </script>
