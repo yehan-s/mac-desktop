@@ -26,25 +26,80 @@
         />
         <Icon name="screen" desc="屏幕共享" />
         <Icon name="friend" desc="邀请进群" /> -->
-        <Icon name="more" desc="更多" />
+        <Icon name="more" desc="更多" @click="groupInfoHandler" />
       </div>
     </header>
   </div>
+  <Dialog
+    v-model:visible="groupInfoVisible"
+    modal
+    maximizable
+    header="群成员"
+    :pt="persets.dialog"
+    :draggable="true"
+    :closable="true"
+  >
+    <!-- <template #header> </template> -->
+    <template #default>
+      <div class="grid grid-cols-6 gap-4 overflow-y-auto h-72 py-4">
+        <div
+          v-for="item in chatStore.currentChat.groupObject.members"
+          :key="item.id"
+          class="w-full h-[65px] rounded-full flex items-center flex-col justify-between"
+        >
+          <img class="w-10 h-10 rounded-s" :src="item.avatar" alt="" />
+          <div class="">{{ item.nickname }}</div>
+        </div>
+        <!-- 添加 -->
+        <div
+          class="w-full h-[65px] rounded-full flex items-center flex-col justify-between"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 48 48"
+            class="scale-[1.18] -translate-y-[2px]"
+          >
+            <path
+              stroke-linejoin="bevel"
+              stroke-linecap="round"
+              stroke-width="1"
+              stroke="#333"
+              d="M24 32V16M42 27v-6M6 27v-6M14 6H8a2 2 0 0 0-2 2v6M34 6h6a2 2 0 0 1 2 2v6M34 42h6a2 2 0 0 0 2-2v-6M14 42H8a2 2 0 0 1-2-2v-6M27 6h-6M32 24H16M27 42h-6"
+              data-follow-stroke="#333"
+            />
+          </svg>
+          <div class="">添加</div>
+        </div>
+      </div>
+    </template>
+  </Dialog>
 </template>
 
 <script setup lang="ts">
 import persets from "~/config/persets";
 import Icon from "./icon.vue";
 import Video from "./video.vue";
+import type { User } from "~/types/user";
 import { useThemeStore } from "~/store/theme";
 import { useChatStore } from "~/store/chat";
 import { useUserStore } from "~/store/user";
+import GroupMembers from "./groupMembers.vue";
 const themeStore = useThemeStore();
 const chatStore = useChatStore();
 const userStore = useUserStore();
 const textColor = computed(() =>
   themeStore.dark ? "text-[#fff]" : "text-[#000]"
 );
+
+interface wuzi {
+  id: number;
+}
+
+const groupInfoVisible = ref(false);
+const groupInfoHandler = () => {
+  groupInfoVisible.value = true;
+};
 
 // 视频开关
 // const videoHandler = () => {

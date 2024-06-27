@@ -1,3 +1,24 @@
+interface groupChatType extends GroupType.GroupChat {
+  members: User[];
+}
+
+interface currentChatType {
+  privateObject: {
+    id: number;
+    avatar: string;
+    nickname: string;
+  };
+  groupObject: Partial<groupChatType>;
+  sendMessage: {
+    sender_id: number;
+    receiver_id: number;
+    content: string;
+    room: string;
+    type: string;
+    media_type: string;
+  };
+}
+
 import socket from "@/utils/socket";
 import { findMessage, sendMessage } from "~/api/message";
 import {
@@ -5,9 +26,10 @@ import {
   addPrivateUnread,
   clearGroupUnread,
   clearPrivateUnread,
+  findAllGroupMember,
 } from "~/api/search";
 import { findUserInfoByUserId, findUserInfoByUsername } from "~/api/user";
-import type { Message, VideoType } from "~/types";
+import type { GroupType, Message, User, VideoType } from "~/types";
 import { CallStatus, type callStatusType } from "~/types/video";
 
 export const useChatStore = defineStore("chat", () => {
@@ -18,13 +40,15 @@ export const useChatStore = defineStore("chat", () => {
   // "type": "private",
   // "media_type": "text"
 
-  const currentChat = reactive({
+  const currentChat = reactive<currentChatType>({
     privateObject: {
       id: 0,
       avatar: "",
       nickname: "",
     },
-    groupObject: {},
+    groupObject: {
+      members: [],
+    },
     sendMessage: {
       sender_id: 0, //自己的id
       receiver_id: 0, //对方的id
@@ -60,6 +84,10 @@ export const useChatStore = defineStore("chat", () => {
   // 存储当前群聊对象的信息
   const setGroupReceiver = async (item: {}) => {
     currentChat.groupObject = item;
+    currentChat.groupObject.members = await findAllGroupMember({
+      room: item.room,
+    });
+    console.log("存储群聊信息", currentChat.groupObject);
     currentChat.privateObject.nickname = "";
     // 群聊消息中 sender_id 和 recevier_id 是一样的
     currentChat.sendMessage.receiver_id = item.sender_id;

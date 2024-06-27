@@ -32,7 +32,6 @@ export class ChatController {
   // 添加私聊未读消息
   @Post('/addPrivateUnread')
   addPrivateUnread(@Body() dto): Promise<string> {
-    console.log('检测一下！！！！！', dto);
     const fn = () => 'unread_msg_count + 1';
     return this.chatService.updatePrivateUnread(dto.room, dto.user_id, fn);
   }
@@ -45,7 +44,6 @@ export class ChatController {
   // 添加群聊未读消息
   @Post('/addGroupUnread')
   addGroupUnread(@Body() dto) {
-    console.log('检测一下！！！！！', dto);
     const fn = () => 'unread + 1';
     return this.chatService.updateGroupUnread(dto.room, dto.user_id, fn);
   }
@@ -72,6 +70,11 @@ export class ChatController {
   @Get('/findGroupMember')
   findGroupMember(@Query() query) {
     return this.chatService.findGroupMember(query.room, query.user_id);
+  }
+  // 查找群聊下所有的用户
+  @Get('/findAllGroupMember')
+  findAllGroupMember(@Query() query) {
+    return this.chatService.findAllGroupMember(query.room);
   }
   // 查找群聊
   @Get('/findGroupchat/:name')

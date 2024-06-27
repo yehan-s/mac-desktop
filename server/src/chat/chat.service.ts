@@ -199,7 +199,6 @@ export class ChatService {
     const groupTemp = this.groupChatRepository.create(group);
     // 添加创建者到群聊的成员数组中
     // groupTemp.members = [creator];
-
     // 这样中间表会添加数据
     const res = await this.groupChatRepository.save(groupTemp);
     const addGMData = {
@@ -207,7 +206,6 @@ export class ChatService {
       group_id: res.id,
     };
     this.createGroupMember(addGMData.user_id, addGMData.group_id);
-
     // 发一条默认消息
     const message = {
       sender_id: group.creator_id,
@@ -274,7 +272,22 @@ export class ChatService {
     });
     return res;
   }
+  // 查找群聊下所有用户
+  async findAllGroupMember(room: string) {
+    console.log('room', room);
+    const groupchatResult = await this.groupChatRepository
+      .createQueryBuilder('groupChat')
+      .where({ room })
+      .leftJoinAndSelect('groupChat.members', 'groupMember')
+      .leftJoinAndSelect('groupMember.user', 'user')
+      .getOne();
+    const memberList = [];
 
+    groupchatResult.members.forEach((item) => {
+      memberList.push(item.user);
+    });
+    return memberList;
+  }
   // 搜索群聊通过群名
   async findGroupchatByName(name: string) {
     const res = await this.groupChatRepository

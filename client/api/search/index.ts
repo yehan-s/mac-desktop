@@ -71,3 +71,11 @@ export function findGroupMember(data: {
     params: data,
   });
 }
+
+// 获取所有群成员
+export function findAllGroupMember(data: { room: string }): Promise<User[]> {
+  return useClientRequest(`/chat/findAllGroupMember`, {
+    method: "GET",
+    query: data,
+  });
+}
