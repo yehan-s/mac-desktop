@@ -8,11 +8,6 @@ export class AuthController {
     console.log('auth controller', process.env.SECRET);
   }
 
-  @Get()
-  findAll(): string {
-    return 'haha';
-  }
-
   @Post('/signin')
   async signIn(@Body() dto, @Query() query) {
     const { username, password } = dto;

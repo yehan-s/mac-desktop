@@ -9,8 +9,8 @@ export default defineNuxtConfig({
     // apiSecret: '123',
     // 公开的键，也会暴露给客户端
     public: {
-      apiBase: 'http://127.0.0.1:3000'
-    }
+      apiBase: "http://127.0.0.1:3000",
+    },
   },
   modules: [
     [
@@ -37,7 +37,9 @@ export default defineNuxtConfig({
   css: [
     // "primevue/resources/themes/aura-light-green/theme.css"
   ],
+  // 只在开发环境有效,生产环境需要在.env 文件中设置
   devServer: {
     port: 3005,
   },
+  ssr: true
 });

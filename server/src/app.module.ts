@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { ConfigEnum } from 'enum/config.enum';
 import { ChatModule } from './chat/chat.module';
+import { ImgModule } from './img/img.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { ChatModule } from './chat/chat.module';
     } as TypeOrmModuleOptions),
     AuthModule,
     ChatModule,
+    ImgModule,
   ],
   controllers: [UserController],
   providers: [],
