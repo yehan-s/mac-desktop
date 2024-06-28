@@ -50,7 +50,7 @@ import socket from "~/utils/socket";
 
 export const useChatListStore = defineStore("chatList", (): ChatListState => {
   // 分组类型
-  let listType = ref<"message" | "friend" | "group">("friend");
+  let listType = ref<"message" | "friend" | "group">("message");
   // 好友分组
   let friendGroupList = ref<GroupList[]>([]);
   // 群聊列表  群聊不需要分组，只有item

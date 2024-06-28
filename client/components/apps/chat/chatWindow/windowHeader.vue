@@ -26,20 +26,47 @@
         />
         <Icon name="screen" desc="屏幕共享" />
         <Icon name="friend" desc="邀请进群" /> -->
-        <Icon name="more" desc="更多" @click="groupInfoHandler" />
+        <Icon name="more" desc="更多" @click="groupInfoHandler(true)" />
       </div>
     </header>
   </div>
   <Dialog
     v-model:visible="groupInfoVisible"
     modal
-    maximizable
-    header="群成员"
     :pt="persets.dialog"
     :draggable="true"
-    :closable="true"
+    :closable="false"
   >
-    <!-- <template #header> </template> -->
+    <template #header>
+      <div class="w-full flex justify-between items-center">
+        <div class="font-bold">群成员</div>
+
+        <div>
+          <button
+            class="btn btn-ghost btn-sm px-0"
+            @click="groupInfoHandler(false)"
+            aria-label="Close"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="icon icon-tabler icon-tabler-x"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="#000000"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </template>
     <template #default>
       <div class="grid grid-cols-6 gap-4 overflow-y-auto h-72 py-4">
         <div
@@ -97,8 +124,8 @@ interface wuzi {
 }
 
 const groupInfoVisible = ref(false);
-const groupInfoHandler = () => {
-  groupInfoVisible.value = true;
+const groupInfoHandler = (value: boolean) => {
+  groupInfoVisible.value = value;
 };
 
 // 视频开关

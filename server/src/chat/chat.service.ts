@@ -95,6 +95,19 @@ export class ChatService {
       group_id: friendGroup2.id,
     });
     await this.friendRepository.save(friendTemp2);
+
+    // TODO:发送初始消息
+    const message = {
+      sender_id: friend.user_id,
+      receiver_id: friend.friend_id,
+      content: '我们已经是好友了',
+      room: friend.room,
+      type: 'private',
+      media_type: 'text',
+    };
+    this.createMessage(message);
+    // 添加未读
+
     return '添加好友成功';
   }
 

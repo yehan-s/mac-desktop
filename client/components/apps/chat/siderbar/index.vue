@@ -34,7 +34,7 @@
         <!-- 关闭按钮 -->
         <div>
           <button
-            class="btn btn-ghost btn-sm"
+            class="btn btn-ghost btn-sm px-0"
             @click="closeUserProfile"
             aria-label="Close"
           >

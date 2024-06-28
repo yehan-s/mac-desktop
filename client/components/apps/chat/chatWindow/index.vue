@@ -10,16 +10,16 @@
         <!-- 消息发送区 -->
         <ChatSent class="h-[180px]" />
       </div>
-      <div
+      <!-- <div
         v-if="chatStore.currentChat.sendMessage.type === 'group'"
         class="flex flex-col w-[177px] border"
         :class="[border]"
-      >
+      > -->
         <!-- 群公告 -->
-        <GroupAnnouncement />
+        <!-- <GroupAnnouncement /> -->
         <!-- 群成员 -->
-        <GroupMembers />
-      </div>
+        <!-- <GroupMembers /> -->
+      <!-- </div> -->
     </div>
   </div>
 </template>
