@@ -31,7 +31,7 @@
     </header>
   </div>
   <Dialog
-    v-model:visible="groupInfoVisible"
+    v-model:visible="showGroupInfo"
     modal
     :pt="persets.dialog"
     :draggable="true"
@@ -119,13 +119,10 @@ const textColor = computed(() =>
   themeStore.dark ? "text-[#fff]" : "text-[#000]"
 );
 
-interface wuzi {
-  id: number;
-}
 
-const groupInfoVisible = ref(false);
+const showGroupInfo = ref(false);
 const groupInfoHandler = (value: boolean) => {
-  groupInfoVisible.value = value;
+  showGroupInfo.value = value;
 };
 
 // 视频开关

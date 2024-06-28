@@ -82,7 +82,7 @@ let password = ref("123");
 const check = ref(false);
 
 const backgroundImage = "url(img/ui/loginbg.png)";
-const chatIcon = "img/icons/qq.png";
+const chatIcon = "img/icons/turbochat.png";
 
 // const userStore = useUserStore();
 

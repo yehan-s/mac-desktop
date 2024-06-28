@@ -2,8 +2,33 @@
 <!-- 这里高度只限定180 -->
 <template>
   <div class="h-[180px] flex flex-col">
-    <div class="flex h-[40px] space-x-2 border-t" :class="[border]">
-      <Icon name="smail" desc="表情" />
+    <div class="flex h-[40px] space-x-2 border-t relative" :class="[border]">
+      <!-- 表情 -->
+      <EmojiPanel
+        class="absolute bottom-[40px] z-20"
+        :dark="true"
+        v-show="showEmojiPanel"
+        @clickOutside="handleClickOutside"
+      />
+      <!-- TODO:未封装的emoji -->
+      <!-- <div
+          ref="divRef"
+          class="p-1 rounded-xl overflow-y-scroll h-[170px] text-2xl grid grid-cols-9 gap-1 chatlist"
+          :class="emojiBg"
+          @click="selectEmoji"
+        >
+
+          <div
+            v-for="emoji in emojis"
+            :key="emoji"
+            class="ml-1"
+            :data-emoji="emoji"
+          >
+            {{ emoji }}
+          </div>
+   
+        </div> -->
+      <Icon name="smail" desc="表情" @click.stop="emojiPanelHandler(true)" />
       <!-- <Icon name="sc" desc="截图" /> -->
       <Icon name="file" desc="文件" />
       <Icon name="img" desc="照片" />
@@ -40,6 +65,8 @@
 </template>
 
 <script setup lang="ts">
+import { defineExpose } from "vue";
+import EmojiPanel from "./emojiList/index.vue";
 import type { Message } from "~/types/message.d.ts";
 import Icon from "./icon.vue";
 import socket from "~/utils/socket";
@@ -64,27 +91,33 @@ const border = computed(() =>
 );
 const bg = computed(() => (themeStore.dark ? "bg-red-100" : "bg-gray-500"));
 
+//消息的处理
 let message = ref<string>("");
-
 const sendMessage = (e: KeyboardEvent) => {
   const target = e.target as HTMLTextAreaElement;
   console.log("sendMessage " + target.value);
   let data = target.value.replace(/\r?\n|\r/g, "");
-
   chatStore.sendPrivateMessage(data);
-
   target.value = "";
-
-  // socket.emit("demo", data);
-
-  // 创建一个消息
-  // let tempChat: Partial<Message> = {
-  //   userId: "3c33f19c-b5be-4fd4-b9e7-6b5882c4a078",
-  //   content: data,
-  //   roomId: "TurboRoom",
-  // };
-  // socket.emit("createMessage", tempChat);
 };
+
+// Emoji的处理
+const showEmojiPanel = ref(false);
+const emojiBg = computed(() =>
+  themeStore.dark ? "bg-[#060606]" : "bg-[#fcfcfc]"
+);
+const emojiPanelHandler = (value: boolean) => {
+  showEmojiPanel.value = value;
+};
+// 把showEmojiPanel给子组件，让其可以关闭
+defineExpose({ showEmojiPanel, message });
+const handleClickOutside = () => {
+  if (!showEmojiPanel.value) {
+    return;
+  }
+  emojiPanelHandler(false);
+};
+
 const changeMessage = (e: any) => {
   console.log("changeMessage " + e.currentTarget);
 };

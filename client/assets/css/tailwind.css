@@ -156,3 +156,7 @@ button {
 .scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: #585858;
 }
+
+.emjoyPanel span {
+  display: inline-block;
+}

@@ -18,12 +18,12 @@ const props = defineProps({
 });
 
 const switchMenu = () => {
-  console.log(props.mo, props.value);
+  // console.log(props.mo, props.value);
   // 如果传入了mo则是一个菜单开关
   if (props.mo) {
     controlStore[props.mo](!props.value);
     // console.log(props.mo);
-    console.log(controlStore.showWifiMenu, props.value);
+    // console.log(controlStore.showWifiMenu, props.value);
   }
 };
 </script>
