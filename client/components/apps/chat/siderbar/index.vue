@@ -150,9 +150,7 @@ const themeStore = useThemeStore();
 const userStore = useUserStore();
 const chatListStore = useChatListStore();
 
-const demo = () => {
-  console.log("demo");
-};
+
 
 let props = defineProps<{
   avatar: string;

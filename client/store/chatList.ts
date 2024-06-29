@@ -145,7 +145,6 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
         avatar: item.user.avatar,
       };
       let MessageTemp = await findLastMessage(item.room);
-      // console.log("!!!!!!!!!!!", MessageTemp);
       chatListItem.lastMessage = MessageTemp.content;
       chatListItem.date = MessageTemp.created_at as string;
       chatListItem.room = MessageTemp.room;
@@ -209,10 +208,9 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
 
       chatListTemp.push(chatListItem);
     }
-    // let
+    // 获取最新的更新消息
     chatList.value = chatListTemp;
-    console.log("这是我要提交的chatList", chatList.value);
-    console.log("-----------", friendsList);
+    console.log("这是最新获取的chatList", chatList.value);
   };
 
   return {

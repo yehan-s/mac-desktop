@@ -2,7 +2,8 @@ import { User } from "./user";
 
 export interface GroupChat {
   id: number;
-  name: string;
+  username: string;
+  nickname: string;
   creator_id: number;
   avatar: string;
   announcement: string | null;

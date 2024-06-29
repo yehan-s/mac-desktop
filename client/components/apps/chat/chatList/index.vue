@@ -127,13 +127,6 @@ const expandedKeys = ref({
   // "2_2": true,
 });
 
-const groupItems = ref([
-  {
-    label: "这是一个吃瓜群",
-    avatar: "https://avatars.githubusercontent.com/u/44036559?v=4",
-  },
-]);
-
 // 好友和群聊切换
 const tabMenuItems = ref([
   {
