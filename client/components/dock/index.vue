@@ -52,7 +52,7 @@ const items = ref([
     command,
   },
   {
-    label: "chatgpt",
+    label: "aichat",
     icon: "img/icons/chatgpt.png",
     command,
   },

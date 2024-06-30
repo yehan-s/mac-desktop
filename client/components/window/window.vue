@@ -21,11 +21,13 @@
       />
     </div>
     <!-- 存放app -->
+     <!-- 第一步存放在这，第二部docker栏设置 -->
     <div class="relative w-full h-full bg-green-200">
       <Chat v-if="props.appName === 'turbochat'" />
       <Launchpad v-if="props.appName === 'launchpad'" />
       <Vsc v-if="props.appName === 'vsc'" />
       <Terminal v-if="props.appName === 'terminal'" />
+      <AiChat v-if="props.appName === 'aichat'" />
     </div>
   </div>
 </template>
@@ -36,6 +38,7 @@ import TrafficHeader from "@/components/window/trafficLight.vue";
 import Chat from "@/components/apps/chat/index.vue";
 import Vsc from "@/components/apps/vsc/index.vue";
 import Terminal from "@/components/apps/terminal/index.vue";
+import AiChat from "@/components/apps/aichat/index.vue";
 import { vDraggable, type DragOptions } from "@neodrag/vue";
 import { useAppStore } from "~/store/app";
 

@@ -11,6 +11,7 @@ async function bootstrap() {
   app.use(helmet());
   // 全局使用 ValidationPipe
   app.useGlobalPipes(new ValidationPipe());
+  // TODO: 端口写入环境变量
   await app.listen(3000);
 }
 bootstrap();
