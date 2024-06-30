@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ConfigEnum } from 'enum/config.enum';
 import { ChatModule } from './chat/chat.module';
 import { ImgModule } from './img/img.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -33,6 +34,13 @@ import { ImgModule } from './img/img.module';
     AuthModule,
     ChatModule,
     ImgModule,
+    // 请求限制，ttl为时间，limit为时间内限制次数
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 300,
+      },
+    ]),
   ],
   controllers: [UserController],
   providers: [],
