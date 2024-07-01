@@ -6,3 +6,9 @@ export function getStsIdentity(): Promise<UploadTypes.GetSTSResult> {
     method: "POST",
   });
 }
+
+export function upload() {
+  return useClientRequest("/img/upload", {
+    method: "POST",
+  });
+}

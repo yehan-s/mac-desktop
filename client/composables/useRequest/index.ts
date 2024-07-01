@@ -50,7 +50,7 @@ export async function useClientRequest<T = unknown>(
     console.log("具体错误", data, "错误信息", statusMessage);
     // 具体的错误处理大家自己去实现
     // 错误码： data?.code
-    alert(data.message);
+    alert(data);
 
     throw error;
   }

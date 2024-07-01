@@ -185,53 +185,13 @@ export const useChatStore = defineStore("chat", () => {
       // 是的话为每个消息添加上发送者头像
       if (allMessageTemp) {
         if (allMessageTemp[0].type === "group") {
-          // const objectInfo: { id: number; avatar: string; nickname: string }[] =
-          //   [];
-          // // 存储返回信息 缺少类型
-          // let res: any;
-          // for (let item of allMessageTemp) {
-          //   // 触发了多次 bug
-          //   // 通过查找每个信息的发送者id，获取发送者的信息得到头像
-          //   // 减少查询次数，同样最好只查询一次
-          //   const foundObject = objectInfo.find(
-          //     (obj) => obj.id === item.sender_id
-          //   );
-          //   // 为true说明，已存过信息，不需要发请求，直接查找并赋值
-          //   // 为false说明，没有存过信息，需要发请求，存储信息
-          //   if (foundObject) {
-          //     console.log("我进入了哦");
-          //     objectInfo.forEach((obj) => {
-          //       if (obj.id === item.sender_id) {
-          //         res.avatar = obj.avatar;
-          //         res.nickname = obj.nickname;
-          //       }
-          //     });
-          //   } else {
-          //     console.log("获取所有信息的时候获取信息");
-          //     res = await findUserInfoByUserId(item.sender_id);
-          //     objectInfo.push({
-          //       id: item.sender_id,
-          //       avatar: res.avatar,
-          //       nickname: res.nickname,
-          //     });
-          //   }
-          //   // 会导致页面闪烁
-          //   item.avatar = res.avatar;
-          //   item.nickname = res.nickname;
-          // }
           // 提前找到群员的信息，把头像和nickname赋值到消息中
           allMessageTemp.forEach((item) => {
-            // currentChat.groupObject.members!.forEach((member) => {
-            //   if (item.id === member.id) {
-            //     item.avatar = member.avatar;
-            //     item.nickname = member.nickname;
-            //   }
-            // });
             let memberTemp = currentChat.groupObject.members!.find(
               (member) => member.id === item.sender_id
             );
             if (memberTemp) {
-              console.log("找到了群员信息", memberTemp);
+              // console.log("找到了群员信息", memberTemp);
               item.avatar = memberTemp.avatar;
               item.nickname = memberTemp.nickname;
             }
@@ -240,6 +200,11 @@ export const useChatStore = defineStore("chat", () => {
         allMessage.value = allMessageTemp;
       } else {
         // allMessage.value = allMessageTemp;
+        useNuxtApp().$toast.add({
+          severity: "warn",
+          detail: "获取消息失败",
+          life: 3000,
+        });
         throw new Error("获取消息失败");
       }
     }

@@ -17,7 +17,6 @@
           :class="emojiBg"
           @click="selectEmoji"
         >
-
           <div
             v-for="emoji in emojis"
             :key="emoji"
@@ -25,8 +24,7 @@
             :data-emoji="emoji"
           >
             {{ emoji }}
-          </div>
-   
+          </div> 
         </div> -->
       <Icon name="smail" desc="表情" @click.stop="emojiPanelHandler(true)" />
       <!-- <Icon name="sc" desc="截图" /> -->

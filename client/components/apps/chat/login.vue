@@ -100,6 +100,11 @@ const loginHandler = async () => {
   // console.log("res", res);
   // console.log("他的类型是", typeof res);
   if (res) {
+    // 让请求头获取到
+    const tokenTemp: string = res.access_token as string;
+    // console.log("tokenTemp", typeof tokenTemp);
+    const token = useCookie("token");
+    token.value = tokenTemp;
     userStore.access_token = res.access_token;
   }
 

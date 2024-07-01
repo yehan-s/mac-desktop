@@ -77,12 +77,14 @@ const sendMessage = async () => {
   messages.value = [...messages.value, newMessage];
   inputValue.value = "";
   console.log("send message", messages.value);
+
+  // TODO: 缺少token
   try {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
+        Authorization: `Bearer $`,
       },
       body: JSON.stringify({
         messages: [{ role: "user", content: inputValue.value.trim() }],

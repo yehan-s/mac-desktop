@@ -1,9 +1,8 @@
 import { getStsIdentity } from "~/api/upload";
+import { useNuxtApp, useRuntimeConfig } from "#app";
 
 const OSS = require("ali-oss");
 const moment = require("moment");
-
-const env = process.env.NODE_ENV;
 
 let expirationTime: any = null; // STS token 过期时间
 let client: any = null; // OSS Client 实例
@@ -23,13 +22,16 @@ export function initOssClient(
   stsToken: any,
   expiration: any
 ) {
+  const runtimeConfig = useRuntimeConfig();
   client = new OSS({
     accessKeyId,
     accessKeySecret,
     stsToken,
-    region: process.env.OSS_REGION,
-    bucket: process.env.OSS_ROLE_NAME,
+    region: runtimeConfig.public.OSS_REGION,
+    bucket: runtimeConfig.public.OSS_BUCKET,
+    secure: false,
   });
+  // endpoint: "sts.cn-wuhan-lr.aliyuncs.com",
   expirationTime = expiration;
   return client;
 }
@@ -47,6 +49,7 @@ export function destroyOssClient() {
 
 // 图片上传至 oss
 export const imgUpload = async (opt: any) => {
+  console.log("oss检测", opt);
   if (opt.file.size > 1024 * 1024) {
     useNuxtApp().$toast.add({
       severity: "warn",
@@ -70,9 +73,23 @@ export const imgUpload = async (opt: any) => {
     return;
   }
 
-  // 检查是否已有 Oss Client
-  let client = checkOssClient();
-  if (client === null) {
+  // 检查是否已有 Oss Client 待会开启
+  //   let client = checkOssClient();
+
+  //  这里有问题：待会检查
+  //   client = initOssClient(
+  //     opt.sts.AccessKeyId,
+  //     opt.sts.AccessKeySecret,
+  //     opt.sts.SecurityToken,
+  //     opt.sts.Expiration
+  //   );
+
+  //   const runtimeConfig = useRuntimeConfig();
+  //   console.log(runtimeConfig.public.OSS_REGION, runtimeConfig.public.OSS_BUCKET);
+  //   console.log("oss client", client);
+
+    if (client === null) {
+  // if (1) {
     try {
       //   const res = await this.$http.post("/ac-admin/get-sts-identity", {});
       const res = await getStsIdentity();
@@ -88,9 +105,10 @@ export const imgUpload = async (opt: any) => {
     } catch (error) {
       useNuxtApp().$toast.add({
         severity: "warn",
-        detail: `${error}`,
+        detail: `没有sts权限`,
         life: 3000,
       });
+      console.warn("没有权限的错误", error);
       return;
     }
   }
@@ -99,30 +117,38 @@ export const imgUpload = async (opt: any) => {
     .fill(null)
     .map(() => Math.round(Math.random() * 16).toString(16))
     .join("");
-  const path = `ac/tmp-img/${randomName}.${extname}`;
+  //   const path = `ac/tmp-img/${randomName}.${extname}`;
+  const path = `yehan-first/desktop/${randomName}.${extname}`;
   let url;
   try {
     // 使用 multipartUpload 正式上传到 oss
-    const res = await client.multipartUpload(path, opt.file, {
-      // 使用el时使用
-      //   progress: async function (p: number) {
-      //     // progress is generator
-      //     let e = {};
-      //     e.percent = p * 100;
-      //     // 上传进度条，el-upload 组件自带的方法
-      //     opt.onProgress(e);
-      //   },
-    });
+    // console.log(opt);
+    // console.log("client", client);
+    // const res = await client.multipartUpload(path, opt.file.objectURL, {
+    //   // 使用el时使用
+    //   //   progress: async function (p: number) {
+    //   //     // progress is generator
+    //   //     let e = {};
+    //   //     e.percent = p * 100;
+    //   //     // 上传进度条，el-upload 组件自带的方法
+    //   //     opt.onProgress(e);
+    //   //   },
+    // });
+    // const res = await client.multipartUpload(path, opt.fileObject);
+    const res = await client.put(path, opt.fileObject);
     // 去除 oss 分片上传后返回所带的查询参数，否则访问会 403
-    const ossPath = res.res.requestUrls[0].split("?")[0];
+    // const ossPath = res.res.requestUrls[0].split("?")[0];
     // 替换协议，统一使用 'https://'，否则 Android 无法显示图片
-    url = ossPath.replace("http://", "https://");
+    // url = ossPath.replace("http://", "https://");
+    console.log("上传最后的结果", res);
+    url = res.url;
   } catch (error) {
     useNuxtApp().$toast.add({
       severity: "warn",
       detail: `${error}`,
       life: 3000,
     });
+    console.warn("上传图片到 oss 失败", error);
   }
   return url;
 };

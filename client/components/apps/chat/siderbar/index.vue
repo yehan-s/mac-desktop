@@ -66,8 +66,27 @@
           <div class="flex border-b-2 pb-2 mb-2">
             <div class="avatar mr-6">
               <!-- 头像 -->
-              <div class="w-24 h-24 rounded">
-                <img :src="userInfo.avatar" />
+              <div class="w-24 h-24 rounded relative">
+                <!-- 上传 -->
+                <FileUpload
+                  v-show="isEdit"
+                  :pt="persets.fileupload"
+                  :auto="true"
+                  ref="fileupload"
+                  accept="image/*"
+                  :url="uploadUrl"
+                  @beforeSend="beforeSend($event)"
+                  @select="select"
+                  @upload="upload"
+                  :maxFileSize="1000000"
+                  class="w-24 h-24 rounded-full bg-pink-500 absolute top-0 left-0 z-10 opacity-0"
+                >
+                </FileUpload>
+                <!-- 显示 -->
+                <img
+                  :src="userInfo.avatar"
+                  class="w-24 h-24 absolute top-0 left-0"
+                />
               </div>
             </div>
             <div>
@@ -82,18 +101,23 @@
 
               <!-- 签名div和textarea相互覆盖 -->
               <!-- 单独textarea无法实现多行省略 -->
-              <div class="h-[50px]">
+              <div class="h-[50px] overflow-visible">
                 <textarea
                   ref="textareaRef"
                   v-model="userInfo.signature"
-                  class="hidden w-full mb-4 rounded-md row-span-2 textarea-ghost p-1 resize-none"
+                  class="w-full mb-4 rounded-md row-span-2 textarea-ghost p-1 resize-none"
+                  placeholder="点击这里输入签名"
+                  v-if="isEdit"
                 ></textarea>
                 <div
                   ref="divRef"
-                  class="line-clamp-2 mb-4 p-1 rounded-md"
-                  @click="updateSignature"
+                  class="mb-4 p-1 rounded-md w-[260px] line-clamp-2"
+                  @click="editSignature"
+                  v-if="!isEdit"
                 >
-                  {{ userInfo.signature }}
+                  <div class="text-ellipsis w-[260px] line-clamp-2">
+                    {{ userInfo.signature }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -146,11 +170,11 @@ import persets from "~/config/persets";
 import { useThemeStore } from "~/store/theme";
 import { useUserStore } from "~/store/user";
 import { useChatListStore } from "~/store/chatList";
+import type { FileUploadBeforeSendEvent } from "primevue/fileupload";
+import { imgUpload } from "~/utils/upload";
 const themeStore = useThemeStore();
 const userStore = useUserStore();
 const chatListStore = useChatListStore();
-
-
 
 let props = defineProps<{
   avatar: string;
@@ -161,18 +185,18 @@ let bg = themeStore.dark ? "bg-[#262626] " : "bg-[#e4e4e5]";
 let isEdit = ref<boolean>(false);
 
 let userProfile = ref<boolean>(false);
+
 let userInfo = reactive({
-  username: "yehan",
-  nickname: "夜寒",
-  signature: "随性的，我们唱起歌随性的，我们唱起歌随性的",
-  avatar:
-    "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg",
+  username: userStore.username,
+  nickname: userStore.nickname,
+  signature: userStore.signature,
+  avatar: userStore.avatar,
 });
 
 // 签名div和textarea相互覆盖
 const textareaRef = ref<HTMLTextAreaElement | null>(null);
 const divRef = ref<HTMLDivElement | null>(null);
-const updateSignature = () => {
+const editSignature = () => {
   if (textareaRef.value || divRef.value) {
     if (!isEdit.value) {
       textareaRef.value?.classList.add("hidden");
@@ -198,11 +222,89 @@ const closeUserProfile = () => {
   userInfo.signature = userStore.signature;
 };
 
+// 保存
 const savaUserInfo = () => {
   isEdit.value = !isEdit.value;
-  updateSignature();
+  // editSignature();
   userStore.updateNickname(userInfo.nickname);
-  userStore.updateSignature(userInfo.signature);
+  // userStore.updateSignature(userInfo.signature);
+  userStore.updateAvatar(userInfo.avatar);
+  console.log("保存成功", userInfo.signature);
+};
+
+// 上传文件
+
+interface File {
+  size: number;
+  type: string;
+  name: string;
+  objectURL: string;
+  fileObject: object;
+}
+let fileObject: any = null;
+
+const file = reactive<File>({} as File);
+const uploadUrl = `${useRuntimeConfig().public.apiBase}/img/get-sts-identity`;
+
+// 给url的默认行为添加请求头
+const beforeSend = ($event: FileUploadBeforeSendEvent) => {
+  console.log("beforeSend", $event);
+  const userAuth = useCookie("token");
+  if (userAuth.value) {
+    $event.xhr.setRequestHeader("Authorization", `Bearer ${userAuth.value}`);
+  }
+};
+// 在select时候获取file对象
+const select = ($event: any) => {
+  console.log("很可惜，没有结构", $event);
+  const fileTemp = $event.files[0];
+  console.log("文件的大小是", $event.files[0].size);
+  file.size = fileTemp.size;
+  file.type = fileTemp.type;
+  file.name = fileTemp.name;
+  file.objectURL = fileTemp.objectURL;
+
+  // 假设 opt.file 是一个 Blob 对象
+  const blob = file.objectURL;
+
+  // 将 Blob 对象转换为 File 对象
+  file.fileObject = new File([blob], file.name);
+
+  fileObject = $event.files[0];
+};
+// 有个autoFocus的提醒
+const upload = async ($event: any) => {
+  console.log("上传文件", $event);
+  let stsResult = $event.xhr.response;
+  stsResult = JSON.parse(stsResult);
+  if (stsResult.code !== 200)
+    return useNuxtApp().$toast.add({
+      severity: "warn",
+      summary: "Warn",
+      detail: "STS获取失败",
+      life: 3000,
+    });
+  const path = await imgUpload({
+    file,
+    sts: stsResult.data.stsToken.Credentials,
+    fileObject,
+  });
+
+  userInfo.avatar = path;
+  return false;
+
+  useNuxtApp().$toast.add({
+    severity: "success",
+    summary: "Success",
+    detail: "文件上传中。。",
+    life: 3000,
+  });
+
+  // const path = await imgUpload(file);
+  // console.log("我要看结果", path);
+
+  // 阻止组件默认行为
+  return false;
 };
 </script>
 

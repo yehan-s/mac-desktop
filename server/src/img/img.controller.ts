@@ -12,4 +12,9 @@ export class ImgController {
   async getIdentityFromSTS(@Request() req: any) {
     return await this.imgService.getIdentityFromSTS(req.user.username);
   }
+
+  @Post('upload')
+  async upload() {
+    return await this.imgService.upload();
+  }
 }
