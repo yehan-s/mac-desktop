@@ -1,8 +1,7 @@
 <template>
   <div
     ref="emojiPanelRef"
-    class="p-1 rounded-xl overflow-y-scroll chatlist w-[350px] h-[170px] text-2xl grid grid-cols-9"
-    :class="bg"
+    class="p-1 rounded-xl overflow-y-scroll chatlist w-[350px] h-[170px] text-2xl grid grid-cols-9 dark:bg-[#060606] bg-[#fcfcfc]"
     @click="selectEmoji($parent, $event)"
   >
     <!-- <transition-group name="fade" tag="div"> -->
@@ -110,7 +109,6 @@ const emojiList = [
   "🧽",
   "🧾",
 ];
-const bg = ref(props.dark ? "bg-[#060606]" : "bg-[#fcfcfc]");
 
 const selected = ref(true);
 

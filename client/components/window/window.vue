@@ -10,7 +10,7 @@
     <!-- bg-transparent -->
     <div
       @dblclick="toggleMax"
-      class="absolute z-30 flex w-full h-7 window-header rounded-t-xl bg-red-300"
+      class="absolute z-30 flex w-full h-7 window-header rounded-t-xl bg-transparent"
     >
       <TrafficHeader
         class="z-10"

@@ -1,28 +1,26 @@
 <template>
-  <!-- TODO:虚拟列表 -->
+  <!-- TODO: 虚拟列表 -->
   <!-- TODO: 滚动动画有bug，此处取消了scroll-smooth -->
   <div
-    class="chatlist overflow-y-scroll overflow-hidden border-t"
-    :class="[border]"
+    class="chatlist overflow-y-scroll overflow-hidden border-t dark:text-white dark:border-[#232323] border-[#e9e9e9]"
     @mouseenter="onMouseEnter"
     @mouseleave="onMouseLeave"
     ref="chatMessageRef"
   >
     <div class="flex flex-col w-full px-2">
       <div class="text-right">
-        <button
+        <!-- <button
           @click="addMessage"
           class="hover:bg-gray-100 active:bg-gray-200 rounded-full inline-flex items-center justify-center p-1.5 text-gray-500 hover:text-gray-700"
         >
           <div class="w-4 h-4 flex items-center">＋</div>
-        </button>
+        </button> -->
       </div>
 
       <!-- 消息冒泡 -->
-      <template v-for="item in chatStore.allMessage">
+      <template v-for="item in chatStore.allMessage" class="my-2">
         <!-- 根据消息的发送者是不是对方，从而决定冒泡在屏幕左右 -->
         <div
-          @click="demo"
           class="chat"
           :class="{
             'chat-start': getPosition(item),
@@ -44,7 +42,9 @@
             <time class="text-xs opacity-50">{{ item.created_at }}</time>
           </div>
           <!-- 内容 -->
-          <div class="chat-bubble chat-bubble-primary">
+          <div
+            class="chat-bubble dark:bg-[#2c2c2c] bg-[#d9d9d9] dark:text-white"
+          >
             {{ item.content }}
           </div>
         </div>
@@ -85,6 +85,13 @@ const props = defineProps({
   },
 });
 
+const darkBorder = "border-[#232323]";
+const lightBorder = "border-[#e9e9e9]";
+
+//  const bg = dark ? 'bg-[#1a1a1a]' : 'bg-[#f2f2f2]'
+const darkBg = "bg-[#1a1a1a]";
+const lightBg = "bg-[#f2f2f2]";
+
 // 传入chat仓库中进行控制
 const chatMessageRef = ref<HTMLDivElement | null>(null);
 
@@ -100,11 +107,7 @@ onUpdated(() => {
       behavior: "instant",
     });
   }
-  // console.log("onUpdated", chatMessageRef.value?.scrollHeight);
 });
-const demo = () => {
-  console.log(chatMessageRef.value?.scrollHeight);
-};
 
 const border = computed(() =>
   themeStore.dark ? "border-[#232323]" : "border-[#e9e9e9]"

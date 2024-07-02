@@ -1,6 +1,7 @@
 <template>
   <div
     class="w-screen h-screen overflow-hidden bg-center bg-cover relative"
+    :class="{ dark: themeStore.dark }"
     :style="backgroundStyle"
   >
     <Toast :pt="perset.toast" position="top-center" />

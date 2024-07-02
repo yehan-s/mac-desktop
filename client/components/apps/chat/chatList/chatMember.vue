@@ -1,7 +1,6 @@
 <template>
   <div
-    class="flex w-full p-2 h-[70px] active:bg-gray-200"
-    :class="[themeStore.dark ? 'hover:bg-white/10' : 'hover:bg-[#f5f5f5]']"
+    class="flex w-full p-2 h-[70px] hover:bg-[#f5f5f5] dark:hover:bg-white/10"
   >
     <!-- 左侧头像以及未读 -->
     <div class="p-2 rounded-full indicator">
@@ -16,19 +15,18 @@
     <!-- 右侧上 名字和日期 -->
     <div class="flex flex-col w-full">
       <div class="flex">
-        <div class="flex-1" :class="[themeStore.dark ? '' : 'text-black']">
+        <div class="flex-1 dark:text-gray-400 text-black">
           {{ props.name }}
         </div>
         <div class="flex-1 h-full"></div>
-        <div :class="[themeStore.dark ? '' : 'text-gray-400']">
+        <div class="dark:text-[#5e5e5e]">
           {{ props.date }}
         </div>
       </div>
       <!-- 单行省略 -->
       <!-- 右侧下 消息内容 -->
       <div
-        class="overflow-hidden text-ellipsis whitespace-nowrap max-w-44"
-        :class="[themeStore.dark ? '' : 'text-gray-400']"
+        class="dark:text-[#5e5e5e] text-gray-400 overflow-hidden text-ellipsis whitespace-nowrap max-w-44"
       >
         {{ props.lastMessage }}
       </div>

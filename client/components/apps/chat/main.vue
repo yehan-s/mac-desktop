@@ -1,6 +1,6 @@
 <template>
   <div class="flex h-[600px] w-[900px] backdrop-blur-sm">
-    <SiderBar :avatar="userStore.avatar" />
+    <SiderBar  />
     <ChatList />
     <ChatWindow v-if="chatStore.currentChat.sendMessage.room" />
     <div class="flex-1 flex-center" v-else>

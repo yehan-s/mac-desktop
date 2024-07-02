@@ -3,6 +3,9 @@
 const primaryColor = "#4e81ef";
 
 module.exports = {
+  // 暗黑
+
+  darkMode: "selector",
   content: [
     "presets/**/*.{js,vue,ts}",
     "./components/**/*.{js,vue,ts}",
@@ -32,6 +35,8 @@ module.exports = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       // 取的 tailwind.css 中 :root 的颜色
+      // 这个是primevue用到的颜色
+      // dock组件用到
       colors: {
         "primary-50": "rgb(var(--primary-50))",
         "primary-100": "rgb(var(--primary-100))",
@@ -62,6 +67,7 @@ module.exports = {
   daisyui: {
     themes: [
       {
+        // 文字的主题色
         mytheme: {
           primary: primaryColor,
           // secondary: "#D926AA",

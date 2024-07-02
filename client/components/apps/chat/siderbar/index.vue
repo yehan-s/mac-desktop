@@ -1,10 +1,12 @@
 <template>
   <!-- 宽度66px -->
-  <div class="w-[66px] h-full flex flex-col select-none">
+  <div
+    class="w-[66px] h-full flex flex-col select-none dark:bg-[#262626] bg-[#e4e4e5]"
+  >
     <!-- 顶部空余 h-7 -->
     <div class="w-full h-7"></div>
     <div class="my-4 flex-center" @click="openUserProfile">
-      <img :src="props.avatar" width="35px" alt="qqavatar" height="35px" />
+      <img :src="userInfo.avatar" width="35px" alt="qqavatar" height="35px" />
     </div>
     <div class="flex flex-col h-[160px] p-3 space-y-2">
       <TopIcon name="message" :onClick="chatListStore.setListType" />
@@ -176,9 +178,7 @@ const themeStore = useThemeStore();
 const userStore = useUserStore();
 const chatListStore = useChatListStore();
 
-let props = defineProps<{
-  avatar: string;
-}>();
+
 let bg = themeStore.dark ? "bg-[#262626] " : "bg-[#e4e4e5]";
 
 // 是否在编辑状态

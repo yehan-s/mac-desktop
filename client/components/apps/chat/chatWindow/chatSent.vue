@@ -5,7 +5,7 @@
     <div class="flex h-[40px] space-x-2 border-t relative" :class="[border]">
       <!-- 表情 -->
       <EmojiPanel
-        class="absolute bottom-[40px] z-20"
+        class="absolute bottom-[40px] z-20 dark:border-[#232323] border-[#e0e0e0]"
         :dark="true"
         v-show="showEmojiPanel"
         @clickOutside="handleClickOutside"
@@ -34,8 +34,7 @@
       <textarea
         name=""
         id=""
-        class="w-full h-full px-3 py-2 overflow-y-scroll resize-none focus:outline-none focus:shadow-outline chatlist overflow-hidden scroll-smooth"
-        :class="[bg]"
+        class="w-full h-full px-3 py-2 overflow-y-scroll resize-none focus:outline-none focus:shadow-outline chatlist overflow-hidden scroll-smooth dark:bg-[#1a1a1a] bg-[#f2f2f2] dark:text-white"
         v-model="message"
         @mouseenter="onMouseEnter"
         @mouseleave="onMouseLeave"

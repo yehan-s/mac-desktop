@@ -2,8 +2,7 @@
 <template>
   <!-- 宽度250px -->
   <div
-    class="w-[250px] h-full flex flex-col select-none"
-    :class="[themeStore.dark ? 'bg-[#262626] ' : 'bg-red-200']"
+    class="w-[250px] h-full flex flex-col select-none dark:bg-[#262626] bg-white"
   >
     <!-- 距顶高度 -->
     <div class="w-full h-7 flex"></div>
@@ -100,6 +99,7 @@ const onMouseLeave = (event: MouseEvent) => {
 
 // 点击消息item高亮
 let itemBg = computed(() => {
+  // return themeStore.dark ? "bg-white/10" : "bg-[#f5f5f5]";
   return themeStore.dark ? "bg-white/10" : "bg-[#f5f5f5]";
 });
 const getItemBgColor = () => {
@@ -175,10 +175,7 @@ const chatMemberHandler = async (item: chatListItem) => {
   // 清空消息
   chatStore.clearUnread();
   chatListStore.getLMToChatList(userStore.id);
-
-  // chatStore.scrollToBottomInit();  
 };
-
 
 // 点击分组列表item
 const groupItemsHandler = (item: any) => {
@@ -193,7 +190,6 @@ const groupItemsHandler = (item: any) => {
       chatMemberHandler(messageItem as chatListItem);
       return;
     }
-    // 跳转四疗效
     if (
       messageItem.receiver_id === item.id ||
       messageItem.sender_id === item.id

@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="h-6"></div>
-    <header class="flex-center">
-      <div class="text-base ml-4 font-black" :class="[textColor]">
+    <header class="flex-center dark:text-black">
+      <div class="text-base ml-4 font-black dark:text-[#fff] text-[#000]">
         {{
           chatStore.currentChat.privateObject.nickname
             ? chatStore.currentChat.privateObject.nickname
@@ -11,21 +11,8 @@
       </div>
       <div class="flex-1"></div>
       <div class="flex mr-2 space-x-2">
-        <!-- <Icon name="apps" desc="应用中心" />
-        <Icon name="phone" desc="语音通话" />
-        <Icon
-          name="video"
-          desc="视频通话"
-          @click="
-            chatStore.videoHandler({
-              id: userStore.id,
-              nickname: userStore.nickname,
-              avatar: userStore.avatar,
-            })
-          "
-        />
-        <Icon name="screen" desc="屏幕共享" />
-        <Icon name="friend" desc="邀请进群" /> -->
+        <!-- <Icon name="screen" desc="屏幕共享" />
+        <Icon name="friend" desc="邀请进群" />  -->
         <Icon name="more" desc="更多" @click="groupInfoHandler(true)" />
       </div>
     </header>
@@ -115,10 +102,9 @@ import GroupMembers from "./groupMembers.vue";
 const themeStore = useThemeStore();
 const chatStore = useChatStore();
 const userStore = useUserStore();
-const textColor = computed(() =>
-  themeStore.dark ? "text-[#fff]" : "text-[#000]"
-);
-
+// const textColor = computed(() =>
+//   themeStore.dark ? "text-[#fff]" : "text-[#000]"
+// );
 
 const showGroupInfo = ref(false);
 const groupInfoHandler = (value: boolean) => {

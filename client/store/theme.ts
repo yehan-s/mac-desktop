@@ -9,7 +9,7 @@ interface ThemeState {
 }
 
 export const useThemeStore = defineStore("theme", (): ThemeState => {
-  let dark = ref(false);
+  let dark = ref(true);
   let brightness = ref(80);
   let sound = ref(80);
   const setDark = (value: boolean) => {

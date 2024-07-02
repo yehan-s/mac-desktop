@@ -1,9 +1,9 @@
 <template>
-  <div class="flex flex-col flex-1 select-none" :class="[bg]">
+  <div class="flex flex-col flex-1 select-none bg-[#f2f2f2] dark:bg-[#1a1a1a]">
     <!-- 窗口头部 -->
     <WindowHeader />
     <div class="flex flex-1">
-      <div class="flex flex-col flex-1 overflow-hidden" :class="[bg]">
+      <div class="flex flex-col flex-1 overflow-hidden" >
         <!-- 消息显示区 -->
         <ChatMessage class="h-[350px]" />
         <!-- <ChatMessage  /> -->
@@ -15,10 +15,10 @@
         class="flex flex-col w-[177px] border"
         :class="[border]"
       > -->
-        <!-- 群公告 -->
-        <!-- <GroupAnnouncement /> -->
-        <!-- 群成员 -->
-        <!-- <GroupMembers /> -->
+      <!-- 群公告 -->
+      <!-- <GroupAnnouncement /> -->
+      <!-- 群成员 -->
+      <!-- <GroupMembers /> -->
       <!-- </div> -->
     </div>
   </div>
