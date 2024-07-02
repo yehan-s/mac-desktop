@@ -5,7 +5,7 @@
   >
     <!-- 顶部空余 h-7 -->
     <div class="w-full h-7"></div>
-    <div class="my-4 flex-center" @click="openUserProfile">
+    <div class="my-4 flex-center" @click="userProfileHandle(true)">
       <img :src="userInfo.avatar" width="35px" alt="qqavatar" height="35px" />
     </div>
     <div class="flex flex-col h-[160px] p-3 space-y-2">
@@ -24,7 +24,7 @@
 
   <!-- 个人资料 -->
   <Dialog
-    v-model:visible="userProfile"
+    v-model:visible="showUserProfile"
     modal
     :pt="persets.dialog"
     :draggable="true"
@@ -37,7 +37,7 @@
         <div>
           <button
             class="btn btn-ghost btn-sm px-0"
-            @click="closeUserProfile"
+            @click="userProfileHandle(false)"
             aria-label="Close"
           >
             <svg
@@ -174,17 +174,19 @@ import { useUserStore } from "~/store/user";
 import { useChatListStore } from "~/store/chatList";
 import type { FileUploadBeforeSendEvent } from "primevue/fileupload";
 import { imgUpload } from "~/utils/upload";
+import type { UpdateUserInfoDate } from "~/api/user/types";
+import { updateUserInfo } from "~/api/user";
+// import { UpdateUserInfoDate } from "~/api/user/types";
 const themeStore = useThemeStore();
 const userStore = useUserStore();
 const chatListStore = useChatListStore();
-
 
 let bg = themeStore.dark ? "bg-[#262626] " : "bg-[#e4e4e5]";
 
 // 是否在编辑状态
 let isEdit = ref<boolean>(false);
 
-let userProfile = ref<boolean>(false);
+let showUserProfile = ref<boolean>(false);
 
 let userInfo = reactive({
   username: userStore.username,
@@ -211,25 +213,46 @@ const editSignature = () => {
   }
 };
 
-const openUserProfile = () => {
-  userProfile.value = true;
+const userProfileHandle = (value: boolean) => {
+  if (value) {
+    showUserProfile.value = value;
+  } else {
+    showUserProfile.value = false;
+    isEdit.value = false;
+    userInfo.nickname = userStore.nickname;
+    userInfo.signature = userStore.signature;
+    userInfo.avatar = userStore.avatar;
+  }
 };
 
-const closeUserProfile = () => {
-  userProfile.value = false;
-  isEdit.value = false;
-  userInfo.nickname = userStore.nickname;
-  userInfo.signature = userStore.signature;
-};
+// FIXME: 删掉
+// const openUserProfile = () => {
+//   userProfile.value = true;
+// };
+
+// const closeUserProfile = () => {
+//   userProfile.value = false;
+//   isEdit.value = false;
+//   userInfo.nickname = userStore.nickname;
+//   userInfo.signature = userStore.signature;
+// };
 
 // 保存
 const savaUserInfo = () => {
   isEdit.value = !isEdit.value;
   // editSignature();
   userStore.updateNickname(userInfo.nickname);
-  // userStore.updateSignature(userInfo.signature);
+  userStore.updateSignature(userInfo.signature);
   userStore.updateAvatar(userInfo.avatar);
-  console.log("保存成功", userInfo.signature);
+  const updateUserInfoDate: UpdateUserInfoDate = {
+    id: userStore.id,
+    nickname: userInfo.nickname,
+    signature: userInfo.signature,
+    avatar: userInfo.avatar,
+  };
+  // TODO:更新是否让别人强制更新？？
+  updateUserInfo(updateUserInfoDate);
+  userProfileHandle(false);
 };
 
 // 上传文件

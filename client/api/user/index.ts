@@ -42,3 +42,11 @@ export function findUserInfoByUserId(userId: number): Promise<User> {
 //     // params: data,
 //   });
 // }
+
+// 更新用户信息
+export function updateUserInfo(data: UserTypes.UpdateUserInfoDate) {
+  return useClientRequest<String>("/user/updateUser", {
+    method: "POST",
+    body: data,
+  });
+}

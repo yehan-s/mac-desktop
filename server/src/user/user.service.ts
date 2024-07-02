@@ -105,4 +105,25 @@ export class UserService {
 
     return res;
   }
+  // 更新 （头像，昵称，签名）
+  async updateUser(
+    id: number,
+    nickname: string,
+    signature: string,
+    avatar: string,
+  ) {
+    console.log('updateUser', nickname, signature, avatar);
+    const res = await this.userRepository
+      .createQueryBuilder('user')
+      .where('id = :id', { id })
+      .update(User)
+      .set({ nickname, signature, avatar })
+      .execute();
+
+    if (res.affected > 0) {
+      return '修改成功';
+    } else {
+      return '修改失败';
+    }
+  }
 }

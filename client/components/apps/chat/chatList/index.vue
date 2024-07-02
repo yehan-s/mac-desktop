@@ -102,9 +102,9 @@ let itemBg = computed(() => {
   // return themeStore.dark ? "bg-white/10" : "bg-[#f5f5f5]";
   return themeStore.dark ? "bg-white/10" : "bg-[#f5f5f5]";
 });
-const getItemBgColor = () => {
-  return "bg-blue-200";
-};
+// const getItemBgColor = () => {
+//   return "bg-blue-200";
+// };
 let isItemActive = ref<string>("");
 const setActive = (room: string) => {
   isItemActive.value = room;

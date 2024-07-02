@@ -37,7 +37,6 @@ export class UserController {
   @Post()
   addUser(@Body() dto: CreateUserDto): any {
     const user = dto as User;
-    // console.log('post', dto, req, query);
     return this.userService.create(user);
   }
 
@@ -47,6 +46,12 @@ export class UserController {
     return this.userService.findUser(username, password);
   }
 
+  @Post('/updateUser')
+  updateUser(@Body() dto) {
+    const { id, nickname, signature, avatar } = dto;
+    // return '哈哈';
+    return this.userService.updateUser(id, nickname, signature, avatar);
+  }
   // @Post('/addGroupMember')
   // addGroupMember(@Body() dto): any {
   //   // return '好了';
