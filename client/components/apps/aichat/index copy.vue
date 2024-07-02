@@ -6,10 +6,7 @@
     <div class="flex flex-col px-3 py-6">
       <h1 className="text-2xl font-bold text-gray-100">Chat with Me!</h1>
       <!-- 消息区域 -->
-      <div
-        ref="chatListRef"
-        class="overflow-y-scroll chatlist h-[450px] custom-scrollbar"
-      >
+      <div class="overflow-y-scroll chatlist h-[450px] custom-scrollbar">
         <div
           v-for="(message, index) in messages"
           :key="index"
@@ -55,7 +52,6 @@
 </template>
 
 <script setup lang="ts">
-import { sendAIMessage } from "~/utils/chatAI";
 interface aiMessage {
   text: string;
   isBot: boolean;
@@ -74,7 +70,6 @@ const messages = ref<aiMessage[]>([
     timestamp: "",
   },
 ]);
-
 const inputValue = ref("");
 const isLoading = ref(false);
 const error = ref("");
@@ -97,16 +92,30 @@ const sendMessage = async () => {
 
   // TODO: 缺少token
   try {
-    let content = inputValue.value.trim();
-    const { botMessage } = await sendAIMessage(content);
-    messages.value = [...messages.value, botMessage];
-    // chatListRef.value?.scrollIntoView({ behavior: "smooth" });
-    // 输入就会跳转，需要改进
-    // chatListRef.value?.scrollTo({
-    //   top: chatListRef.value.scrollHeight,
-    //   behavior: "smooth",
-    // });
-    chatListRef.value!.scrollTop = chatListRef.value!.scrollHeight;
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer $`,
+      },
+      body: JSON.stringify({
+        messages: [{ role: "user", content: inputValue.value.trim() }],
+        max_tokens: 100,
+        model: "gpt-3.5-turbo",
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data?.choices?.[0]?.message) {
+      const botMessage: any = {
+        text: data.choices[0].message.content.trim(),
+        isBot: true,
+        timestamp: "",
+      };
+      messages.value = [...messages.value, botMessage];
+    }
+    if (data?.error) throw new Error(data?.error.message);
   } catch (error) {
     // useAlertStore().useAlert(
     //   "error",
@@ -130,6 +139,8 @@ const handleInputChange = (event: Event) => {
 const handleKeyDown = (event: KeyboardEvent) => {
   if (event.key === "Enter") sendMessage();
 };
+
+
 
 onMounted(() => {
   if (chatListRef.value) {

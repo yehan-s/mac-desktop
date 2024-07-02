@@ -33,13 +33,6 @@ import type { GroupType, Message, User, VideoType } from "~/types";
 import { CallStatus, type callStatusType } from "~/types/video";
 
 export const useChatStore = defineStore("chat", () => {
-  // "sender_id": 4,
-  // "receiver_id": 5,
-  // "content": "这是一条很长的消息，用来测试是否达到预期效果，嘿嘿",
-  // "room": "de97ea22-7488-45eb-8bc7-f2854ada7fb2",
-  // "type": "private",
-  // "media_type": "text"
-
   const currentChat = reactive<currentChatType>({
     privateObject: {
       id: 0,
@@ -104,6 +97,7 @@ export const useChatStore = defineStore("chat", () => {
     currentChat.sendMessage.type = type;
   };
 
+  // chatMessageRef 用于滚动到底部
   const chatMessageRef = ref();
 
   // 将所有好友的连接都连上 登录的时候会被调用
@@ -119,8 +113,6 @@ export const useChatStore = defineStore("chat", () => {
       (item: { group: any }) => item.group
     );
     const list = friends?.concat(groupChats);
-    // console.log("friends", friends);
-    // console.log("记得删除！！！！！", list);
     socket.connect();
     socket.emit("inintialize", list);
   };
@@ -225,13 +217,37 @@ export const useChatStore = defineStore("chat", () => {
     }
   };
 
+  // 滚动条到最底部
   const scrollToBottom = () => {
     if (chatMessageRef.value) {
-      chatMessageRef.value.scrollTop = chatMessageRef.value.scrollHeight;
+      // chatMessageRef.value.scrollTop = chatMessageRef.value.scrollHeight;
+      // chatMessageRef.value.scrollIntoView({ behavior: "smooth" });
+      chatMessageRef.value?.scrollTo({
+        top: chatMessageRef.value.scrollHeight,
+        behavior: "smooth",
+      });
     } else {
-      console.log("没有选定聊天框，不滚动");
+      // 另一边用户没选中聊天，不滚动
+      return;
     }
   };
+  // 从左侧列表点入
+  // TODO: 优化，左侧点击事件
+  // const scrollToBottomInit = async () => {
+  //   await nextTick();
+  //   if (chatMessageRef.value) {
+  //     // console.log(chatMessageRef.value.scrollTop); //0  0
+  //     // console.log(chatMessageRef.value.scrollHeight); //349  4924
+
+  //     // console.log(chatMessageRef.value.clientHeight); //349  349
+  //     chatMessageRef.value!.scrollTop =
+  //       chatMessageRef.value.scrollHeight - chatMessageRef.value.clientHeight;
+  //     // console.log(chatMessageRef.value.scrollTop); // 0  4575
+  //   } else {
+  //     // 另一边用户没选中聊天，不滚动
+  //     return;
+  //   }
+  // };
 
   // 添加消息
   const addMessage = (message: Message) => {

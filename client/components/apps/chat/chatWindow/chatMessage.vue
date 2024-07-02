@@ -1,6 +1,8 @@
 <template>
+  <!-- TODO:虚拟列表 -->
+  <!-- TODO: 滚动动画有bug，此处取消了scroll-smooth -->
   <div
-    class="chatlist overflow-y-scroll overflow-hidden scroll-smooth border-t"
+    class="chatlist overflow-y-scroll overflow-hidden border-t"
     :class="[border]"
     @mouseenter="onMouseEnter"
     @mouseleave="onMouseLeave"
@@ -20,6 +22,7 @@
       <template v-for="item in chatStore.allMessage">
         <!-- 根据消息的发送者是不是对方，从而决定冒泡在屏幕左右 -->
         <div
+          @click="demo"
           class="chat"
           :class="{
             'chat-start': getPosition(item),
@@ -51,10 +54,6 @@
 </template>
 
 <script setup lang="ts">
-// import { define } from 'vue';
-// import type  Message  from '~/types/message.d.ts';
-// @ts-ignore
-import type { Message } from "~/tpyes/index.ts";
 import socket from "~/utils/socket";
 import { useThemeStore } from "~/store/theme";
 import { ref, reactive } from "vue";
@@ -87,11 +86,25 @@ const props = defineProps({
 });
 
 // 传入chat仓库中进行控制
-const chatMessageRef = ref(null);
+const chatMessageRef = ref<HTMLDivElement | null>(null);
 
-onMounted(() => {
-  chatStore.chatMessageRef = chatMessageRef.value;
+// 第一次点击时scrollHeight = clientHeight，只有onUpdated才是正确的scrollHeight
+// 但是这里着用一次
+const init = true;
+onUpdated(() => {
+  if (init) {
+    chatMessageRef.value?.scrollTo({
+      top: (chatMessageRef.value!.scrollTop =
+        chatMessageRef.value!.scrollHeight -
+        chatMessageRef.value!.clientHeight),
+      behavior: "instant",
+    });
+  }
+  // console.log("onUpdated", chatMessageRef.value?.scrollHeight);
 });
+const demo = () => {
+  console.log(chatMessageRef.value?.scrollHeight);
+};
 
 const border = computed(() =>
   themeStore.dark ? "border-[#232323]" : "border-[#e9e9e9]"

@@ -10,22 +10,6 @@
         v-show="showEmojiPanel"
         @clickOutside="handleClickOutside"
       />
-      <!-- TODO:未封装的emoji -->
-      <!-- <div
-          ref="divRef"
-          class="p-1 rounded-xl overflow-y-scroll h-[170px] text-2xl grid grid-cols-9 gap-1 chatlist"
-          :class="emojiBg"
-          @click="selectEmoji"
-        >
-          <div
-            v-for="emoji in emojis"
-            :key="emoji"
-            class="ml-1"
-            :data-emoji="emoji"
-          >
-            {{ emoji }}
-          </div> 
-        </div> -->
       <Icon name="smail" desc="表情" @click.stop="emojiPanelHandler(true)" />
       <!-- <Icon name="sc" desc="截图" /> -->
       <Icon name="file" desc="文件" />

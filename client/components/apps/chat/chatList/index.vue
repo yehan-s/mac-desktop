@@ -176,10 +176,9 @@ const chatMemberHandler = async (item: chatListItem) => {
   chatStore.clearUnread();
   chatListStore.getLMToChatList(userStore.id);
 
-  setTimeout(() => {
-    chatStore.scrollToBottom();
-  }, 0);
+  // chatStore.scrollToBottomInit();  
 };
+
 
 // 点击分组列表item
 const groupItemsHandler = (item: any) => {

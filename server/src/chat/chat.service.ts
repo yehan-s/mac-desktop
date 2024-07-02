@@ -96,7 +96,7 @@ export class ChatService {
     });
     await this.friendRepository.save(friendTemp2);
 
-    // TODO:发送初始消息
+    // TODO:发送初始消息 ?? TODO:刷新左侧列表 未作，7/3
     const message = {
       sender_id: friend.user_id,
       receiver_id: friend.friend_id,
