@@ -42,6 +42,7 @@ export default defineNuxtConfig({
 
     "@nuxtjs/tailwindcss",
     "nuxt-primevue", // 全局引入 PrimeVue
+    "@nuxt/content", // 引入 Nuxt Content 模块
   ],
   primevue: {
     options: {
@@ -57,4 +58,24 @@ export default defineNuxtConfig({
     port: 3005,
   },
   ssr: true,
+  // 配置content
+  content: {
+    api: {
+      baseURL: "/api/_my_content",
+    },
+    useContentHead: false,
+    highlight: {
+      // Theme used in all color schemes.
+      // theme: 'github-light'
+      // OR
+      theme: {
+        // Default theme (same as single string)
+        default: "github-light",
+        // Theme used if `html.dark`
+        dark: "github-dark",
+        // Theme used if `html.sepia`
+        sepia: "monokai",
+      },
+    },
+  },
 });

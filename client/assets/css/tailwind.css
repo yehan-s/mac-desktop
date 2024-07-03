@@ -36,6 +36,7 @@
   }
 
   /* Slider */
+  /* Slider */
   .slider .rangeslider {
     @apply bg-gray-300 w-full h-7 shadow-none m-0 rounded-r-full border-t border-r border-b border-transparent;
   }
@@ -74,7 +75,6 @@
     box-shadow: 0 0 1px #3b82f6;
   }
 }
-
 :root {
   --primary-50: 236 253 245;
   --primary-100: 209 250 229;

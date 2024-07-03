@@ -21,13 +21,18 @@
       />
     </div>
     <!-- 存放app -->
-     <!-- 第一步存放在这，第二部docker栏设置 -->
-    <div class="relative w-full h-full ">
+    <!-- 第一步存放在这，第二部docker栏设置 -->
+    <div class="relative w-full h-full">
       <Chat v-if="props.appName === 'turbochat'" />
       <Launchpad v-if="props.appName === 'launchpad'" />
       <Vsc v-if="props.appName === 'vsc'" />
       <Terminal v-if="props.appName === 'terminal'" />
       <AiChat v-if="props.appName === 'aichat'" />
+
+      <ContentDoc
+        v-if="props.appName === 'mdDoc'"
+        class="prose rounded-xl p-2 dark:bg-[#202020] dark:text-[#cbc9c9] bg-[#faf7f5] text-[#333c4d]"
+      />
     </div>
   </div>
 </template>

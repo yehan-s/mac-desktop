@@ -12,6 +12,7 @@
   "dependencies": {
     "@icon-park/vue-next": "^1.4.2",
     "@neodrag/vue": "^2.0.4",
+    "@nuxt/content": "^2.13.0",
     "@pinia/nuxt": "^0.5.1",
     "ali-oss": "^6.20.0",
     "dayjs": "^1.11.10",
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.11.4",
+    "@tailwindcss/typography": "^0.5.13",
     "daisyui": "^4.10.1",
     "dayjs-nuxt": "^2.1.9",
     "nuxt-primevue": "^0.3.1",

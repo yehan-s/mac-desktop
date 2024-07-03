@@ -2,7 +2,7 @@
   <!-- TODO: 虚拟列表 -->
   <!-- TODO: 滚动动画有bug，此处取消了scroll-smooth -->
   <div
-    class="chatlist overflow-y-scroll overflow-hidden border-t dark:text-white dark:border-[#232323] border-[#e9e9e9]"
+    class="scroll chatList overflow-y-scroll overflow-hidden border-t dark:text-white dark:border-[#232323] border-[#e9e9e9]"
     @mouseenter="onMouseEnter"
     @mouseleave="onMouseLeave"
     ref="chatMessageRef"
@@ -181,16 +181,16 @@ const removeMessage = (e: any, message: any) => {
 
 const animatingMessages = ref(props.messages.slice(lastChangedIndex.value));
 
-const onMouseEnter = (event: MouseEvent) => {
-  // console.log(event.currentTarget);
-  (event.currentTarget as HTMLElement).classList.remove("chatlist");
-  (event.currentTarget as HTMLElement).classList.add("chatlist_");
-};
-const onMouseLeave = (event: MouseEvent) => {
-  // console.log("leave");
-  (event.currentTarget as HTMLElement).classList.remove("chatlist_");
-  (event.currentTarget as HTMLElement).classList.add("chatlist");
-};
+// const onMouseEnter = (event: MouseEvent) => {
+//   // console.log(event.currentTarget);
+//   (event.currentTarget as HTMLElement).classList.remove("chatlist");
+//   (event.currentTarget as HTMLElement).classList.add("chatlist_");
+// };
+// const onMouseLeave = (event: MouseEvent) => {
+//   // console.log("leave");
+//   (event.currentTarget as HTMLElement).classList.remove("chatlist_");
+//   (event.currentTarget as HTMLElement).classList.add("chatlist");
+// };
 </script>
 
 <style scoped>
