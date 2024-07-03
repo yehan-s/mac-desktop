@@ -113,6 +113,7 @@ export const useChatStore = defineStore("chat", () => {
       (item: { group: any }) => item.group
     );
     const list = friends?.concat(groupChats);
+    console.log(list);
     socket.connect();
     socket.emit("inintialize", list);
   };
@@ -133,7 +134,7 @@ export const useChatStore = defineStore("chat", () => {
     if (currentChat.sendMessage.type === "private") {
       // 如果是音频，不增加未读，不滚动屏幕
       if (currentChat.sendMessage.media_type === "video") {
-        return;
+        // return;
       }
       // if (currentChat.sendMessage.media_type === "image") {
       //   window.confirm("图片上传成功，请等待对方确认");
@@ -145,6 +146,7 @@ export const useChatStore = defineStore("chat", () => {
         user_id: currentChat.sendMessage.sender_id,
       });
       socket.emit("sendPrivate", currentChat.sendMessage);
+      // 如果是群消息
     } else if (currentChat.sendMessage.type === "group") {
       await addGroupUnread({
         room: currentChat.sendMessage.room,
@@ -160,7 +162,7 @@ export const useChatStore = defineStore("chat", () => {
 
   // 接收私聊消息
   socket.on("sendPrivate", async (data) => {
-    // 发送消息，最后一条消息接收不到，肯能数据库还没刷出来把
+    // 发送消息，最后一条消息接收不到，可能数据库还没刷出来
     await getAllMessage(currentChat.sendMessage.room);
     // 不选择滚动
     // bug:不是选定当前聊天框也会滚动
@@ -676,6 +678,17 @@ export const useChatStore = defineStore("chat", () => {
     removeVideoElements();
   }
 
+  // 更新所有人lastMessage
+  function updateAllLastMessage(data: { room: string; from: string }) {
+    console.log("正在尝试更新消息");
+    socket.emit("updateAllLastMessage", data);
+  }
+
+  // 进入socket房间
+  function joinRoom(data: { room: string }) {
+    socket.emit("joinRoom", data);
+  }
+
   return {
     currentChat,
     allMessage,
@@ -703,5 +716,7 @@ export const useChatStore = defineStore("chat", () => {
     acceptVideoCall,
     setCallStatus,
     closeVideo,
+    updateAllLastMessage,
+    joinRoom,
   };
 });

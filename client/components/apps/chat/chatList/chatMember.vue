@@ -14,11 +14,11 @@
     </div>
     <!-- 右侧上 名字和日期 -->
     <div class="flex flex-col w-full">
-      <div class="flex">
-        <div class="flex-1 dark:text-gray-400 text-black">
+      <div class="flex h-6">
+        <div class="flex-1 overflow-hidden dark:text-gray-400 text-black">
           {{ props.name }}
         </div>
-        <div class="flex-1 h-full"></div>
+        <div class="w-10 h-full"></div>
         <div class="dark:text-[#5e5e5e]">
           {{ props.date }}
         </div>

@@ -38,22 +38,22 @@ export async function useClientRequest<T = unknown>(
   url: string,
   options?: NitroFetchOptions
 ): Promise<T> {
-  try {
-    // @ts-ignore
-    const res = await useNuxtApp().$request<T>(url, options);
-    // @ts-ignore
-    return res;
-  } catch (error) {
-    if (!process.client) throw error;
-    console.log("useClientRequest error useFetch的错误", error);
-    const { data, statusMessage } = error as $FetchError<RequestResult<T>>;
-    console.log("具体错误", data, "错误信息", statusMessage);
-    // 具体的错误处理大家自己去实现
-    // 错误码： data?.code
-    alert(data);
+  // try {
+  // @ts-ignore
+  const res = await useNuxtApp().$request<T>(url, options);
+  // @ts-ignore
+  return res;
+  // } catch (error) {
+  //   if (!process.client) throw error;
+  //   console.log("useClientRequest error useFetch的错误", error);
+  //   const { data, statusMessage } = error as $FetchError<RequestResult<T>>;
+  //   console.log("具体错误", data, "错误信息", statusMessage);
+  // 具体的错误处理大家自己去实现
+  // 错误码： data?.code
+  // alert(data);
 
-    throw error;
-  }
+  // throw error;
+  // }
 }
 
 /** 通用的请求错误处理 */

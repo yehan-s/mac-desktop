@@ -65,6 +65,8 @@
           </h2>
           <p>{{ searchResult?.username }}</p>
           <div class="card-actions justify-end">
+            <!-- 更改双方的所有状态 -->
+            <!-- TODO: 1. chatList 2. 关系表-->
             <button class="btn btn-primary" @click="addHandler">添加</button>
           </div>
         </div>
@@ -87,6 +89,8 @@ import { useChatListStore } from "~/store/chatList";
 import type { AddFriendData } from "~/api/add/types";
 import { findUserInfoByUsername } from "~/api/user";
 import { addGroupMember, findGroupchat } from "~/api/message";
+import { useChatStore } from "~/store/chat";
+const chatStore = useChatStore();
 const themeStore = useThemeStore();
 const userStore = useUserStore();
 const chatListStore = useChatListStore();
@@ -131,28 +135,66 @@ const searchHandler = async () => {
 const addHandler = async () => {
   // 更新好友列表
   if (selectText.value) {
+    // 获取自己的id和搜索到的id
     const friend: AddFriendData = {
       user_id: userStore.id,
       friend_id: searchResult.value?.id!,
     };
-    await addFriend(friend);
+    // 添加好友
+    // 拿到好友的RoomId 用来发送初始消息
+    const freindResult = await addFriend(friend);
+    // console.log("client尝试");
+    if (freindResult) {
+      console.log("添加好友成功", freindResult);
+      // 不行，因为还没进入room
+      await chatStore.joinRoom({ room: freindResult.room! });
+      // console.log("加入房间成功：", a);
+      // 此时还没有消息？？
+      await chatStore.updateAllLastMessage({
+        room: freindResult.room!,
+        from: "addFriend",
+      });
+      // console.log("更新消息成功：", b);
+    }
+    // FIXME: 忘记这里是做什么的
     if (userStore.login) {
       let userInfo = await findUserInfoByUsername(userStore.username);
-      console.log("更新信息", userInfo);
+      // console.log("更新信息", freindResult);
       if (userInfo) {
         userStore.saveUserInfo(userInfo);
       }
-    }
-    chatListStore.getFGItem(userStore.friendGroups);
-  } else {
-    const group = {
-      user_id: userStore.id,
-      group_id: searchResult.value?.id!,
-    };
-    console.log("group", group);
-    await addGroupMember(group);
 
-    // 需要更新群组列表
+      // const message = {
+      //   sender_id: freindResult.user_id,
+      //   receiver_id: freindResult.friend_id,
+      //   content: "我们已经是好友了",
+      //   room: freindResult.room,
+      //   type: "private",
+      //   media_type: "text",
+      // };
+      // // FIXME: 有时间得单独写一个方法，这样很容易出bug
+      // // chatStore.currentChat.sendMessage.room = freindResult.room;
+      // chatStore.setRoom(freindResult.room as string);
+      // chatStore.setType("private");
+      // chatStore.setReceiver(userInfo.id);
+      // chatStore.sendPrivateMessage(message.content);
+      // chatListStore.getFGItem(userStore.friendGroups);
+
+      // 添加群
+    } else {
+      const group = {
+        user_id: userStore.id,
+        group_id: searchResult.value?.id!,
+      };
+      console.log("group", group);
+
+      // 需要更新群组列表
+    }
+    useNuxtApp().$toast.add({
+      severity: "success",
+      detail: "添加成功",
+      life: 3000,
+    });
   }
 };
 

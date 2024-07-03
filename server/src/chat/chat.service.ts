@@ -13,6 +13,7 @@ import { Message } from './entitys/message.entity';
 import { v4 as uuidv4 } from 'uuid';
 import { User } from 'src/user/user.entity';
 import { GroupMember } from './entitys/group-members.entity';
+// import { ChatGateway } from './chat.gateway';
 
 @Injectable()
 export class ChatService {
@@ -31,6 +32,7 @@ export class ChatService {
     @InjectRepository(Message)
     private messageRepository: Repository<Message>,
     private userService: UserService,
+    // private chatGateway: ChatGateway,
   ) {}
 
   // 创建好友分组
@@ -94,7 +96,7 @@ export class ChatService {
       room: friend.room,
       group_id: friendGroup2.id,
     });
-    await this.friendRepository.save(friendTemp2);
+    const res = await this.friendRepository.save(friendTemp2);
 
     // TODO:发送初始消息 ?? TODO:刷新左侧列表 未作，7/3
     const message = {
@@ -106,9 +108,14 @@ export class ChatService {
       media_type: 'text',
     };
     this.createMessage(message);
-    // 添加未读
+    // 添加未读 发反了
+    // 刷新消息
+    // this.chatGateway.updateAllLastMessage({
+    //   room: friend.room,
+    //   from: 'addFriend',
+    // });
 
-    return '添加好友成功';
+    return res;
   }
 
   // 查找好友 通过分组id

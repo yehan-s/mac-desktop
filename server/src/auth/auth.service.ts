@@ -24,6 +24,7 @@ export class AuthService {
     // }
     if (!user) {
       throw new UnauthorizedException('用户不存在，请注册');
+      return Promise.reject('用户不存在，请注册');
     }
 
     // else {
@@ -37,7 +38,10 @@ export class AuthService {
 
     if (!user) {
       // 如果比对不通过
-      throw new UnauthorizedException('用户名或者密码错误');
+      // throw new UnauthorizedException('用户名或者密码错误');
+      return Promise.reject('用户名或者密码错误');
+    } else {
+      console.log('生成了', user);
     }
 
     // 生成token
@@ -59,7 +63,8 @@ export class AuthService {
     // throw new Error('Method not implemented.');
     const user = await this.userService.findUserByUsername(username);
     if (user) {
-      throw new ForbiddenException('用户名已存在');
+      // throw new ForbiddenException('用户名已存在');
+      return Promise.reject('用户名已存在');
     }
     const res = await this.userService.create({ username, password });
 

@@ -58,6 +58,17 @@ export class ChatGateway implements OnGatewayConnection {
     return '初始化成功';
   }
 
+  @SubscribeMessage('joinRoom')
+  async joinRoom(
+    @MessageBody() data: any,
+    @ConnectedSocket() client: Socket,
+  ): Promise<string> {
+    client.join(data.room);
+    console.log('加入房间', data.room);
+    console.log(client.rooms);
+    return Promise.resolve('加入房间成功');
+  }
+
   // 发送通话申请
   @SubscribeMessage('request_video')
   async request_video(
@@ -102,10 +113,17 @@ export class ChatGateway implements OnGatewayConnection {
     client.to(data.room).emit('receive_candidate', data.candidate);
   }
 
-  // 参收
+  // 通话结束
   @SubscribeMessage('closeVideo')
   clsoeVideo(@MessageBody() data: any) {
     this.server.in(data).emit('closeVideo');
+  }
+
+  // 双方更新消息列表
+  @SubscribeMessage('updateAllLastMessage')
+  updateAllLastMessage(@MessageBody() data: any): Promise<string> {
+    this.server.in(data.room).emit('updateLastMessage', data.from);
+    return Promise.resolve('更新成功');
   }
 
   // @SubscribeMessage('createMessage')

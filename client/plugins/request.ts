@@ -37,6 +37,11 @@ export default defineNuxtPlugin(() => {
     /** 响应错误拦截器 */
     onResponseError(_context) {
       console.log("进入相应错误拦截器", _context.response._data);
+      useNuxtApp().$toast.add({
+        severity: "error",
+        detail: _context.response._data.message,
+        life: 3000,
+      });
     },
   });
 

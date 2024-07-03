@@ -28,6 +28,6 @@ import { User } from 'src/user/user.entity';
   ],
   providers: [ChatService, ChatGateway],
   controllers: [ChatController],
-  exports: [ChatService],
+  exports: [ChatService, ChatGateway],
 })
 export class ChatModule {}

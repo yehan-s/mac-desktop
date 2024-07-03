@@ -80,6 +80,7 @@ import { useChatListStore } from "@/store/chatList";
 import { useChatStore } from "@/store/chat";
 import type { MenuItem } from "primevue/menuitem";
 import type { Message } from "~/types";
+import { searchUser } from "~/api/search";
 const themeStore = useThemeStore();
 const userStore = useUserStore();
 const chatListStore = useChatListStore();
@@ -207,7 +208,27 @@ onMounted(() => {
 
   // 监听新消息
   // 如果我们选中框有新消息，此时应该先把未读清空，发送方是统一都新增了未读
-  socket.on("updateLastMessage", () => {
+  socket.on("updateLastMessage", async (from: string = "") => {
+    // FIXME: 这里应该是根据from来判断是哪种方式，以后改成enum
+    // 让对方也加入
+    if (from === "addFriend") {
+      // console.log("这里只是添加好友");
+      // 加下面这两个
+      // console.log("这里需要把代码限号")
+      const res = await searchUser(userStore.username);
+      // console.log("最后了", res);
+      userStore.friendGroups = res.friendGroups;
+      userStore.groupChats = res.groupMembers!.map(
+        (item: { group: any }) => item.group
+      );
+
+      chatListStore.getFGItem(userStore.friendGroups);
+      chatListStore.getGroupItem(userStore.groupChats);
+      chatListStore.setFriendsList(userStore.friendGroups);
+      chatListStore.getLMToChatList(userStore.id);
+
+      return;
+    }
     chatStore.clearUnread();
     chatListStore.getLMToChatList(userStore.id);
   });

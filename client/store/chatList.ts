@@ -85,19 +85,23 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
           id: userItem.id,
         };
         fgItemTemp.items.push(fmItemTemp);
-        console.log("先看看这个", userItem);
-        console.log("此处刚添加", fgItemTemp.items);
+        // console.log("先看看这个", userItem);
+        // console.log("此处刚添加", fgItemTemp.items);
       });
       friendGroupList.value.push(fgItemTemp);
+      console.log("获取成员的列表", friendGroupList);
     });
   };
 
   // 获取群聊
   const getGroupItem = async (groupChats: any) => {
+    console.log("先让我看第一眼", groupChats);
     // let res = groupChats.map((item: any) => {
     //   return item.group;
     // });
-    console.log("这是我要提交的群聊之前", groupChats);
+    // 获取之前先清空
+    groupChatList.value = [];
+    console.log("这是我要提交的群聊之前", groupChatList);
     // console.log("这是我要提交的群聊", res);
     // 群聊的每一项
     let groupItemTemp: GroupItem = {
@@ -113,6 +117,7 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
       };
 
       groupChatList.value.push(groupItemTemp);
+      console.log("提交之后的群聊", groupChatList);
       // groupChatList.value.push(groupItemTemp);
     }
   };
@@ -120,6 +125,9 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
   // 设置好友列表
   // 获取关联的分组，把所有分组下的好友都放到一个数组中
   const setFriendsList = (friendGroups: any) => {
+    // 先清空
+    console.log("先看下setFriendsList", friendGroups);
+    friendsList = [];
     friendGroups.forEach((item: any) => {
       item.friends.forEach((friend: any) => {
         friendsList.push(friend);
@@ -133,6 +141,7 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
 
   // 获取消息列表
   // 显示最后一条消息
+  // 想要在变化好友的情况下，改变消息列表，一定要改变friendsList
   const getLMToChatList = async (userId: number) => {
     // 把数组赋空
     // chatList.value = [];

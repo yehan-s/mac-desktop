@@ -36,6 +36,7 @@
     </div>
     <div class="text-[12px] flex justify-start items-center text-[#999]">
       <div
+      
         class="flex-center w-4 h-4 border-[1px] mr-1 border-[#b2c1cb] rounded-full text-white"
         :class="check ? 'bg-[#0099ff]' : ''"
         @click="toggleCheck"
@@ -110,7 +111,12 @@ const loginHandler = async () => {
 
   // if (userStore.login) {
   let userInfo = await findUserInfoByUsername(username.value);
-  console.log("我想获取到信息", userInfo);
+  // try {
+  // } catch (error) {
+  //   console.error("获取用户信息失败", error);
+  //   return;
+  // }
+  // console.log("我想获取到信息", userInfo);
   if (userInfo) {
     userStore.saveUserInfo(userInfo);
     chatStore.setSenderId(userInfo.id);
