@@ -133,7 +133,11 @@ export const useChatStore = defineStore("chat", () => {
     if (currentChat.sendMessage.type === "private") {
       // 如果是音频，不增加未读，不滚动屏幕
       if (currentChat.sendMessage.media_type === "video") {
+        return;
       }
+      // if (currentChat.sendMessage.media_type === "image") {
+      //   window.confirm("图片上传成功，请等待对方确认");
+      // }
 
       // 添加未读
       await addPrivateUnread({

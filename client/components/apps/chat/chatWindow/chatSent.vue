@@ -12,11 +12,28 @@
       />
       <Icon name="smail" desc="表情" @click.stop="emojiPanelHandler(true)" />
       <!-- <Icon name="sc" desc="截图" /> -->
-      <Icon name="file" desc="文件" />
+      <!-- <Icon name="file" desc="文件" /> -->
       <Icon name="img" desc="照片" />
+      <!-- 发送图片 -->
+  
+        <FileUpload
+          :pt="persets.fileupload"
+          mode="basic"
+          :auto="true"
+          ref="fileupload"
+          accept="image/*"
+          :url="uploadUrl"
+          :maxFileSize="1000000"
+          @beforeSend="beforeSend($event)"
+          @select="select"
+          @upload="upload"
+          class="w-[32px] h-[32px] rounded-full bg-pink-500 absolute top-[8px] -left-[48px] z-10 opacity-0"
+        >
+        </FileUpload>
+    
       <!-- <Icon name="voice" desc="语音输入" /> -->
       <div class="flex-1"></div>
-      <Icon name="phone" desc="语音通话" />
+      <!-- <Icon name="phone" desc="语音通话" /> -->
       <Icon
         name="video"
         desc="视频通话"
@@ -47,6 +64,7 @@
 
 <script setup lang="ts">
 import { defineExpose } from "vue";
+import persets from "~/config/persets";
 import EmojiPanel from "./emojiList/index.vue";
 import type { Message } from "~/types/message.d.ts";
 import Icon from "./icon.vue";
@@ -54,6 +72,7 @@ import socket from "~/utils/socket";
 import { useThemeStore } from "~/store/theme";
 import { useChatStore } from "~/store/chat";
 import { useUserStore } from "~/store/user";
+import type { FileUploadBeforeSendEvent } from "primevue/fileupload";
 const themeStore = useThemeStore();
 const chatStore = useChatStore();
 const userStore = useUserStore();
@@ -101,6 +120,86 @@ const handleClickOutside = () => {
 
 const changeMessage = (e: any) => {
   console.log("changeMessage " + e.currentTarget);
+};
+// 上传文件
+
+interface File {
+  size: number;
+  type: string;
+  name: string;
+  objectURL: string;
+  fileObject: object;
+}
+let fileObject: any = null;
+
+const file = reactive<File>({} as File);
+const uploadUrl = `${useRuntimeConfig().public.apiBase}/img/get-sts-identity`;
+
+// 给url的默认行为添加请求头
+const beforeSend = ($event: FileUploadBeforeSendEvent) => {
+  console.log("beforeSend", $event);
+  const userAuth = useCookie("token");
+  if (userAuth.value) {
+    $event.xhr.setRequestHeader("Authorization", `Bearer ${userAuth.value}`);
+  }
+};
+// 在select时候获取file对象
+const select = ($event: any) => {
+  console.log("选中文件时打印", $event);
+  if ($event.files.length === 0) {
+    useNuxtApp().$toast.add({
+      severity: "warn",
+      detail: "只支持上传 jpg、jpeg、png、gif 格式的图片111111111",
+      life: 3000,
+    });
+    return;
+  }
+  const fileTemp = $event.files[0];
+  console.log("文件的大小是", $event.files[0].size);
+  file.size = fileTemp.size;
+  file.type = fileTemp.type;
+  file.name = fileTemp.name;
+  file.objectURL = fileTemp.objectURL;
+
+  // 假设 opt.file 是一个 Blob 对象
+  const blob = file.objectURL;
+
+  // 将 Blob 对象转换为 File 对象
+  file.fileObject = new File([blob], file.name);
+
+  fileObject = $event.files[0];
+};
+// 有个autoFocus的提醒
+const upload = async ($event: any) => {
+  console.log("上传文件", $event);
+  let stsResult = $event.xhr.response;
+  stsResult = JSON.parse(stsResult);
+  if (stsResult.code !== 200)
+    return useNuxtApp().$toast.add({
+      severity: "warn",
+      summary: "Warn",
+      detail: "STS获取失败",
+      life: 3000,
+    });
+  const path = await imgUpload({
+    file,
+    sts: stsResult.data.stsToken.Credentials,
+    fileObject,
+  });
+
+  // 发送图片小
+  chatStore.sendPrivateMessage(path, "image");
+
+  return false;
+
+  useNuxtApp().$toast.add({
+    severity: "success",
+    summary: "Success",
+    detail: "文件上传中。。",
+    life: 3000,
+  });
+
+  return false;
 };
 
 const onMouseEnter = (event: MouseEvent) => {

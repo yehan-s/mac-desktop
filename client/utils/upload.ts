@@ -88,8 +88,8 @@ export const imgUpload = async (opt: any) => {
   //   console.log(runtimeConfig.public.OSS_REGION, runtimeConfig.public.OSS_BUCKET);
   //   console.log("oss client", client);
 
-    if (client === null) {
-  // if (1) {
+  if (client === null) {
+    // if (1) {
     try {
       //   const res = await this.$http.post("/ac-admin/get-sts-identity", {});
       const res = await getStsIdentity();
@@ -118,7 +118,7 @@ export const imgUpload = async (opt: any) => {
     .map(() => Math.round(Math.random() * 16).toString(16))
     .join("");
   //   const path = `ac/tmp-img/${randomName}.${extname}`;
-  const path = `yehan-first/desktop/${randomName}.${extname}`;
+  const path = `desktop/${randomName}.${extname}`;
   let url;
   try {
     // 使用 multipartUpload 正式上传到 oss

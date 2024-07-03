@@ -18,10 +18,10 @@
       </div>
 
       <!-- 消息冒泡 -->
-      <template v-for="item in chatStore.allMessage" class="my-2">
+      <template v-for="item in chatStore.allMessage" >
         <!-- 根据消息的发送者是不是对方，从而决定冒泡在屏幕左右 -->
         <div
-          class="chat"
+          class="chat my-2"
           :class="{
             'chat-start': getPosition(item),
             'chat-end': !getPosition(item),
@@ -39,14 +39,28 @@
           <!-- 头部 名字和时间  -->
           <div class="chat-header">
             {{ getName(item) }}
+            <!-- FIXME: 时间显示有问题 -->
             <time class="text-xs opacity-50">{{ item.created_at }}</time>
           </div>
           <!-- 内容 -->
+          <!-- <div
+            v-if="item.media_type === 'image'"
+            class="chat-bubble dark:bg-[#2c2c2c] bg-[#d9d9d9] dark:text-white"
+          > -->
+          <img
+            v-if="item.media_type === 'image'"
+            :src="item.content"
+            alt=""
+            class="w-32 rounded-lg"
+          />
+          <!-- </div> -->
           <div
+            v-else
             class="chat-bubble dark:bg-[#2c2c2c] bg-[#d9d9d9] dark:text-white"
           >
             {{ item.content }}
           </div>
+          
         </div>
       </template>
     </div>

@@ -279,7 +279,15 @@ const beforeSend = ($event: FileUploadBeforeSendEvent) => {
 };
 // 在select时候获取file对象
 const select = ($event: any) => {
-  console.log("很可惜，没有结构", $event);
+  console.log("选中文件时打印", $event);
+  if ($event.files.length === 0) {
+    useNuxtApp().$toast.add({
+      severity: "warn",
+      detail: "只支持上传 jpg、jpeg、png、gif 格式的图片111111111",
+      life: 3000,
+    });
+    return;
+  }
   const fileTemp = $event.files[0];
   console.log("文件的大小是", $event.files[0].size);
   file.size = fileTemp.size;

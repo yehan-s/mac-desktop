@@ -25,6 +25,7 @@
       </div>
       <!-- 单行省略 -->
       <!-- 右侧下 消息内容 -->
+      <!-- FIXME: 这里的消息内容，如果时图片应该显示 [图片] -->
       <div
         class="dark:text-[#5e5e5e] text-gray-400 overflow-hidden text-ellipsis whitespace-nowrap max-w-44"
       >

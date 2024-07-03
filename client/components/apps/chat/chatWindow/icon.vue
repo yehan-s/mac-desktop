@@ -1,6 +1,6 @@
 <template>
   <div
-    class="rounded-lg h-[46px] flex-center relative px-[5px]"
+    class="rounded-lg h-[46px] flex-center relative px-[5px] overflow-hidden"
     @click="onClick"
     @mouseenter="onMouseEnter"
     @mouseleave="onMouseLeave"
@@ -12,6 +12,7 @@
       width="15"
       height="15"
     />
+    <slot></slot>
     <div
       v-if="desc"
       class="absolute invisible rounded-sm top-12"

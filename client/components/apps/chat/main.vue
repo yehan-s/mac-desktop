@@ -1,9 +1,9 @@
 <template>
   <div class="flex h-[600px] w-[900px] backdrop-blur-sm">
-    <SiderBar  />
+    <SiderBar />
     <ChatList />
     <ChatWindow v-if="chatStore.currentChat.sendMessage.room" />
-    <div class="flex-1 flex-center" v-else>
+    <div class="flex-1 flex-center bg-[#f6f6f6] dark:bg-[#1c1c1c]" v-else>
       认识新朋友，<br />
       有 Chat 就够了
     </div>
@@ -23,7 +23,6 @@ const chatStore = useChatStore();
 const flag = true;
 const bg = themeStore.dark ? "bg-[#1a1a1a]" : "bg-[#f2f2f2]";
 const src = themeStore.dark ? "/qq/logo/qq_dark.svg" : "/qq/logo/qq_.svg";
-
 </script>
 
 <style>
