@@ -1,4 +1,5 @@
 <template>
+  <!-- 最小化 最大化 关闭按钮 -->
   <div class="bg-transparent absolute">
     <div
       ref="trafficLightRef"

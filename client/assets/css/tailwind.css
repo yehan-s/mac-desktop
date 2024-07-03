@@ -2,6 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  html,
+  body,
+  #root {
+    @apply h-full overflow-hidden;
+    /* cursor: url("cursors/normal-select.svg"), auto; */
+  }
+
+  button {
+    /* cursor: url("cursors/normal-select.svg"), auto; */
+  }
+
+  * {
+    @apply m-0 p-0;
+  }
+
+  .appLink {
+    /* cursor: url("cursors/normal-select.svg"), auto; */
+  }
+}
+
 @layer components {
   .flex-center {
     @apply flex justify-center items-center;
@@ -54,16 +75,6 @@
   }
 }
 
-* {
-  @apply m-0 p-0;
-}
-
-html,
-body,
-#root {
-  @apply h-full overflow-hidden;
-}
-
 :root {
   --primary-50: 236 253 245;
   --primary-100: 209 250 229;
@@ -90,9 +101,9 @@ body,
   --surface-950: 3 6 23;
 }
 
-button {
+/* button {
   cursor: url("cursors/normal-select.svg"), auto;
-}
+} */
 
 /* 所有需要溢出带滚动条 */
 /* 仅适用于 Chrome, Safari, Opera 浏览器 */

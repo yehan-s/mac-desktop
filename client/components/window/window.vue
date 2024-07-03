@@ -22,7 +22,7 @@
     </div>
     <!-- 存放app -->
      <!-- 第一步存放在这，第二部docker栏设置 -->
-    <div class="relative w-full h-full bg-green-200">
+    <div class="relative w-full h-full ">
       <Chat v-if="props.appName === 'turbochat'" />
       <Launchpad v-if="props.appName === 'launchpad'" />
       <Vsc v-if="props.appName === 'vsc'" />
