@@ -8,7 +8,7 @@
       <!-- 消息区域 -->
       <div
         ref="chatListRef"
-        class="overflow-y-scroll chatlist h-[450px] custom-scrollbar"
+        class="overflow-y-scroll scroll-smooth chatlist h-[430px] custom-scrollbar mb-24"
       >
         <div
           v-for="(message, index) in messages"
@@ -31,18 +31,29 @@
           </div>
         </div>
       </div>
-      <!-- 输入区域 -->
-      <!-- TODO:等待返回信息时disable -->
+      
       <div class="fixed flex w-full bottom-[10px]">
         <input
+          ref="inputRef"
           v-model="inputValue"
           @keydown.enter="sendMessage"
           :autofocus="true"
-          placeholder="Type your message here..."
-          class="text-black py-2 border rounded-lg grow-[0.8] focus:outline-none focus:ring-2 ring-blue-500 transition duration-200"
+          placeholder="请键入问题"
+          :disabled="isLoading"
+          class="text-black px-2 py-2 border rounded-lg grow-[0.8] focus:outline-none focus:ring-2 ring-blue-500 transition duration-200"
         />
         <button
           @click="sendMessage"
+          :disabled="true"
+          v-if="isLoading"
+          class="ml-4 py-2 w-[80px] text-white bg-primary rounded-lg disabled:opacity-50 transition duration-200"
+        >
+          <span class="loading loading-spinner loading-xs"></span>
+        </button>
+        <button
+          v-else
+          @click="sendMessage"
+          :disabled="isLoading || inputValue.trim() === ''"
           class="ml-4 py-2 w-[80px] text-white bg-primary rounded-lg disabled:opacity-50 transition duration-200"
         >
           Send
@@ -55,7 +66,6 @@
 </template>
 
 <script setup lang="ts">
-import { sendAIMessage } from "~/utils/chatAI";
 interface aiMessage {
   text: string;
   isBot: boolean;
@@ -68,17 +78,13 @@ const messages = ref<aiMessage[]>([
     isBot: true,
     timestamp: "",
   },
-  {
-    text: "I'm sorry, I don't have an answer for that. Can you please provide more information?",
-    isBot: true,
-    timestamp: "",
-  },
 ]);
 
 const inputValue = ref("");
 const isLoading = ref(false);
 const error = ref("");
 const chatListRef = ref<HTMLDivElement | null>(null);
+const inputRef = ref<HTMLInputElement | null>(null);
 
 const sendMessage = async () => {
   if (inputValue.value.trim() === "") return;
@@ -92,13 +98,15 @@ const sendMessage = async () => {
     timestamp: "",
   };
   messages.value = [...messages.value, newMessage];
-  inputValue.value = "";
+
   console.log("send message", messages.value);
 
-  // TODO: 缺少token
   try {
+    // console.log("先看下input", inputValue.value);
     let content = inputValue.value.trim();
-    const { botMessage } = await sendAIMessage(content);
+    inputValue.value = "";
+    // 调用写好的工具
+    const { botMessage } = await useNuxtApp().$sendAIMessage(content);
     messages.value = [...messages.value, botMessage];
     // chatListRef.value?.scrollIntoView({ behavior: "smooth" });
     // 输入就会跳转，需要改进
@@ -106,6 +114,8 @@ const sendMessage = async () => {
     //   top: chatListRef.value.scrollHeight,
     //   behavior: "smooth",
     // });
+    // 最后再清空
+
     chatListRef.value!.scrollTop = chatListRef.value!.scrollHeight;
   } catch (error) {
     // useAlertStore().useAlert(
@@ -120,16 +130,18 @@ const sendMessage = async () => {
     });
   } finally {
     isLoading.value = false;
+    await nextTick();
+    inputRef.value!.focus();
   }
 };
 
-const handleInputChange = (event: Event) => {
-  inputValue.value = (event.target as HTMLInputElement).value;
-};
+// const handleInputChange = (event: Event) => {
+//   inputValue.value = (event.target as HTMLInputElement).value;
+// };
 
-const handleKeyDown = (event: KeyboardEvent) => {
-  if (event.key === "Enter") sendMessage();
-};
+// const handleKeyDown = (event: KeyboardEvent) => {
+//   if (event.key === "Enter") sendMessage();
+// };
 
 onMounted(() => {
   if (chatListRef.value) {

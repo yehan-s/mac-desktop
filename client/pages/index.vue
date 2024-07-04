@@ -16,7 +16,6 @@
     <ClientOnly>
       <Dock />
     </ClientOnly>
-    
   </div>
 </template>
 
@@ -43,7 +42,9 @@ const backgroundStyle = computed(() => {
   };
 });
 
-onMounted(() => {});
+onMounted(() => {
+
+});
 
 const perset = {
   toast: {

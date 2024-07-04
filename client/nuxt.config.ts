@@ -13,12 +13,17 @@ export default defineNuxtConfig({
     // 公开的键，也会暴露给客户端
     // Nuxt中环境变量只有这里可以使用，其他地方读取不到process.env
     public: {
-      apiBase: "http://127.0.0.1:3000",
+      apiBase: process.env.API_BASE_URL,
       OSS_REGION: process.env.OSS_REGION,
       OSS_BUCKET: process.env.OSS_BUCKET,
+      OSS_ACCESS_KEY_ID: process.env.OSS_ACCESS_KEY_ID,
+      OSS_ACCESS_KEY_SECRET: process.env.OSS_ACCESS_KEY_SECRET,
+
+      CHAT_COMPLETIONS_API_URL: process.env.CHAT_COMPLETIONS_API_URL,
+      SELECTED_MODEL: process.env.SELECTED_MODEL,
+      OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     },
   },
-
   vite: {
     plugins: [
       // 您的 Vite 插件配置
@@ -63,7 +68,7 @@ export default defineNuxtConfig({
     api: {
       baseURL: "/api/_my_content",
     },
-    useContentHead: false,
+    contentHead: false,
     highlight: {
       // Theme used in all color schemes.
       // theme: 'github-light'
