@@ -22,7 +22,9 @@ export class GroupChat {
   @Column()
   creator_id: number;
 
-  @Column({ default: 'https://img2.imgtp.com/2024/05/04/Db7YhuWN.png' })
+  @Column({
+    default: 'https://s11.ax1x.com/2023/12/03/piyFscq.jpg',
+  })
   avatar: string;
 
   @Column({ nullable: true, type: 'text' })

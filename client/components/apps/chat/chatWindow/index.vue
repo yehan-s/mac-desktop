@@ -32,7 +32,7 @@ import GroupMembers from "./groupMembers.vue";
 import WindowHeader from "./windowHeader.vue";
 
 import { useThemeStore } from "~/store/theme";
-import { useChatStore } from "~/store/chat";
+import { useChatStore } from "~/store/chat demo";
 const themeStore = useThemeStore();
 const chatStore = useChatStore();
 

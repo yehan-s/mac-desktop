@@ -26,7 +26,7 @@
   >
     <template #header>
       <div class="w-full flex justify-between items-center">
-        <div class="font-bold">群成员</div>
+        <div class="font-bold">成员</div>
 
         <div>
           <button
@@ -96,7 +96,7 @@ import Icon from "./icon.vue";
 import Video from "./video.vue";
 import type { User } from "~/types/user";
 import { useThemeStore } from "~/store/theme";
-import { useChatStore } from "~/store/chat";
+import { useChatStore } from "~/store/chat demo";
 import { useUserStore } from "~/store/user";
 import GroupMembers from "./groupMembers.vue";
 const themeStore = useThemeStore();

@@ -5,7 +5,6 @@
       modal
       :pt="persets.dialog"
       :draggable="true"
-      :closable="true"
       header="视频通话"
       :style="{ width: '25rem' }"
     >
@@ -106,7 +105,7 @@ import persets from "~/config/persets";
 import { CallIcons } from "~/public/chat";
 import { CallStatus } from "~/types/video";
 import { useThemeStore } from "~/store/theme";
-import { useChatStore } from "~/store/chat";
+import { useChatStore } from "~/store/chat demo";
 import { useUserStore } from "~/store/user";
 const themeStore = useThemeStore();
 const chatStore = useChatStore();
@@ -189,8 +188,8 @@ watch(
         }
         chatStore.myVideoRef = myVideoRef.value;
         chatStore.otherVideoRef = otherVideoRef.value;
-        console.log("检测一下", chatStore.myVideoRef);
-        console.log("检测一下", chatStore.receiveVideoInfo);
+        console.log("检测一下videoMy", chatStore.myVideoRef);
+        console.log("检测一下videoRevice", chatStore.otherVideoRef);
       });
     }
   },
@@ -208,6 +207,7 @@ watch(
         chatStore.myVideoRef = myVideoRef.value;
         chatStore.otherVideoRef = otherVideoRef.value;
         console.log("检测一下", chatStore.myVideoRef);
+        console.log("检测一下", chatStore.otherVideoRef);
         // 双方重新开始计时
         // 如果是请求方，需要先清空之前的计时
         if (oldVal === CallStatus.INITIATE) {

@@ -15,36 +15,26 @@
       <!-- <Icon name="file" desc="文件" /> -->
       <Icon name="img" desc="照片" />
       <!-- 发送图片 -->
-  
-        <FileUpload
-          :pt="persets.fileupload"
-          mode="basic"
-          :auto="true"
-          ref="fileupload"
-          accept="image/*"
-          :url="uploadUrl"
-          :maxFileSize="1000000"
-          @beforeSend="beforeSend($event)"
-          @select="select"
-          @upload="upload"
-          class="w-[32px] h-[32px] rounded-full bg-pink-500 absolute top-[8px] -left-[48px] z-10 opacity-0"
-        >
-        </FileUpload>
-    
+
+      <FileUpload
+        :pt="persets.fileupload"
+        mode="basic"
+        :auto="true"
+        ref="fileupload"
+        accept="image/*"
+        :url="uploadUrl"
+        :maxFileSize="1000000"
+        @beforeSend="beforeSend($event)"
+        @select="select"
+        @upload="upload"
+        class="w-[32px] h-[32px] rounded-full bg-pink-500 absolute top-[8px] -left-[48px] z-10 opacity-0"
+      >
+      </FileUpload>
+
       <!-- <Icon name="voice" desc="语音输入" /> -->
       <div class="flex-1"></div>
       <!-- <Icon name="phone" desc="语音通话" /> -->
-      <Icon
-        name="video"
-        desc="视频通话"
-        @click="
-          chatStore.videoHandler({
-            id: userStore.id,
-            nickname: userStore.nickname,
-            avatar: userStore.avatar,
-          })
-        "
-      />
+      <Icon name="video" desc="视频通话" @click="videoHandler" />
       <!-- <Icon name="record" desc="历史记录" /> -->
     </div>
     <div class="flex-1">
@@ -70,7 +60,7 @@ import type { Message } from "~/types/message.d.ts";
 import Icon from "./icon.vue";
 import socket from "~/utils/socket";
 import { useThemeStore } from "~/store/theme";
-import { useChatStore } from "~/store/chat";
+import { useChatStore } from "~/store/chat demo";
 import { useUserStore } from "~/store/user";
 import type { FileUploadBeforeSendEvent } from "primevue/fileupload";
 const themeStore = useThemeStore();
@@ -116,6 +106,22 @@ const handleClickOutside = () => {
     return;
   }
   emojiPanelHandler(false);
+};
+
+const videoHandler = () => {
+  if (chatStore.currentChat.privateObject.nickname) {
+    chatStore.videoHandler({
+      id: userStore.id,
+      nickname: userStore.nickname,
+      avatar: userStore.avatar,
+    });
+  } else {
+    chatStore.groupVideoHandler({
+      id: userStore.id,
+      nickname: userStore.nickname,
+      avatar: userStore.avatar,
+    });
+  }
 };
 
 const changeMessage = (e: any) => {

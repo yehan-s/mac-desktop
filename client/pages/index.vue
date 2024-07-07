@@ -29,8 +29,10 @@ import UseWindow from "~/components/window/useWindow.vue";
 import Wallpapers from "@/utils/wallpapers";
 import { useThemeStore } from "~/store/theme";
 import { useAppStore } from "~/store/app";
+import { useControlStore } from "~/store/control";
 const themeStore = useThemeStore();
 const appStore = useAppStore();
+const controlStore = useControlStore();
 
 const backgroundStyle = computed(() => {
   // const imageUrl = themeStore.dark ? Wallpapers.NIGHT : Wallpapers.DAY;
@@ -42,8 +44,17 @@ const backgroundStyle = computed(() => {
   };
 });
 
-onMounted(() => {
+const checkWiFiStatus = () => {
+  if ("connection" in navigator) {
+    const connection = navigator.connection || navigator.network.connection;
+    const effectiveConnectionType = connection.effectiveType;
+    const isWifi = connection.effectiveType === "wifi";
+    controlStore.wifiSwitch(isWifi);
+  }
+};
 
+onMounted(() => {
+  checkWiFiStatus();
 });
 
 const perset = {

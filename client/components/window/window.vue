@@ -22,17 +22,17 @@
     </div>
     <!-- 存放app -->
     <!-- 第一步存放在这，第二部docker栏设置 -->
-    <div class="relative w-full h-full">
+    <div class="relative w-full h-full ">
       <Chat v-if="props.appName === 'turbochat'" />
       <Launchpad v-if="props.appName === 'launchpad'" />
       <Vsc v-if="props.appName === 'vsc'" />
       <Terminal v-if="props.appName === 'terminal'" />
       <AiChat v-if="props.appName === 'aichat'" />
 
-      <ContentDoc
+      <!-- <ContentDoc
         v-if="props.appName === 'mdDoc'"
         class="prose rounded-xl p-2 dark:bg-[#202020] dark:text-[#cbc9c9] bg-[#faf7f5] text-[#333c4d]"
-      />
+      /> -->
     </div>
   </div>
 </template>
@@ -56,7 +56,8 @@ let props = defineProps({
 // 拖拽配置
 let options: DragOptions = reactive({
   // position: { x: 0, y: 32 },
-  bounds: { bottom: -500, top: 32, left: -600, right: -600 },
+  // bounds: { bottom: -500, top: 32, left: -600, right: -600 },
+  bounds: { bottom: -500, top: 0, left: -600, right: -600 },
   handle: ".window-header",
   cancel: ".traffic-lights",
   // disabled: !!max,
@@ -75,6 +76,10 @@ const setPosition = (x: number, y: number) => {
 let isMax = ref(false);
 const handleMax = () => {
   isMax.value = true;
+  const rect = refWindow.value!.getBoundingClientRect();
+  const offsetLeft = rect.left + window.pageXOffset;
+  const offsetTop = rect.top + window.pageYOffset;
+  setPosition(-offsetLeft, -offsetTop);
 };
 const handleMini = () => {
   isMax.value = false;

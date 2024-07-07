@@ -30,18 +30,16 @@
     </div>
   </div>
   <Help v-if="rowCommand === 'help'" class="block" />
-  <NotFound
-    v-if="rowCommand === 'notFound'"
-    class="block"
-    :content="rowCommand"
-  />
+  <NotFound v-if="rowCommand === 'notFound'" class="block" :content="content" />
 </template>
 
 <script setup lang="ts">
 import { useSlots } from "vue";
+import { useThemeStore } from "~/store/theme";
 import Help from "@/components/apps/terminal/help/index.vue";
 import NotFound from "../notFound/index.vue";
 // import NotFound from "@/components/apps/terminal/notFound/index.vue";
+const themeStore = useThemeStore();
 
 const emit = defineEmits(["executeCommand", "rollbackCommand"]);
 const props = defineProps<{
@@ -61,8 +59,9 @@ const dir = localStorage.getItem("currentDirectory");
 enum CommandType {
   HELP = "help",
   CLEAR = "clear",
+  SET_MODEL_GPT_3_5 = "set model gpt-3.5",
 }
-const commandList = ["help", "clear"];
+const commandList = ["help", "clear", "set model gpt-3.5"];
 // 要找到回滚的历史指令
 let commandIndex = props.commandList.length - 1;
 
@@ -77,6 +76,14 @@ const executeCommand = () => {
     if (rowCommand.value === CommandType.CLEAR) {
       emit("executeCommand", rowCommand.value);
       return;
+    }
+    if (rowCommand.value === CommandType.SET_MODEL_GPT_3_5) {
+      themeStore.model = "gpt-3.5-turbo";
+      useNuxtApp().$toast.add({
+        severity: "success",
+        detail: "模型切换成功",
+        life: 3000,
+      })
     }
   } else {
     rowCommand.value = "notFound";

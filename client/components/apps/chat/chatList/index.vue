@@ -77,7 +77,7 @@ import Search from "./search.vue";
 import { useThemeStore } from "@/store/theme";
 import { useUserStore } from "~/store/user";
 import { useChatListStore } from "@/store/chatList";
-import { useChatStore } from "@/store/chat";
+import { useChatStore } from "~/store/chat demo";
 import type { MenuItem } from "primevue/menuitem";
 import type { Message } from "~/types";
 import { searchUser } from "~/api/search";
@@ -88,15 +88,16 @@ const chatStore = useChatStore();
 
 // 移入带有滚动条的元素中时，对滚动条进行样式调整
 // 已经隐藏滚动条
-const onMouseEnter = (event: MouseEvent) => {
-  // console.log(event);
-  (event.currentTarget as HTMLElement).classList.remove("chatlist");
-  (event.currentTarget as HTMLElement).classList.add("chatlist_");
-};
-const onMouseLeave = (event: MouseEvent) => {
-  (event.currentTarget as HTMLElement).classList.remove("chatlist_");
-  (event.currentTarget as HTMLElement).classList.add("chatlist");
-};
+// FIXME:修改滚动条
+// const onMouseEnter = (event: MouseEvent) => {
+//   // console.log(event);
+//   (event.currentTarget as HTMLElement).classList.remove("chatlist");
+//   (event.currentTarget as HTMLElement).classList.add("chatlist_");
+// };
+// const onMouseLeave = (event: MouseEvent) => {
+//   (event.currentTarget as HTMLElement).classList.remove("chatlist_");
+//   (event.currentTarget as HTMLElement).classList.add("chatlist");
+// };
 
 // 点击消息item高亮
 let itemBg = computed(() => {
@@ -167,7 +168,7 @@ const chatMemberHandler = async (item: chatListItem) => {
   // 设置房间号可以让右侧聊天窗口显示
   chatStore.setRoom(item.room as string);
   chatStore.setType(item.type as string);
-  console.log("记得删除--------", item);
+  // console.log("记得删除--------", item);
   // 点击item高亮
   setActive(item.room!);
 

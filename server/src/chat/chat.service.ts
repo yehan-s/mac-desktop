@@ -49,7 +49,6 @@ export class ChatService {
     friend_id: number;
     room?: string;
   }) {
-    console.log('friend', friend);
     // user_id是我方的id friend_id是对方的id
     // 这里是需要添加的好友的id，保存下来，待会作为用户id
     let user_id = friend.user_id;
@@ -256,6 +255,14 @@ export class ChatService {
     const user = await this.userService.findUserByUserId(user_id);
     if (!user) {
       throw new NotFoundException('User not found');
+    }
+    // FIXME:找到用户是否已经在群聊的成员列表中
+    // const isMember = groupChat.members.some((item) => item.id === user.id);
+    const isMember = groupChat.members.some(
+      (member) => member.user_id === user.id,
+    );
+    if (isMember) {
+      throw new ForbiddenException('请勿重复添加');
     }
     // 将用户添加到群聊的成员列表中（手动添加中间表）
     const res = await this.groupMemberRepository.create({ user_id, group_id });

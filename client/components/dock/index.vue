@@ -66,20 +66,39 @@ const items = ref([
     icon: "img/icons/turbochat.png",
     command,
   },
-  {
-    label: "facetime",
-    icon: "img/icons/facetime.png",
-    command,
-  },
+  // {
+  //   label: "facetime",
+  //   icon: "img/icons/facetime.png",
+  //   command,
+  // },
   {
     label: "mail",
     icon: "img/icons/mail.png",
-    command,
+    command: () => {
+      useNuxtApp().$toast.add({
+        severity: "success",
+        detail: "yehanescn@gmail.com",
+        life: 3500,
+      });
+      useNuxtApp().$toast.add({
+        severity: "info",
+        detail: "myenli@163.com",
+        life: 3500,
+      });
+      useNuxtApp().$toast.add({
+        severity: "warn",
+        detail: "1513849675@qq.com",
+        life: 3500,
+      });
+    },
   },
   {
     label: "github",
     icon: "img/icons/github.png",
-    command,
+    command: () => {
+      // window.open("https://github.com/yehanescn");
+      window.location.href = "https://github.com/yehan-s/mac-desktop";
+    },
   },
 ]);
 const onDockItemClick = (event: { preventDefault: () => void }, item: any) => {

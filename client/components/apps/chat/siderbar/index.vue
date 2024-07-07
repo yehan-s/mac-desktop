@@ -161,6 +161,7 @@
 
   <!-- 音视频 -->
   <Video />
+  <!-- <GroupVideo /> -->
 </template>
 
 <script setup lang="ts">
@@ -168,6 +169,7 @@ import { nextTick } from "vue";
 import TopIcon from "./topIcon.vue";
 import BottomIcon from "./bottomIcon.vue";
 import Video from "../chatWindow/video.vue";
+// import GroupVideo from "../chatWindow/groupVideo.vue";
 import persets from "~/config/persets";
 import { useThemeStore } from "~/store/theme";
 import { useUserStore } from "~/store/user";

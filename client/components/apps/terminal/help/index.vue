@@ -19,7 +19,7 @@
         按下 <span class="text-purple-400">向上箭头 / 向下箭头</span> -
         选择历史命令
       </li>
-      <li>按下 <span class="text-purple-400">tab</span> - 自动补全</li>
+      <!-- <li>按下 <span class="text-purple-400">tab</span> - 自动补全</li> -->
     </ul>
   </div>
 </template>

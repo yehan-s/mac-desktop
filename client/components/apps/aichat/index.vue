@@ -3,7 +3,7 @@
     <!-- 空出顶部的高度 -->
     <div class="fixed rounded-t-lg w-full top-0 h-7 bg-[#343540]"></div>
     <!-- 内容区域 -->
-    <div class="flex flex-col px-3 py-6">
+    <div class="flex flex-col px-3 py-6 w-full h-full ">
       <h1 className="text-2xl font-bold text-gray-100">Chat with Me!</h1>
       <!-- 消息区域 -->
       <div

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="w-screen h-8 px-2 fixed top-0 text-sm text-white bg-gray-700/10 backdrop-blur-2xl shadow transition flex justify-between"
+      class="w-screen h-8 px-2 fixed top-0 text-sm dark:text-white dark:bg-gray-500/20 text-black bg-gray-100/30 backdrop-blur-2xl shadow transition flex justify-between"
     >
       <div class="flex justify-center w-[30px] items-center">
         <!-- icon -->
@@ -58,9 +58,9 @@
           <MenuControlCenter v-if="controlStore.showControlCenter" />
         </div>
         <!-- 时间 -->
-        <ClientOnly>
-          <TopbarCurrentDate />
-        </ClientOnly>
+        <!-- <ClientOnly> -->
+        <TopbarCurrentDate />
+        <!-- </ClientOnly> -->
       </div>
     </div>
   </div>

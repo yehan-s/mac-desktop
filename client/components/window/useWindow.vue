@@ -13,7 +13,7 @@ import Window from "~/components/window/window.vue";
 
 import { useAppStore } from "~/store/app";
 const appStore = useAppStore();
-appStore.showApps.push('mdDoc')
+// appStore.showApps.push('mdDoc')
 </script>
 
 <style>

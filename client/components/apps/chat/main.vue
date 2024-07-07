@@ -16,7 +16,7 @@ import ChatList from "./chatList/index.vue";
 import ChatWindow from "./chatWindow/index.vue";
 import { useThemeStore } from "~/store/theme";
 import { useUserStore } from "~/store/user";
-import { useChatStore } from "~/store/chat";
+import { useChatStore } from "~/store/chat demo";
 const themeStore = useThemeStore();
 const userStore = useUserStore();
 const chatStore = useChatStore();

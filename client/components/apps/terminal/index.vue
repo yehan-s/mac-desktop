@@ -106,6 +106,7 @@ const clickToFocus = (event) => {
   // terminalInput.value.focus();
 };
 
+
 // const clickToFocus = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 //   e.preventDefault();
 //   const currentInput = document.querySelector(

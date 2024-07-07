@@ -73,7 +73,7 @@ import { loginForClient, findUserInfoByUsername } from "~/api/user/index.ts";
 import socket from "~/utils/socket";
 import { useUserStore } from "~/store/user";
 import { useChatListStore } from "~/store/chatList";
-import { useChatStore } from "~/store/chat";
+import { useChatStore } from "~/store/chat demo";
 const userStore = useUserStore();
 const chatListStore = useChatListStore();
 const chatStore = useChatStore();

@@ -26,7 +26,10 @@ export class User {
   // @Column()
   // phone: string;
 
-  @Column({ default: 'https://img2.imgtp.com/2024/05/04/Db7YhuWN.png' })
+  @Column({
+    default:
+      'https://yehan-first.oss-cn-wuhan-lr.aliyuncs.com/desktop/cdbd4d6c475ba5d61a2cd73c1b9dcc64.jpg',
+  })
   avatar: string;
 
   @Column({ nullable: true })

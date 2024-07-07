@@ -154,6 +154,7 @@ export const useChatListStore = defineStore("chatList", (): ChatListState => {
         avatar: item.user.avatar,
       };
       let MessageTemp = await findLastMessage(item.room);
+      // console.log("看一下原始消息", MessageTemp);
       chatListItem.lastMessage = MessageTemp.content;
       chatListItem.date = MessageTemp.created_at as string;
       chatListItem.room = MessageTemp.room;

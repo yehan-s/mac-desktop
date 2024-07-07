@@ -18,7 +18,7 @@
       </div>
 
       <!-- 消息冒泡 -->
-      <template v-for="item in chatStore.allMessage" >
+      <template v-for="item in chatStore.allMessage">
         <!-- 根据消息的发送者是不是对方，从而决定冒泡在屏幕左右 -->
         <div
           class="chat my-2"
@@ -40,7 +40,12 @@
           <div class="chat-header">
             {{ getName(item) }}
             <!-- FIXME: 时间显示有问题 -->
-            <time class="text-xs opacity-50">{{ item.created_at }}</time>
+            <!-- <time class="text-xs opacity-50">{{ item.created_at }}</time> -->
+            <time class="text-xs opacity-50">{{
+              dayjs(new Date(item.created_at))
+                .locale("en")
+                .format("MMMD ddd HH:mm")
+            }}</time>
           </div>
           <!-- 内容 -->
           <!-- <div
@@ -60,7 +65,6 @@
           >
             {{ item.content }}
           </div>
-          
         </div>
       </template>
     </div>
@@ -68,10 +72,11 @@
 </template>
 
 <script setup lang="ts">
+import dayjs from "@/utils/dayjs";
 import socket from "~/utils/socket";
 import { useThemeStore } from "~/store/theme";
 import { ref, reactive } from "vue";
-import { useChatStore } from "~/store/chat";
+import { useChatStore } from "~/store/chat demo";
 import { useUserStore } from "~/store/user";
 const themeStore = useThemeStore();
 const chatStore = useChatStore();

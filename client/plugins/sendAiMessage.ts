@@ -1,11 +1,18 @@
+import { useThemeStore } from "~/store/theme";
+
 export default defineNuxtPlugin(() => {
   let apiConfig = {
     chatCompletionsApiUrl: useRuntimeConfig().public.CHAT_COMPLETIONS_API_URL,
     selectedModel: useRuntimeConfig().public.SELECTED_MODEL,
     openaiApiKey: useRuntimeConfig().public.OPENAI_API_KEY,
   };
-
+  
+  const themeStore = useThemeStore();
+  // FIXME:展示修改
   const $sendAIMessage = async (content: string) => {
+    if (themeStore.model) {
+      apiConfig.selectedModel = themeStore.model;
+    }
     console.log("进入了plugin");
     // console
     const response = await fetch(apiConfig.chatCompletionsApiUrl as string, {

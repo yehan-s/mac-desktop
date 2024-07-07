@@ -89,7 +89,7 @@ import { useChatListStore } from "~/store/chatList";
 import type { AddFriendData } from "~/api/add/types";
 import { findUserInfoByUsername } from "~/api/user";
 import { addGroupMember, findGroupchat } from "~/api/message";
-import { useChatStore } from "~/store/chat";
+import { useChatStore } from "~/store/chat demo";
 const chatStore = useChatStore();
 const themeStore = useThemeStore();
 const userStore = useUserStore();
@@ -109,6 +109,8 @@ const changeSelect = (e: MouseEvent) => {
     ? (selectText.value = true)
     : (selectText.value = false);
   // selectText.value = !selectText.value;
+  searchResult.value = false;
+  search.value = "";
 };
 
 let search = ref("");
@@ -186,7 +188,26 @@ const addHandler = async () => {
         user_id: userStore.id,
         group_id: searchResult.value?.id!,
       };
-      console.log("group", group);
+      // console.log("group", group);
+      const groupResult = await addGroupMember(group);
+      if (groupResult) {
+        console.log("添加群成功", groupResult);
+        // 不行，因为还没进入room
+        await chatStore.joinRoom({ room: groupResult.room! });
+        // console.log("加入房间成功：", a);
+        // 此时还没有消息？？
+        await chatStore.updateAllLastMessage({
+          room: groupResult.room!,
+          from: "addFriend",
+        });
+        // console.log("更新消息成功：", b);
+      } else {
+        useNuxtApp().$toast.add({
+          severity: "error",
+          detail: "请勿重复添加",
+          life: 3000,
+        });
+      }
 
       // 需要更新群组列表
     }
@@ -195,8 +216,30 @@ const addHandler = async () => {
       detail: "添加成功",
       life: 3000,
     });
+  } else {
+    const group = {
+      user_id: userStore.id,
+      group_id: searchResult.value?.id!,
+    };
+    // console.log("group", group);
+    const groupResult = await addGroupMember(group);
+
+    // 需要更新群组列表
+    if (groupResult) {
+      console.log("添加群成功", groupResult);
+      // 不行，因为还没进入room
+      await chatStore.joinRoom({ room: groupResult!.room });
+      // console.log("加入房间成功：", a);
+      // 此时还没有消息？？
+      await chatStore.updateAllLastMessage({
+        room: groupResult!.room,
+        from: "addFriend",
+      });
+    }
   }
 };
+
+watch(search, () => {});
 
 // dialog的预设
 // const persets = reactive({

@@ -21,6 +21,8 @@ export class ChatGateway implements OnGatewayConnection {
     this.defaultGroup = 'TurboRoom';
   }
 
+  groupVideoList: any[] = [];
+
   @WebSocketServer() server: Server;
   defaultGroup: string;
 
@@ -136,4 +138,48 @@ export class ChatGateway implements OnGatewayConnection {
   //   this.chatService.create(data);
   //   return 'Hello world!';
   // }
+
+  @SubscribeMessage('groupJoinVideoRoom')
+  groupJoinVideoRoom(
+    @MessageBody() data: any,
+    @ConnectedSocket() client: Socket,
+  ) {
+    client.join(data.userInfo.room);
+    this.groupVideoList.push(data.userInfo.nickname);
+    // 第一个用户不需要进行以下操作
+    if (this.groupVideoList.length <= 1) {
+      return;
+    }
+    console.log('最新的', client.rooms);
+    this.server
+      .in(data.userInfo.room)
+      .emit('groupJoinVideoRoom', data, this.groupVideoList);
+  }
+
+  @SubscribeMessage('groupOffer')
+  async groupOffer(
+    @MessageBody() data: any,
+    @ConnectedSocket() client: Socket,
+  ) {
+    if (this.groupVideoList.length <= 1) {
+      // 第一个用户登入
+      console.log('第一个用户登入', data);
+      return;
+    }
+    console.log('group_offer', data);
+    client
+      .to(data.userInfo.room)
+      .emit('groupReceive_offer', data.offer, data.userInfo.room);
+  }
+
+  @SubscribeMessage('groupAnswer')
+  async groupAnswer(
+    @MessageBody() data: any,
+    @ConnectedSocket() client: Socket,
+  ) {
+    console.log('answer', data);
+    client
+      .to(data.userInfo.room)
+      .emit('groupReceive_answer', data.answer, data.userInfo.room);
+  }
 }

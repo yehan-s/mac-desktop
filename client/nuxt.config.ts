@@ -48,6 +48,7 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "nuxt-primevue", // 全局引入 PrimeVue
     "@nuxt/content", // 引入 Nuxt Content 模块
+    'nuxt-time', // 引入时间插件 不需要处理水合
   ],
   primevue: {
     options: {
