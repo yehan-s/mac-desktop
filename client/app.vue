@@ -1,4 +1,5 @@
 <template>
+  <SpeedInsights />
   <div
     class="w-screen h-screen overflow-hidden bg-center bg-cover relative"
     :class="{ dark: themeStore.dark }"
@@ -30,6 +31,8 @@ import Wallpapers from "@/utils/wallpapers";
 import { useThemeStore } from "~/store/theme";
 import { useAppStore } from "~/store/app";
 import { useControlStore } from "~/store/control";
+// vercel/speed-insights
+import { SpeedInsights } from "@vercel/speed-insights/nuxt";
 const themeStore = useThemeStore();
 const appStore = useAppStore();
 const controlStore = useControlStore();
