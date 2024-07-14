@@ -1,8 +1,8 @@
 import { getStsIdentity } from "~/api/upload";
 import { useNuxtApp, useRuntimeConfig } from "#app";
 
-const OSS = require("ali-oss");
-const moment = require("moment");
+// const OSS = require("ali-oss");
+// const moment = require("moment");
 
 let expirationTime: any = null; // STS token 过期时间
 let client: any = null; // OSS Client 实例

@@ -9,6 +9,24 @@ export default defineNuxtConfig({
       filename: "stats.html",
     },
   },
+  app: {
+    head: {
+      title: "desktop",
+      meta: [
+        { charset: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        // 其他 meta 标签...
+      ],
+      script: [
+        // 脚本标签...
+        { src: "./aliyun-oss-sdk-6.18.1.min.js", tagPosition: "bodyClose" },
+      ],
+      link: [
+        // 链接标签...
+      ],
+      // 其他配置...
+    },
+  },
   imports: {
     dirs: ["composables/**"],
   },
@@ -53,7 +71,6 @@ export default defineNuxtConfig({
     "nuxt-primevue", // 引入 Nuxt Content 模块
     "@nuxt/content", // 引入时间插件 不需要处理水合
     "nuxt-time",
-    "@nuxt/image",
   ],
   primevue: {
     options: {
