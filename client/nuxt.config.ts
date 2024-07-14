@@ -4,6 +4,11 @@ import requireTransform from "vite-plugin-require-transform";
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
+  build: {
+    analyze: {
+      filename: "stats.html",
+    },
+  },
   imports: {
     dirs: ["composables/**"],
   },
@@ -44,11 +49,11 @@ export default defineNuxtConfig({
         ],
       },
     ],
-
-    "@nuxtjs/tailwindcss",
-    "nuxt-primevue", // 全局引入 PrimeVue
-    "@nuxt/content", // 引入 Nuxt Content 模块
-    'nuxt-time', // 引入时间插件 不需要处理水合
+    "@nuxtjs/tailwindcss", // 全局引入 PrimeVue
+    "nuxt-primevue", // 引入 Nuxt Content 模块
+    "@nuxt/content", // 引入时间插件 不需要处理水合
+    "nuxt-time",
+    "@nuxt/image",
   ],
   primevue: {
     options: {
@@ -64,6 +69,7 @@ export default defineNuxtConfig({
     port: 3005,
   },
   ssr: true,
+
   // 配置content
   content: {
     api: {

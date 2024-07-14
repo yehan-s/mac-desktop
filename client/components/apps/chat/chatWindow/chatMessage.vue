@@ -58,7 +58,15 @@
             alt=""
             class="w-32 rounded-lg"
           />
-          <!-- </div> -->
+
+          <NuxtLink
+            :to="item.content.split('+')[1]"
+            download
+            v-else-if="item.media_type === 'file'"
+            class="text-green-600 dark:text-green-800 chat-bubble dark:bg-[#2c2c2c] bg-[#d9d9d9] "
+          >
+            {{ item.content.split("+")[0] }}
+          </NuxtLink>
           <div
             v-else
             class="chat-bubble dark:bg-[#2c2c2c] bg-[#d9d9d9] dark:text-white"

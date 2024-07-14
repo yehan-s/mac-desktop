@@ -12,10 +12,11 @@
       />
       <Icon name="smail" desc="表情" @click.stop="emojiPanelHandler(true)" />
       <!-- <Icon name="sc" desc="截图" /> -->
-      <!-- <Icon name="file" desc="文件" /> -->
+      <Icon name="file" desc="文件" />
+
       <Icon name="img" desc="照片" />
       <!-- 发送图片 -->
-
+      <!-- 976.563 KB -->
       <FileUpload
         :pt="persets.fileupload"
         mode="basic"
@@ -26,8 +27,23 @@
         :maxFileSize="1000000"
         @beforeSend="beforeSend($event)"
         @select="select"
-        @upload="upload"
+        @upload="uploadImg"
         class="w-[32px] h-[32px] rounded-full bg-pink-500 absolute top-[8px] -left-[48px] z-10 opacity-0"
+      >
+      </FileUpload>
+      <!-- 上传文件 -->
+      <!-- 1024.00 MB -->
+      <FileUpload
+        :pt="persets.fileupload"
+        mode="basic"
+        :auto="true"
+        ref="fileupload"
+        :url="uploadUrl"
+        :maxFileSize="1073741824"
+        @beforeSend="beforeSend($event)"
+        @select="select"
+        @upload="uploadFile"
+        class="w-[32px] h-[32px] rounded-full bg-pink-500 absolute top-[8px] -left-[140px] z-10 opacity-0"
       >
       </FileUpload>
 
@@ -138,7 +154,7 @@ interface File {
 }
 let fileObject: any = null;
 
-const file = reactive<File>({} as File);
+let file = reactive<File>({} as File);
 const uploadUrl = `${useRuntimeConfig().public.apiBase}/img/get-sts-identity`;
 
 // 给url的默认行为添加请求头
@@ -155,29 +171,30 @@ const select = ($event: any) => {
   if ($event.files.length === 0) {
     useNuxtApp().$toast.add({
       severity: "warn",
-      detail: "只支持上传 jpg、jpeg、png、gif 格式的图片111111111",
+      detail: "不可以文件夹或程序",
       life: 3000,
     });
     return;
   }
-  const fileTemp = $event.files[0];
+  // const fileTemp = $event.files[0];
+  file = $event.files[0];
   console.log("文件的大小是", $event.files[0].size);
-  file.size = fileTemp.size;
-  file.type = fileTemp.type;
-  file.name = fileTemp.name;
-  file.objectURL = fileTemp.objectURL;
+  // file.size = fileTemp.size;
+  // file.type = fileTemp.type;
+  // file.name = fileTemp.name;
+  // file.objectURL = fileTemp.objectURL;
 
   // 假设 opt.file 是一个 Blob 对象
-  const blob = file.objectURL;
+  // const blob = file.objectURL;
 
   // 将 Blob 对象转换为 File 对象
-  file.fileObject = new File([blob], file.name);
+  // file.fileObject = new File([blob], file.name);
 
-  fileObject = $event.files[0];
+  // fileObject = $event.files[0];
 };
 // 有个autoFocus的提醒
-const upload = async ($event: any) => {
-  console.log("上传文件", $event);
+const uploadImg = async ($event: any) => {
+  console.log("上传图片", $event);
   let stsResult = $event.xhr.response;
   stsResult = JSON.parse(stsResult);
   if (stsResult.code !== 200)
@@ -190,11 +207,42 @@ const upload = async ($event: any) => {
   const path = await imgUpload({
     file,
     sts: stsResult.data.stsToken.Credentials,
-    fileObject,
+  });
+
+  // 发送图片消息
+  chatStore.sendPrivateMessage(path, "image");
+
+  return false;
+
+  useNuxtApp().$toast.add({
+    severity: "success",
+    summary: "Success",
+    detail: "文件上传中。。",
+    life: 3000,
+  });
+
+  return false;
+};
+
+const uploadFile = async ($event: any) => {
+  console.log("上传文件", $event);
+  let stsResult = $event.xhr.response;
+  stsResult = JSON.parse(stsResult);
+  if (stsResult.code !== 200)
+    return useNuxtApp().$toast.add({
+      severity: "warn",
+      summary: "Warn",
+      detail: "STS获取失败",
+      life: 3000,
+    });
+  console.log("上传文件吗", file);
+  const { url, fileName } = await fileUpload({
+    file,
+    sts: stsResult.data.stsToken.Credentials,
   });
 
   // 发送图片小
-  chatStore.sendPrivateMessage(path, "image");
+  chatStore.sendPrivateMessage(fileName + "+" + url, "file");
 
   return false;
 

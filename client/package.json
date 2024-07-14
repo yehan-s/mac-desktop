@@ -14,6 +14,7 @@
     "@neodrag/vue": "^2.0.4",
     "@nuxt/content": "^2.13.0",
     "@pinia/nuxt": "^0.5.1",
+    "@vercel/speed-insights": "^1.0.12",
     "ali-oss": "^6.20.0",
     "dayjs": "^1.11.10",
     "dotenv": "^16.4.5",
