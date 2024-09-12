@@ -9,12 +9,17 @@ import { ChatModule } from './chat/chat.module';
 import { ImgModule } from './img/img.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 
+function getEnvFilePath() {
+  const env = process.env.NODE_ENV || 'development';
+  return [`.env.${env}`, '.env'];
+}
+
 @Module({
   imports: [
     UserModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env', '.env.development'],
+      envFilePath: getEnvFilePath(),
     }),
     TypeOrmModule.forRoot({
       // type: 'mysql',
@@ -45,4 +50,4 @@ import { ThrottlerModule } from '@nestjs/throttler';
   controllers: [UserController],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }

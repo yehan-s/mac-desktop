@@ -36,7 +36,6 @@
     </div>
     <div class="text-[12px] flex justify-start items-center text-[#999]">
       <div
-      
         class="flex-center w-4 h-4 border-[1px] mr-1 border-[#b2c1cb] rounded-full text-white"
         :class="check ? 'bg-[#0099ff]' : ''"
         @click="toggleCheck"

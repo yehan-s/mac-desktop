@@ -4,11 +4,13 @@ import requireTransform from "vite-plugin-require-transform";
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
+
   build: {
     analyze: {
       filename: "stats.html",
     },
   },
+
   app: {
     head: {
       title: "desktop",
@@ -27,9 +29,11 @@ export default defineNuxtConfig({
       // 其他配置...
     },
   },
+
   imports: {
     dirs: ["composables/**"],
   },
+
   runtimeConfig: {
     // 仅在服务器端可用的私有密钥
     // apiSecret: '123',
@@ -47,6 +51,7 @@ export default defineNuxtConfig({
       OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     },
   },
+
   vite: {
     plugins: [
       // 您的 Vite 插件配置
@@ -55,6 +60,7 @@ export default defineNuxtConfig({
       }),
     ],
   },
+
   modules: [
     [
       "@pinia/nuxt",
@@ -72,19 +78,23 @@ export default defineNuxtConfig({
     "@nuxt/content", // 引入时间插件 不需要处理水合
     "nuxt-time",
   ],
+
   primevue: {
     options: {
       unstyled: true,
     },
     // @ts-ignore
   },
+
   css: [
     // "primevue/resources/themes/aura-light-green/theme.css"
   ],
+
   // 只在开发环境有效,生产环境需要在.env 文件中设置
   devServer: {
     port: 3005,
   },
+
   ssr: true,
 
   // 配置content
@@ -107,4 +117,6 @@ export default defineNuxtConfig({
       },
     },
   },
+
+  compatibilityDate: "2024-09-12",
 });

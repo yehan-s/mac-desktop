@@ -19,7 +19,7 @@ export class ImgService {
     const identity = await sts.getCallerIdentity();
     // return identity;
     // 打*号是因为涉及安全问题，具体角色需要询问公司管理阿里云的同事
-    // console.log(`当前用户身份信息: ${JSON.stringify(identity)}`);
+    console.log(`当前用户身份信息: ${JSON.stringify(identity)}`);
     const stsToken = await sts.assumeRole(
       `acs:ram::${identity.AccountId}:role/${ossConfig.roleName}`,
       `${username}`,
