@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -30,5 +30,10 @@ export class AuthController {
     const { username, password } = dto;
     console.log('signup', query);
     return this.authService.signUp(username, password);
+  }
+
+  @Get('/hello')
+  hello() {
+    return 'hello';
   }
 }

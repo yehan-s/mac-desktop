@@ -1,81 +1,120 @@
-# Turborepo starter
+# Mac Desktop
 
-This is an official starter Turborepo.
+## 项目启动
 
-## Using this example
+### Installation
 
-Run the following command:
+1. 直接在根目录 pnpm i
+2. 或者进入client和server目录，分别执行 pnpm i
 
-```sh
-npx create-turbo@latest
+在client目录下，创建.env.development 文件，内容如下：
+
+```yaml
+PORT=3010
+
+API_BASE_URL=http://127.0.0.1:3000
+
+# OSS_ACCESS_KEY_ID= 你的阿里AccessKeyId
+# OSS_ACCESS_KEY_SECRET= 你的阿里AccessKeySecret
+# OSS_BUCKET= 你的阿里Bucket名称
+# OSS_REGION= 你的阿里区域
+# OSS_ROLE_NAME= 你的阿里角色名称
+
+# CHAT_COMPLETIONS_API_URL= 你的AI Completion API地址
+# SELECTED_MODEL= 你的AI Completion模型名称
+# OPENAI_API_KEY= 你的OpenAI API Key
 ```
 
-## What's inside?
+创建
 
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
+```yaml
+暂时同上
 ```
 
-### Develop
 
-To develop all apps and packages, run the following command:
+在 server 目录下，创建 .env 文件，内容如下：
 
-```
-cd my-turborepo
-pnpm dev
-```
+```yaml
+OSS_ACCESS_KEY_ID= 你的阿里AccessKeyId
+OSS_ACCESS_KEY_SECRET= 你的阿里AccessKeySecret
+OSS_BUCKET= 你的阿里Bucket名称
+OSS_REGION= 你的阿里区域，前面加上oss-,例如：oss-cn-wuhan-lr
+OSS_ROLE_NAME= 你的阿里角色名称
 
-### Remote Caching
+DB_TYPE=mysql
+# DB_HOST=127.0.0.1
+# DB_PORT=3306
 
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+DB_SYNC=true
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
+LOG_ON=true
+LOG_LEVEL=info
 
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
+# jwt secret
+SECRET=111VfX5Z$zA7PWXfcFmQTQE4Y*ag93$VPfW
 ```
 
-## Useful Links
 
-Learn more about the power of Turborepo:
+创建 .env.development 文件，内容如下：
 
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+```yaml
+DB_DATABASE=test
+DB_HOST=127.0.0.1
+DB_PORT=3306
+
+DB_USERNAME=root
+DB_PASSWORD=example
+
+# 用在开发过程中，每次启动都会重新创建数据库
+# 生产环境需要关闭，否则会导致数据丢失
+# 开启状态下，每次实体改变时，项目重启时会自动同步数据库
+DB_SYNC=true
+
+LOG_ON=true
+
+# jwt secret
+SECRET= 你的密钥
+```
+
+创建 .env.production 文件，内容如下：
+
+```yaml
+DB_DATABASE= 你的数据库名称
+DB_HOST= 你的数据库地址
+DB_PORT= 你的数据库端口
+
+DB_USERNAME= 你的数据库用户名
+DB_PASSWORD= 你的数据库密码
+
+# 用在开发过程中，每次启动都会重新创建数据库
+DB_SYNC=false
+
+LOG_ON=true
+
+# jwt secret
+SECRET= 你的密钥
+```
+
+
+创建 docker-compose.yml 文件，内容如下：
+
+```yaml
+# Use root/example as user/password credentials
+version: '3.1'
+
+services:
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+    ports:
+      - 3306:3306
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+```
